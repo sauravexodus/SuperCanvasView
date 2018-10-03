@@ -1,0 +1,44 @@
+PODS:
+  - Reusable (4.0.3):
+    - Reusable/Storyboard (= 4.0.3)
+    - Reusable/View (= 4.0.3)
+  - Reusable/Storyboard (4.0.3)
+  - Reusable/View (4.0.3)
+  - RxCocoa (4.3.1):
+    - RxSwift (~> 4.0)
+  - RxSwift (4.3.1)
+  - RxSwiftExt (3.3.0):
+    - RxSwiftExt/Core (= 3.3.0)
+  - RxSwiftExt/Core (3.3.0):
+    - RxSwift (~> 4.0)
+  - SnapKit (4.0.1)
+  - Then (2.4.0)
+
+DEPENDENCIES:
+  - Reusable
+  - RxCocoa
+  - RxSwift
+  - RxSwiftExt
+  - SnapKit
+  - Then
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - Reusable
+    - RxCocoa
+    - RxSwift
+    - RxSwiftExt
+    - SnapKit
+    - Then
+
+SPEC CHECKSUMS:
+  Reusable: 12b67a60e1f3e8c523cc910795dab733f58fbc7e
+  RxCocoa: 78763c7b07d02455598d9fc3c1ad091a28b73635
+  RxSwift: fe0fd770a43acdb7d0a53da411c9b892e69bb6e4
+  RxSwiftExt: 81afb48ab0602f503147417baeb3989d64c7687d
+  SnapKit: 0de968a9fec17499afa29683b05d0c775b6d1c29
+  Then: 71866660c7af35a7343831f7668e7cd2b62ee0f2
+
+PODFILE CHECKSUM: add20849423e71af501199f8cbb950b2de28200d
+
+COCOAPODS: 1.5.3

@@ -8,20 +8,32 @@
 
 /* Begin PBXBuildFile section */
 		7DC203FA2164C4C6007D93B7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DC203F92164C4C6007D93B7 /* AppDelegate.swift */; };
-		7DC203FC2164C4C6007D93B7 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DC203FB2164C4C6007D93B7 /* ViewController.swift */; };
-		7DC203FF2164C4C6007D93B7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7DC203FD2164C4C6007D93B7 /* Main.storyboard */; };
 		7DC204012164C4C8007D93B7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7DC204002164C4C8007D93B7 /* Assets.xcassets */; };
 		7DC204042164C4C8007D93B7 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7DC204022164C4C8007D93B7 /* LaunchScreen.storyboard */; };
+		7DC2040C2164C4E8007D93B7 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DC2040B2164C4E8007D93B7 /* HomeViewController.swift */; };
+		7DC2040F2164C570007D93B7 /* CanvasView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DC2040E2164C570007D93B7 /* CanvasView.swift */; };
+		7DC204112164C5A0007D93B7 /* Line.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DC204102164C5A0007D93B7 /* Line.swift */; };
+		7DC204132164C671007D93B7 /* UIBezierPath+extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DC204122164C671007D93B7 /* UIBezierPath+extensions.swift */; };
+		7DC204152164C969007D93B7 /* PDFPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DC204142164C969007D93B7 /* PDFPage.swift */; };
+		7DC204172164D0B4007D93B7 /* CanvasCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DC204162164D0B4007D93B7 /* CanvasCell.swift */; };
+		E12C7DF811C83565F03590AF /* Pods_SuperCanvasView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 616E2B50C7A3D46F97B4272D /* Pods_SuperCanvasView.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		5D0A1C39A2E4617ADDD11B16 /* Pods-SuperCanvasView.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SuperCanvasView.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SuperCanvasView/Pods-SuperCanvasView.debug.xcconfig"; sourceTree = "<group>"; };
+		616E2B50C7A3D46F97B4272D /* Pods_SuperCanvasView.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SuperCanvasView.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		6ECE9AAC46BC542E347C69DA /* Pods-SuperCanvasView.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SuperCanvasView.release.xcconfig"; path = "Pods/Target Support Files/Pods-SuperCanvasView/Pods-SuperCanvasView.release.xcconfig"; sourceTree = "<group>"; };
 		7DC203F62164C4C6007D93B7 /* SuperCanvasView.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SuperCanvasView.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7DC203F92164C4C6007D93B7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		7DC203FB2164C4C6007D93B7 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		7DC203FE2164C4C6007D93B7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		7DC204002164C4C8007D93B7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		7DC204032164C4C8007D93B7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		7DC204052164C4C8007D93B7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		7DC2040B2164C4E8007D93B7 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
+		7DC2040E2164C570007D93B7 /* CanvasView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasView.swift; sourceTree = "<group>"; };
+		7DC204102164C5A0007D93B7 /* Line.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Line.swift; sourceTree = "<group>"; };
+		7DC204122164C671007D93B7 /* UIBezierPath+extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIBezierPath+extensions.swift"; sourceTree = "<group>"; };
+		7DC204142164C969007D93B7 /* PDFPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFPage.swift; sourceTree = "<group>"; };
+		7DC204162164D0B4007D93B7 /* CanvasCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -29,17 +41,28 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E12C7DF811C83565F03590AF /* Pods_SuperCanvasView.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		09208EC5813ECF2965829838 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				616E2B50C7A3D46F97B4272D /* Pods_SuperCanvasView.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		7DC203ED2164C4C6007D93B7 = {
 			isa = PBXGroup;
 			children = (
 				7DC203F82164C4C6007D93B7 /* SuperCanvasView */,
 				7DC203F72164C4C6007D93B7 /* Products */,
+				91AB2DFD3BD7373371A1FECE /* Pods */,
+				09208EC5813ECF2965829838 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -54,14 +77,35 @@
 		7DC203F82164C4C6007D93B7 /* SuperCanvasView */ = {
 			isa = PBXGroup;
 			children = (
+				7DC2040D2164C55A007D93B7 /* CanvasView */,
 				7DC203F92164C4C6007D93B7 /* AppDelegate.swift */,
-				7DC203FB2164C4C6007D93B7 /* ViewController.swift */,
-				7DC203FD2164C4C6007D93B7 /* Main.storyboard */,
 				7DC204002164C4C8007D93B7 /* Assets.xcassets */,
 				7DC204022164C4C8007D93B7 /* LaunchScreen.storyboard */,
 				7DC204052164C4C8007D93B7 /* Info.plist */,
+				7DC2040B2164C4E8007D93B7 /* HomeViewController.swift */,
+				7DC204162164D0B4007D93B7 /* CanvasCell.swift */,
 			);
 			path = SuperCanvasView;
+			sourceTree = "<group>";
+		};
+		7DC2040D2164C55A007D93B7 /* CanvasView */ = {
+			isa = PBXGroup;
+			children = (
+				7DC2040E2164C570007D93B7 /* CanvasView.swift */,
+				7DC204102164C5A0007D93B7 /* Line.swift */,
+				7DC204122164C671007D93B7 /* UIBezierPath+extensions.swift */,
+				7DC204142164C969007D93B7 /* PDFPage.swift */,
+			);
+			path = CanvasView;
+			sourceTree = "<group>";
+		};
+		91AB2DFD3BD7373371A1FECE /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				5D0A1C39A2E4617ADDD11B16 /* Pods-SuperCanvasView.debug.xcconfig */,
+				6ECE9AAC46BC542E347C69DA /* Pods-SuperCanvasView.release.xcconfig */,
+			);
+			name = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -71,9 +115,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 7DC204082164C4C8007D93B7 /* Build configuration list for PBXNativeTarget "SuperCanvasView" */;
 			buildPhases = (
+				1286AC262D5518153FB706E4 /* [CP] Check Pods Manifest.lock */,
 				7DC203F22164C4C6007D93B7 /* Sources */,
 				7DC203F32164C4C6007D93B7 /* Frameworks */,
 				7DC203F42164C4C6007D93B7 /* Resources */,
+				233EE57E174357F9FC8C905C /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -124,33 +170,78 @@
 			files = (
 				7DC204042164C4C8007D93B7 /* LaunchScreen.storyboard in Resources */,
 				7DC204012164C4C8007D93B7 /* Assets.xcassets in Resources */,
-				7DC203FF2164C4C6007D93B7 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		1286AC262D5518153FB706E4 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-SuperCanvasView-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		233EE57E174357F9FC8C905C /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-SuperCanvasView/Pods-SuperCanvasView-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/Reusable/Reusable.framework",
+				"${BUILT_PRODUCTS_DIR}/RxCocoa/RxCocoa.framework",
+				"${BUILT_PRODUCTS_DIR}/RxSwift/RxSwift.framework",
+				"${BUILT_PRODUCTS_DIR}/RxSwiftExt/RxSwiftExt.framework",
+				"${BUILT_PRODUCTS_DIR}/SnapKit/SnapKit.framework",
+				"${BUILT_PRODUCTS_DIR}/Then/Then.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Reusable.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxCocoa.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxSwift.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxSwiftExt.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SnapKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Then.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-SuperCanvasView/Pods-SuperCanvasView-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		7DC203F22164C4C6007D93B7 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7DC203FC2164C4C6007D93B7 /* ViewController.swift in Sources */,
 				7DC203FA2164C4C6007D93B7 /* AppDelegate.swift in Sources */,
+				7DC204112164C5A0007D93B7 /* Line.swift in Sources */,
+				7DC2040C2164C4E8007D93B7 /* HomeViewController.swift in Sources */,
+				7DC204172164D0B4007D93B7 /* CanvasCell.swift in Sources */,
+				7DC2040F2164C570007D93B7 /* CanvasView.swift in Sources */,
+				7DC204132164C671007D93B7 /* UIBezierPath+extensions.swift in Sources */,
+				7DC204152164C969007D93B7 /* PDFPage.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		7DC203FD2164C4C6007D93B7 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				7DC203FE2164C4C6007D93B7 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		7DC204022164C4C8007D93B7 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -278,6 +369,7 @@
 		};
 		7DC204092164C4C8007D93B7 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5D0A1C39A2E4617ADDD11B16 /* Pods-SuperCanvasView.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
@@ -296,6 +388,7 @@
 		};
 		7DC2040A2164C4C8007D93B7 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 6ECE9AAC46BC542E347C69DA /* Pods-SuperCanvasView.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;

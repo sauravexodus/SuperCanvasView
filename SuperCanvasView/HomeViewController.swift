@@ -11,6 +11,22 @@ import UIKit
 import SnapKit
 import Then
 
+struct SectionModel {
+    let header: String
+    let items: [String]
+    var lines: [Line]
+    
+    static var dummy: [SectionModel] = {
+        return Array(1...10).map {
+            SectionModel(
+                header: "Header \($0)",
+                items: Array(1...10).map { "Item \($0)" },
+                lines: []
+            )
+        }
+    }()
+}
+
 final class HomeViewController: UIViewController {
     
     let tableView = UITableView().then {
@@ -18,6 +34,7 @@ final class HomeViewController: UIViewController {
         $0.register(cellType: CanvasCell.self)
         $0.separatorStyle = .none
         $0.backgroundColor = .gray
+        $0.panGestureRecognizer.allowedTouchTypes = [UITouchType.direct.rawValue as NSNumber]
         $0.translatesAutoresizingMaskIntoConstraints = false
     }
     
@@ -29,6 +46,8 @@ final class HomeViewController: UIViewController {
     let addTextButton = UIButton().then {
         $0.setTitle("Add Text", for: .normal)
     }
+    
+    var dataSource: [SectionModel] = SectionModel.dummy
     
     // MARK: Init methods
     
@@ -71,17 +90,28 @@ final class HomeViewController: UIViewController {
     private func configureTableView() {
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.reloadData()
     }
     
 }
 
 extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 10
+        return dataSource.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: CanvasCell = tableView.dequeueReusableCell(for: indexPath)
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        let cell: CanvasCell = tableView.dequeueReusableCell(for: indexPath)
+        cell.configure(with: dataSource[indexPath.row])
+        cell.canvasView.rx.lines.subscribe(onNext: { [weak self] lines in
+            guard let strongSelf = self else { return }
+            strongSelf.dataSource[indexPath.row].lines = lines
+        })
+        .disposed(by: cell.disposeBag)
     }
 }

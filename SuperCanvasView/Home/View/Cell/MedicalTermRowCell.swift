@@ -42,8 +42,6 @@ final class MedicalTermRowCell: UITableViewCell, Reusable {
         canvasView.lines = lines
         addSubview(titleLabel)
         addSubview(canvasView)
-        if text == "Symptom" { backgroundColor = .blue }
-        if text == "Diagnosis" { backgroundColor = .red }
         titleLabel.snp.remakeConstraints { make in
             make.height.equalTo(height)
             make.top.bottom.left.right.equalToSuperview()

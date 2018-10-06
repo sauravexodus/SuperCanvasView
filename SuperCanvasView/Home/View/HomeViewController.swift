@@ -43,10 +43,6 @@ final class HomeViewController: UIViewController, View {
         $0.setTitle("Add Medical Term Row", for: .normal)
     }
     
-    let addTenRows = UIButton().then {
-        $0.setTitle("Add Ten Rows", for: .normal)
-    }
-    
     let deleteAllRows = UIButton().then {
         $0.setTitle("Delete All Rows", for: .normal)
     }
@@ -89,7 +85,6 @@ final class HomeViewController: UIViewController, View {
         view.backgroundColor = .gray
         view.addSubview(buttonsView)
         buttonsView.addSubview(addMedicalTermRow)
-        buttonsView.addSubview(addTenRows)
         buttonsView.addSubview(deleteAllRows)
         buttonsView.addSubview(printButton)
         view.addSubview(tableView)
@@ -106,14 +101,9 @@ final class HomeViewController: UIViewController, View {
             make.left.equalToSuperview().offset(8)
             make.bottom.equalToSuperview().inset(8)
         }
-        addTenRows.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(8)
-            make.left.equalTo(addMedicalTermRow.snp.right).offset(8)
-            make.bottom.equalToSuperview().inset(8)
-        }
         deleteAllRows.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(8)
-            make.left.equalTo(addTenRows.snp.right).offset(8)
+            make.left.equalTo(addMedicalTermRow.snp.right).offset(8)
             make.bottom.equalToSuperview().inset(8)
         }
         printButton.snp.makeConstraints { make in
@@ -142,11 +132,6 @@ final class HomeViewController: UIViewController, View {
             .map { _ in
                 return .add(ConsultationRow(height: Float([50, 100, 150].randomElement() ?? 0), medicalSection: [MedicalSection.symptoms(name: "Symptom", lines: []), MedicalSection.diagnoses(name: "Diagnosis", lines: [])].randomElement() ?? MedicalSection.symptoms(name: "Shouldn't show up", lines: [])))
             }
-            .bind(to: reactor.action)
-            .disposed(by: disposeBag)
-        
-        addTenRows.rx.tap
-            .mapTo(.addTen)
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
@@ -182,11 +167,11 @@ extension HomeViewController {
 
 extension HomeViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        return 100.0
+        return 25.0
     }
     
     func tableView(_ tableView: UITableView, willDisplayFooterView view: UIView, forSection section: Int) {
-        view.tintColor = .green
+        view.tintColor = .gray
     }
 }
 

@@ -15,12 +15,10 @@ final class HomeViewModel: Reactor {
     enum Action {
         case initialLoad
         case add(ConsultationRow)
-        case addTen
         case deleteAll
     }
     
     enum Mutation {
-        case appendTenConsultationRows
         case setPages([ConsultationPageSection])
     }
     
@@ -37,7 +35,6 @@ final class HomeViewModel: Reactor {
         switch action {
         case .initialLoad: return mutateInitialLoad()
         case let .add(consultationRow): return mutateAppendConsultationRow(consultationRow)
-        case .addTen: return .empty()
         case .deleteAll: return mutateInitialLoad()
         }
     }
@@ -55,7 +52,9 @@ final class HomeViewModel: Reactor {
         var consultationRows = consultationRows
         let indexToInsert = consultationRows.reduce(consultationRows.count, { result, row in
             guard consultationRow.medicalSection == row.medicalSection else { return result }
-            if let index = consultationRows.firstIndex(of: row) { return index + 1 }
+            if let index = consultationRows.firstIndex(of: row) {
+                return index + 1
+            }
             return result
         })
         consultationRows.insert(consultationRow, at: indexToInsert)
@@ -86,8 +85,6 @@ final class HomeViewModel: Reactor {
     func reduce(state: HomeViewModel.State, mutation: HomeViewModel.Mutation) -> HomeViewModel.State {
         var state = state
         switch mutation {
-        case .appendTenConsultationRows:
-            print("reached here")
         case let .setPages(pages):
             state.pages = pages
         }

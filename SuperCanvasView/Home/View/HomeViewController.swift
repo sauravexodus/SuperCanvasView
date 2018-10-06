@@ -80,6 +80,8 @@ final class HomeViewController: UIViewController, View {
         addSubviews()
         addConstraints()
         tableView.sectionFooterHeight = 100
+        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.estimatedRowHeight = 2
         tableView.rx
             .setDelegate(self)
             .disposed(by: disposeBag)
@@ -187,6 +189,14 @@ extension HomeViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, willDisplayFooterView view: UIView, forSection section: Int) {
         view.tintColor = .green
+    }
+    
+    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 2
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return UITableViewAutomaticDimension
     }
 }
 

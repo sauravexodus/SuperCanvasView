@@ -112,6 +112,8 @@ class CanvasView: UIView {
     /// An optional `CGImage` containing the last representation of lines no longer receiving updates.
     var frozenImage: CGImage?
     
+    var touchReachedBottom = PublishSubject<Void>()
+    
     // MARK: Touches
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -120,6 +122,12 @@ class CanvasView: UIView {
             return
         }
         drawTouches(touches, withEvent: event)
+        
+        if let first = touches.first {
+            if first.location(in: self).y > (frame.size.height - 10) {
+                touchReachedBottom.onNext(())
+            }
+        }
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -128,6 +136,12 @@ class CanvasView: UIView {
             return
         }
         drawTouches(touches, withEvent: event)
+        
+        if let first = touches.first {
+            if first.location(in: self).y > (frame.size.height - 50) {
+                touchReachedBottom.onNext(())
+            }
+        }
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {

@@ -79,7 +79,7 @@ final class HomeViewController: UIViewController, View {
     private func setup() {
         addSubviews()
         addConstraints()
-        
+        tableView.sectionFooterHeight = 100
         tableView.rx
             .setDelegate(self)
             .disposed(by: disposeBag)

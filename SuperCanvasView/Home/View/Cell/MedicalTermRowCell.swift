@@ -22,6 +22,11 @@ final class MedicalTermRowCell: UITableViewCell, Reusable {
         $0.translatesAutoresizingMaskIntoConstraints = false
     }
     
+    override func prepareForReuse() {
+        backgroundColor = .white
+        canvasView.clear()
+    }
+    
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         backgroundColor = .white
@@ -39,11 +44,11 @@ final class MedicalTermRowCell: UITableViewCell, Reusable {
         addSubview(canvasView)
         if text == "Symptom" { backgroundColor = .blue }
         if text == "Diagnosis" { backgroundColor = .red }
-        titleLabel.snp.makeConstraints { make in
+        titleLabel.snp.remakeConstraints { make in
             make.height.equalTo(height)
             make.top.bottom.left.right.equalToSuperview()
         }
-        canvasView.snp.makeConstraints { make in
+        canvasView.snp.remakeConstraints { make in
             make.height.equalTo(height)
             make.top.bottom.left.right.equalToSuperview()
         }

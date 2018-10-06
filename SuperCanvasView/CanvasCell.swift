@@ -94,13 +94,13 @@ final class CanvasCell: UITableViewCell, Reusable {
         disposeBag = .init()
     }
     
-    func configure(with sectionModel: SectionModel) {
-        items.bind(to: tableView.rx.items(cellIdentifier: "SimpleCell", cellType: SimpleCell.self)) { row, element, cell in
-            cell.configure(with: element)
-        }.disposed(by: disposeBag)
-        items.onNext(sectionModel.items)
-        canvasView.lines = sectionModel.lines
-        canvasView.setNeedsDisplay()
-    }
+//    func configure(with sectionModel: SectionModel) {
+//        items.bind(to: tableView.rx.items(cellIdentifier: "SimpleCell", cellType: SimpleCell.self)) { row, element, cell in
+//            cell.configure(with: element)
+//        }.disposed(by: disposeBag)
+//        items.onNext(sectionModel.items)
+//        canvasView.lines = sectionModel.lines
+//        canvasView.setNeedsDisplay()
+//    }
     
 }

@@ -11,5 +11,8 @@ target 'SuperCanvasView' do
   pod 'Then'
   pod 'SnapKit'
   pod 'Reusable'
+  pod 'RxDataSources'
+  pod 'ReactorKit'
+  pod 'RxViewController'
 
 end

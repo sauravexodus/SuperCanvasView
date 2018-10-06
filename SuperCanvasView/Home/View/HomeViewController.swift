@@ -35,16 +35,12 @@ final class HomeViewController: UIViewController, View {
         $0.translatesAutoresizingMaskIntoConstraints = false
     }
     
-    let addDrawingRow = UIButton().then {
-        $0.setTitle("Add Drawing Row", for: .normal)
-    }
-    
     let addMedicalTermRow = UIButton().then {
-        $0.setTitle("Add Medical Term Row", for: .normal)
+        $0.setTitle("Add", for: .normal)
     }
     
     let deleteAllRows = UIButton().then {
-        $0.setTitle("Delete All Rows", for: .normal)
+        $0.setTitle("Delete All", for: .normal)
     }
     
     let printButton = UIButton().then {
@@ -98,17 +94,17 @@ final class HomeViewController: UIViewController, View {
         }
         addMedicalTermRow.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(8)
-            make.left.equalToSuperview().offset(8)
+            make.left.equalToSuperview().offset(16)
             make.bottom.equalToSuperview().inset(8)
         }
         deleteAllRows.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(8)
-            make.left.equalTo(addMedicalTermRow.snp.right).offset(8)
+            make.left.equalTo(addMedicalTermRow.snp.right).offset(32)
             make.bottom.equalToSuperview().inset(8)
         }
         printButton.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(8)
-            make.left.equalTo(deleteAllRows.snp.right).offset(8)
+            make.left.equalTo(deleteAllRows.snp.right).offset(32)
             make.bottom.equalToSuperview().inset(8)
         }
         tableView.snp.makeConstraints { make in

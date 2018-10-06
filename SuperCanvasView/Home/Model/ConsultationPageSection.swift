@@ -11,6 +11,20 @@ import RxDataSources
 
 struct ConsultationPageSection {
     var items: [Item]
+    var pageHeight: Float
+    var usedHeight: Float {
+        return items.filter { item in item.medicalSection != .none }.reduce(0, { result, item in result + item.height })
+    }
+    var isPageFull: Bool {
+        return pageHeight == usedHeight
+    }
+    var heightToBePadded: Float {
+        return pageHeight - usedHeight
+    }
+    
+    func canInsertRow(with height: Float) -> Bool {
+        return height <= pageHeight - usedHeight
+    }
 }
 
 extension ConsultationPageSection: SectionModelType {

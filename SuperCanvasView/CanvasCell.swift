@@ -53,7 +53,7 @@ final class CanvasCell: UITableViewCell, Reusable {
     }
     
     let canvasView = CanvasView().then {
-        $0.backgroundColor = .clear
+        $0.backgroundColor = .blue
         $0.translatesAutoresizingMaskIntoConstraints = false
     }
     

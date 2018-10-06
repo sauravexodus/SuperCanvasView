@@ -10,6 +10,8 @@ import Foundation
 import UIKit
 import SnapKit
 import Then
+import RxSwift
+import WebKit
 
 struct SectionModel {
     let header: String
@@ -47,6 +49,12 @@ final class HomeViewController: UIViewController {
         $0.setTitle("Add Text", for: .normal)
     }
     
+    let printButton = UIButton().then {
+        $0.setTitle("Print", for: .normal)
+    }
+    
+    let disposeBag = DisposeBag()
+    
     var dataSource: [SectionModel] = SectionModel.dummy
     
     // MARK: Init methods
@@ -62,12 +70,53 @@ final class HomeViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func viewDidLoad() {
+        printButton.rx.tap
+            .subscribe(onNext: { [weak self] _ in
+                guard let strongSelf = self else { return }
+                strongSelf.showPrint()
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    private func showPrint() {
+        var images: [UIImage] = []
+        for section in 0...tableView.numberOfSections - 1 {
+            for row in 0...tableView.numberOfRows(inSection: section) - 1 {
+                let indexPath = IndexPath(row: row, section: section)
+                tableView.scrollToRow(at: indexPath, at: .top, animated: false)
+//                tableView.reloadData()
+//                tableView.setNeedsLayout()
+                tableView.layoutIfNeeded()
+                let cell = tableView.cellForRow(at: indexPath)
+                cell?.swCapture { image in
+                    guard let `image` = image else { return }
+                    images.append(image)
+                }
+            }
+        }
+        printConsultation(images: images)
+    }
+    
+    private func printConsultation(images: [UIImage]) {
+        let pi = UIPrintInfo(dictionary: nil)
+        pi.outputType = .general
+        pi.jobName = "JOB"
+        pi.orientation = .portrait
+        pi.duplex = .longEdge
+        let pic = UIPrintInteractionController.shared
+        pic.printInfo = pi
+        pic.printingItems = images
+        pic.present(animated: true)
+    }
+    
     // MARK: Instance methods
     
     private func addSubviews() {
         view.backgroundColor = .gray
         view.addSubview(buttonsView)
         buttonsView.addSubview(addTextButton)
+        buttonsView.addSubview(printButton)
         view.addSubview(tableView)
     }
     
@@ -79,6 +128,11 @@ final class HomeViewController: UIViewController {
         addTextButton.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(8)
             make.left.equalToSuperview().offset(8)
+            make.bottom.equalToSuperview().inset(8)
+        }
+        printButton.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(8)
+            make.left.equalTo(addTextButton.snp.right).offset(8)
             make.bottom.equalToSuperview().inset(8)
         }
         tableView.snp.makeConstraints { make in
@@ -102,7 +156,7 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell: CanvasCell = tableView.dequeueReusableCell(for: indexPath)
-        return cell
+        return cellgit@github.com:sauravexodus/SuperCanvasView.git
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
@@ -114,4 +168,22 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
         })
         .disposed(by: cell.disposeBag)
     }
+}
+
+extension UIImage {
+    func imageWithInsets(insetDimen: CGFloat) -> UIImage {
+        return imageWithInset(insets: UIEdgeInsets(top: insetDimen, left: insetDimen, bottom: insetDimen, right: insetDimen))
+    }
+    
+    func imageWithInset(insets: UIEdgeInsets) -> UIImage {
+        UIGraphicsBeginImageContextWithOptions(
+            CGSize(width: self.size.width + insets.left + insets.right,
+                   height: self.size.height + insets.top + insets.bottom), false, self.scale)
+        let origin = CGPoint(x: insets.left, y: insets.top)
+        self.draw(at: origin)
+        let imageWithInsets = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return imageWithInsets!
+    }
+    
 }

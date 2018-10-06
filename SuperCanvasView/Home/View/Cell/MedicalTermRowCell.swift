@@ -13,7 +13,6 @@ import RxSwift
 
 final class MedicalTermRowCell: UITableViewCell, Reusable {
     let titleLabel = UILabel().then {
-        $0.text = "Random text"
         $0.textColor = .black
     }
     
@@ -23,8 +22,7 @@ final class MedicalTermRowCell: UITableViewCell, Reusable {
     }
     
     override func prepareForReuse() {
-        backgroundColor = .white
-        canvasView.clear()
+//        canvasView.clearForReuse()
     }
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {

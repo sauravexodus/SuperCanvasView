@@ -244,7 +244,7 @@ class CanvasView: UIView {
         needsFullRedraw = true
         setNeedsDisplay()
     }
-    
+
     // MARK: Convenience
     
     func drawTouches(_ touches: Set<UITouch>, withEvent event: UIEvent?) {

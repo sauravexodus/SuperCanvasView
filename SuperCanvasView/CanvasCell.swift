@@ -99,8 +99,6 @@ final class CanvasCell: UITableViewCell, Reusable {
             cell.configure(with: element)
         }.disposed(by: disposeBag)
         items.onNext(sectionModel.items)
-        canvasView.lines = sectionModel.lines
-        canvasView.setNeedsDisplay()
     }
     
 }

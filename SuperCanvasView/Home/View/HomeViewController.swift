@@ -126,7 +126,11 @@ final class HomeViewController: UIViewController, View {
         
         addMedicalTermRow.rx.tap
             .map { _ in
-                return .add(ConsultationRow(height: Float([50, 100, 150].randomElement() ?? 0), medicalSection: [MedicalSection.symptoms(name: "Symptom", lines: []), MedicalSection.diagnoses(name: "Diagnosis", lines: [])].randomElement() ?? MedicalSection.symptoms(name: "Shouldn't show up", lines: [])))
+                let heightsArray = [50, 100, 150]
+                let randomHeightIndex = Int(arc4random_uniform(UInt32(heightsArray.count)))
+                let medicalSectionsArray = [MedicalSection.symptoms(name: "Symptom", lines: []), MedicalSection.diagnoses(name: "Diagnosis", lines: [])]
+                let randomSectionIndex = Int(arc4random_uniform(UInt32(medicalSectionsArray.count)))
+                return .add(ConsultationRow(height: Float(heightsArray[randomHeightIndex]), medicalSection: medicalSectionsArray[randomSectionIndex]))
             }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)

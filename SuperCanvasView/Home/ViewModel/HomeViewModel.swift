@@ -52,7 +52,7 @@ final class HomeViewModel: Reactor {
         var consultationRows = consultationRows
         let indexToInsert = consultationRows.reduce(consultationRows.count, { result, row in
             guard consultationRow.medicalSection == row.medicalSection else { return result }
-            if let index = consultationRows.firstIndex(of: row) {
+            if let index = consultationRows.index(of: row) {
                 return index + 1
             }
             return result

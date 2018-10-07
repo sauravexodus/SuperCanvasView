@@ -9,13 +9,18 @@
 import Foundation
 import UIKit
 import AsyncDisplayKit
+import ReactorKit
+import RxSwift
 
-final class ASHomeViewController: ASViewController<ASTableNode> {
-    
+final class ASHomeViewController: ASViewController<ASTableNode>, View {
+
     let tableNode = ASTableNode(style: .plain)
     let dataSource = Array(1...100).map { "Item \($0)" }
     
-    init() {
+    var disposeBag: DisposeBag = DisposeBag()
+    
+    init(viewModel: HomeViewModel) {
+        defer { self.reactor = viewModel }
         super.init(node: tableNode)
         tableNode.dataSource = self
         tableNode.delegate = self
@@ -26,6 +31,21 @@ final class ASHomeViewController: ASViewController<ASTableNode> {
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    // MARK: Bindings
+    
+    func bind(reactor: HomeViewModel) {
+        bindActions(reactor: reactor)
+        bindState(reactor: reactor)
+    }
+    
+    private func bindActions(reactor: HomeViewModel) {
+        
+    }
+    
+    private func bindState(reactor: HomeViewModel) {
+        
     }
     
 }
@@ -41,7 +61,7 @@ extension ASHomeViewController: ASTableDataSource, ASTableDelegate {
             let cellNode = ASCellNode(viewBlock: { () -> UIView in
                 let view = ASMedicalTermCellNode()
                 view.backgroundColor = .white
-                view.configure(with: title, and: [], height: 160)
+                view.configure(with: title, and: [])
                 return view
             })
             cellNode.style.preferredSize = CGSize(width: CGFloat.greatestFiniteMagnitude, height: 160)

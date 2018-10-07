@@ -33,6 +33,9 @@ PODS:
     - Differentiator (~> 3.0)
     - RxCocoa (~> 4.0)
     - RxSwift (~> 4.0)
+  - RxGesture (2.0.1):
+    - RxCocoa (~> 4.3.1)
+    - RxSwift (~> 4.3.1)
   - RxSwift (4.3.1)
   - RxSwiftExt (3.3.0):
     - RxSwiftExt/Core (= 3.3.0)
@@ -57,6 +60,7 @@ DEPENDENCIES:
   - RxASDataSources
   - RxCocoa
   - RxDataSources
+  - RxGesture
   - RxSwift
   - RxSwiftExt
   - RxViewController
@@ -75,6 +79,7 @@ SPEC REPOS:
     - RxASDataSources
     - RxCocoa
     - RxDataSources
+    - RxGesture
     - RxSwift
     - RxSwiftExt
     - RxViewController
@@ -92,6 +97,7 @@ SPEC CHECKSUMS:
   RxASDataSources: 97e3e87f929d7133cda240c3feb2dd2da34e250e
   RxCocoa: 78763c7b07d02455598d9fc3c1ad091a28b73635
   RxDataSources: a843bad90c29817f5923ec8163f4af2de084ceb3
+  RxGesture: 26ede4ed13ffc6336d29dbd9a8dff229bdb72de7
   RxSwift: fe0fd770a43acdb7d0a53da411c9b892e69bb6e4
   RxSwiftExt: 81afb48ab0602f503147417baeb3989d64c7687d
   RxViewController: 203510707e73dd95f147f0c387710e3ec80d2b0f
@@ -99,6 +105,6 @@ SPEC CHECKSUMS:
   Texture: 9d7e38965cf22ccd7cd9c249dd78b3f14e70ab6c
   Then: 71866660c7af35a7343831f7668e7cd2b62ee0f2
 
-PODFILE CHECKSUM: e8432603f83dea31a0672a9068a411bf0b18d72e
+PODFILE CHECKSUM: 1ed877b23d8da8d7f8bfe276ac9f738c8c544f76
 
 COCOAPODS: 1.5.3

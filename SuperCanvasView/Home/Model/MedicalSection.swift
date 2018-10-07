@@ -12,6 +12,22 @@ enum MedicalSection {
     case symptoms(name: String?, lines: [Line])
     case diagnoses(name: String?, lines: [Line])
     case none
+    
+    var name: String? {
+        switch self {
+        case let .symptoms(name, _): return name
+        case let .diagnoses(name, _): return name
+        default: return nil
+        }
+    }
+    
+    var lines: [Line] {
+        switch self {
+        case let .symptoms(_, lines): return lines
+        case let .diagnoses(_, lines): return lines
+        default: return []
+        }
+    }
 }
 
 extension MedicalSection: Equatable { }

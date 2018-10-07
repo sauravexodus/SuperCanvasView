@@ -15,6 +15,7 @@ target 'SuperCanvasView' do
   pod 'RxDataSources'
   pod 'ReactorKit'
   pod 'RxViewController'
+  pod 'RxGesture'
   
   # Texture
   pod 'Texture'

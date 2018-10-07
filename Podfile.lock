@@ -1,5 +1,20 @@
 PODS:
   - Differentiator (3.1.0)
+  - PINCache (3.0.1-beta.6):
+    - PINCache/Arc-exception-safe (= 3.0.1-beta.6)
+    - PINCache/Core (= 3.0.1-beta.6)
+  - PINCache/Arc-exception-safe (3.0.1-beta.6):
+    - PINCache/Core
+  - PINCache/Core (3.0.1-beta.6):
+    - PINOperation (~> 1.1.0)
+  - PINOperation (1.1.1)
+  - PINRemoteImage/Core (3.0.0-beta.13):
+    - PINOperation
+  - PINRemoteImage/iOS (3.0.0-beta.13):
+    - PINRemoteImage/Core
+  - PINRemoteImage/PINCache (3.0.0-beta.13):
+    - PINCache (= 3.0.1-beta.6)
+    - PINRemoteImage/Core
   - ReactorKit (1.2.0):
     - RxSwift (>= 4.0.0)
   - Reusable (4.0.3):
@@ -22,6 +37,13 @@ PODS:
     - RxCocoa (>= 4.0.0)
     - RxSwift (>= 4.0.0)
   - SnapKit (4.0.1)
+  - Texture (2.7):
+    - Texture/PINRemoteImage (= 2.7)
+  - Texture/Core (2.7)
+  - Texture/PINRemoteImage (2.7):
+    - PINRemoteImage/iOS (= 3.0.0-beta.13)
+    - PINRemoteImage/PINCache
+    - Texture/Core
   - Then (2.4.0)
 
 DEPENDENCIES:
@@ -33,11 +55,15 @@ DEPENDENCIES:
   - RxSwiftExt
   - RxViewController
   - SnapKit
+  - Texture
   - Then
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
     - Differentiator
+    - PINCache
+    - PINOperation
+    - PINRemoteImage
     - ReactorKit
     - Reusable
     - RxCocoa
@@ -46,10 +72,14 @@ SPEC REPOS:
     - RxSwiftExt
     - RxViewController
     - SnapKit
+    - Texture
     - Then
 
 SPEC CHECKSUMS:
   Differentiator: be49ca3408f0ecfc761e4c7763d20c62be01b9ad
+  PINCache: d195fdba255283f7e9900a55e3cced377f431f9b
+  PINOperation: a6219e6fc9db9c269eb7a7b871ac193bcf400aac
+  PINRemoteImage: d6d51c5d2adda55f1ce30c96e850b6c4ebd2856a
   ReactorKit: 18ca466f1e77fef1827addeb921fba8ae14edd63
   Reusable: 12b67a60e1f3e8c523cc910795dab733f58fbc7e
   RxCocoa: 78763c7b07d02455598d9fc3c1ad091a28b73635
@@ -58,8 +88,9 @@ SPEC CHECKSUMS:
   RxSwiftExt: 81afb48ab0602f503147417baeb3989d64c7687d
   RxViewController: 203510707e73dd95f147f0c387710e3ec80d2b0f
   SnapKit: 0de968a9fec17499afa29683b05d0c775b6d1c29
+  Texture: 9d7e38965cf22ccd7cd9c249dd78b3f14e70ab6c
   Then: 71866660c7af35a7343831f7668e7cd2b62ee0f2
 
-PODFILE CHECKSUM: c4a9ddc2907effc915e5561207398a0fb9d05851
+PODFILE CHECKSUM: fcffa0189a5d85bac4ee394138b0c88f37c57ef8
 
 COCOAPODS: 1.5.3

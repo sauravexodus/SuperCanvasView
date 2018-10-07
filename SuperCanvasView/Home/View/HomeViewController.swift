@@ -170,6 +170,10 @@ extension HomeViewController {
         return RxTableViewSectionedReloadDataSource<ConsultationPageSection>(
             configureCell: { dataSource, tableView, indexPath, consultationRow -> UITableViewCell in
                 let cell: MedicalTermRowCell = tableView.dequeueReusableCell(for: indexPath)
+                cell.updateCell.map {
+                    tableView.beginUpdates()
+                    tableView.endUpdates()
+                }.subscribe().disposed(by: cell.disposeBag)
                 switch consultationRow.medicalSection {
                 case let .symptoms(name, lines):
                     cell.configure(with: name, and: lines, height: consultationRow.height)

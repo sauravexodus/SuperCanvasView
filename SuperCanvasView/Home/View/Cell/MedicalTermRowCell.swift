@@ -13,6 +13,7 @@ import RxSwift
 
 final class MedicalTermRowCell: UITableViewCell, Reusable {
     var disposeBag = DisposeBag()
+    var updateCell = PublishSubject<Void>()
     let titleLabel = UILabel().then {
         $0.text = "Random text"
         $0.textColor = .black
@@ -45,6 +46,8 @@ final class MedicalTermRowCell: UITableViewCell, Reusable {
             strongSelf.lastHeight = lastHeight + 100
             strongSelf.setNeedsLayout()
             strongSelf.layoutIfNeeded()
+            
+            strongSelf.updateCell.onNext(())
         }.subscribe().disposed(by: disposeBag)
     }
     

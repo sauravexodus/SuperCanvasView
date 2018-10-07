@@ -14,6 +14,7 @@ import RxSwift
 final class HomeViewModel: Reactor {
     enum Action {
         case initialLoad
+        case select(MedicalSection)
         case add(ConsultationRow)
         case deleteAll
     }
@@ -34,17 +35,18 @@ final class HomeViewModel: Reactor {
     func mutate(action: HomeViewModel.Action) -> Observable<HomeViewModel.Mutation> {
         switch action {
         case .initialLoad: return mutateInitialLoad()
+        case let .select(medicalSection): return .empty()
         case let .add(consultationRow): return mutateAppendConsultationRow(consultationRow)
         case .deleteAll: return mutateInitialLoad()
         }
     }
     
     private func mutateInitialLoad() -> Observable<Mutation> {
-        return .just(.setPages([ConsultationPageSection(items: [ConsultationRow(height: currentState.pageHeight, medicalSection: .none)], pageHeight: currentState.pageHeight)]))
+        return .just(.setPages([ConsultationPageSection(items: [ConsultationRow(height: currentState.pageHeight, medicalSection: .symptoms(name: nil, lines: []))], pageHeight: currentState.pageHeight)]))
     }
     
     private func mutateAppendConsultationRow(_ consultationRow: ConsultationRow) -> Observable<Mutation> {
-        let consultationRows = currentState.pages.reduce([], { result, page in return result + page.items.filter { row in row.medicalSection != .none } })
+        let consultationRows = currentState.pages.reduce([], { result, page in return result + page.items.filter { row in !row.medicalSection.isPadder } })
         return .just(.setPages(createPages(for: consultationRows, appending: consultationRow)))
     }
     
@@ -67,17 +69,19 @@ final class HomeViewModel: Reactor {
             lastPage.items += [row]
             return result + [lastPage]
         })
+        Observable.interval(<#T##period: RxTimeInterval##RxTimeInterval#>, scheduler: <#T##SchedulerType#>)
         return padPages(pages)
     }
     
     private func padPages(_ pages: [ConsultationPageSection]) -> [ConsultationPageSection] {
         var pagesCopy = pages
         for (index, page) in pages.enumerated() {
-            let newItems = page.heightToBePadded != 0 ? [ConsultationRow(height: page.heightToBePadded, medicalSection: .none)] : []
+            var newItems: [ConsultationRow] = []
+            if let paddingRow = page.paddingRow { newItems = [paddingRow] }
             pagesCopy[index] = ConsultationPageSection(items: page.items + newItems, pageHeight: currentState.pageHeight)
         }
-        if let lastPage = pages.last, lastPage.isPageFull {
-            pagesCopy.append(ConsultationPageSection(items: [ConsultationRow(height: currentState.pageHeight, medicalSection: .none)], pageHeight: currentState.pageHeight))
+        if let lastPage = pages.last, let nextPage = lastPage.nextPage {
+            pagesCopy.append(nextPage)
         }
         return pagesCopy
     }

@@ -21,14 +21,16 @@ final class HomeViewModel: Reactor {
     
     enum Mutation {
         case setPages([ConsultationPageSection])
-        case setFocusedIndexPath(IndexPath)
+        case setFocusedIndexPath(IndexPathWithScrollPosition)
     }
     
     struct State {
         var pages: [ConsultationPageSection] = []
         let pageHeight: Float = 300
-        var focusedIndexPath: IndexPath?
+        var focusedIndexPath: IndexPathWithScrollPosition?
     }
+    
+    typealias IndexPathWithScrollPosition = (indexPath: IndexPath, scrollPosition: UITableViewScrollPosition)
     
     let initialState = State()
     
@@ -52,17 +54,23 @@ final class HomeViewModel: Reactor {
             .reduce([], { result, page in
                 return result + page.element.items.enumerated().map { offset, item in return (sectionIndex: page.offset, itemIndex: offset, item: item) }
             })
-            .first { sectionIndex, itemIndex, item in
-                item.medicalTerm.medicalSection == medicalSection }
-            .map { sectionIndex, itemIndex, _ in
-                IndexPath(row: itemIndex, section: sectionIndex) }
+            .first { sectionIndex, itemIndex, item in item.medicalTerm.medicalSection == medicalSection }
+            .map { sectionIndex, itemIndex, _ in IndexPathWithScrollPosition(indexPath: IndexPath(row: itemIndex, section: sectionIndex), scrollPosition: .top) }
         guard let foundPath = indexPath else { return .empty() }
         return .just(.setFocusedIndexPath(foundPath))
     }
     
     private func mutateAppendConsultationRow(_ consultationRow: ConsultationRow) -> Observable<Mutation> {
         let consultationRows = currentState.pages.reduce([], { result, page in return result + page.items.filter { row in !row.medicalTerm.isPadder } })
-        return .just(.setPages(createPages(for: consultationRows, appending: consultationRow)))
+        let pages = createPages(for: consultationRows, appending: consultationRow)
+        let indexPath = pages.enumerated()
+            .reduce([], { result, page in
+                return result + page.element.items.enumerated().map { offset, item in return (sectionIndex: page.offset, itemIndex: offset, item: item) }
+            })
+            .first { sectionIndex, itemIndex, item in item == consultationRow }
+            .map { sectionIndex, itemIndex, item in IndexPathWithScrollPosition(indexPath: IndexPath(row: itemIndex, section: sectionIndex), scrollPosition: .none) }
+        guard let foundPath = indexPath else { return .empty() }
+        return .concat(.just(.setPages(pages)), .just(.setFocusedIndexPath(foundPath)))
     }
     
     private func createPages(for consultationRows: [ConsultationRow], appending consultationRow: ConsultationRow) -> [ConsultationPageSection] {

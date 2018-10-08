@@ -45,20 +45,35 @@ final class ASDisplayNodeWithBackgroundColor: ASDisplayNode {
 }
 
 final class ContainerDisplayNode: ASDisplayNode {
+
+    let addSymptomButtonNode = ASButtonNode().then {
+        $0.setTitle("Add Symptom", with: .systemFont(ofSize: 13), with: .white, for: .normal)
+        $0.style.preferredSize.width = 120
+    }
     
-    let addMedicaltermButtonNode = ASButtonNode().then {
-        $0.setTitle("Add", with: nil, with: .white, for: .normal)
-        $0.style.preferredSize.width = 100
+    let selectSymptomButtonNode = ASButtonNode().then {
+        $0.setTitle("Select Symptom", with: .systemFont(ofSize: 13), with: .white, for: .normal)
+        $0.style.preferredSize.width = 120
+    }
+    
+    let addDiagnosisButtonNode = ASButtonNode().then {
+        $0.setTitle("Add Diagnosis", with: .systemFont(ofSize: 13), with: .white, for: .normal)
+        $0.style.preferredSize.width = 120
+    }
+    
+    let selectDiagnosisButtonNode = ASButtonNode().then {
+        $0.setTitle("Select Diagnosis", with: .systemFont(ofSize: 13), with: .white, for: .normal)
+        $0.style.preferredSize.width = 120
     }
     
     let deleteAllRowsButtonNode = ASButtonNode().then {
-        $0.setTitle("Delete All", with: nil, with: .white, for: .normal)
-        $0.style.preferredSize.width = 140
+        $0.setTitle("Delete All", with: .systemFont(ofSize: 13), with: .white, for: .normal)
+        $0.style.preferredSize.width = 120
     }
     
     let printButtonNode = ASButtonNode().then {
-        $0.setTitle("Print", with: nil, with: .white, for: .normal)
-        $0.style.preferredSize.width = 100
+        $0.setTitle("Print", with: .systemFont(ofSize: 13), with: .white, for: .normal)
+        $0.style.preferredSize.width = 120
     }
     
     let tableNode = ASTableNode(style: .plain).then {
@@ -87,10 +102,20 @@ final class ContainerDisplayNode: ASDisplayNode {
         let backgroundSpec = ASBackgroundLayoutSpec(child: buttonsStack, background: backgroundColor)
         
         buttonsStack.style.preferredSize.height = 80
-        buttonsStack.children = [addMedicaltermButtonNode, deleteAllRowsButtonNode, printButtonNode, spacer]
+        buttonsStack.children = [
+            addSymptomButtonNode,
+            selectSymptomButtonNode,
+            addDiagnosisButtonNode,
+            selectDiagnosisButtonNode,
+            deleteAllRowsButtonNode,
+            printButtonNode,
+            spacer
+        ]
         
         mainStack.children = [backgroundSpec, tableNode]
-        return mainStack
+        
+        let insetSpec = ASInsetLayoutSpec(insets: UIEdgeInsets(top: 20, left: 0, bottom: 0, right: 0), child: mainStack)
+        return insetSpec
     }
     
 }
@@ -110,7 +135,7 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
                 let cellNode = ASCellNode(viewBlock: { () -> UIView in
                     let view = ASMedicalTermCellNode()
                     view.backgroundColor = .white
-                    view.configure(with: item.medicalSection.name, and: [])
+                    view.configure(with: item.medicalTerm.name, and: [])
                     return view
                 })
                 cellNode.style.preferredSize = CGSize(width: Float.greatestFiniteMagnitude, height: item.height)
@@ -147,14 +172,30 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
-        containerNode.addMedicaltermButtonNode.rx
-            .tap
+        containerNode.selectSymptomButtonNode.rx.tap
+            .mapTo(.select(.symptoms))
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        containerNode.addSymptomButtonNode.rx.tap
             .map { _ in
                 let heightsArray = [50, 100, 150]
                 let randomHeightIndex = Int(arc4random_uniform(UInt32(heightsArray.count)))
-                let medicalSectionsArray = [MedicalSection.symptoms(name: "Symptom", lines: []), MedicalSection.diagnoses(name: "Diagnosis", lines: [])]
-                let randomSectionIndex = Int(arc4random_uniform(UInt32(medicalSectionsArray.count)))
-                return .add(ConsultationRow(height: Float(heightsArray[randomHeightIndex]), medicalSection: medicalSectionsArray[randomSectionIndex]))
+                return .add(ConsultationRow(height: Float(heightsArray[randomHeightIndex]), medicalTerm: MedicalTerm(name: "Symptom", lines: [], medicalSection: .symptoms)))
+            }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        containerNode.selectDiagnosisButtonNode.rx.tap
+            .mapTo(.select(.diagnoses))
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        containerNode.addDiagnosisButtonNode.rx.tap
+            .map { _ in
+                let heightsArray = [50, 100, 150]
+                let randomHeightIndex = Int(arc4random_uniform(UInt32(heightsArray.count)))
+                return .add(ConsultationRow(height: Float(heightsArray[randomHeightIndex]), medicalTerm: MedicalTerm(name: "Diagnosis", lines: [], medicalSection: .diagnoses)))
             }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
@@ -169,6 +210,15 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
     private func bindState(reactor: HomeViewModel) {
         reactor.state.map { $0.pages }
             .bind(to: containerNode.tableNode.rx.items(dataSource: dataSource))
+            .disposed(by: disposeBag)
+        
+        reactor.state.map { $0.focusedIndexPath }
+            .unwrap()
+            .distinctUntilChanged()
+            .subscribe(onNext: { [weak self] indexPath in
+                guard let strongSelf = self else { return }
+                strongSelf.containerNode.tableNode.scrollToRow(at: indexPath, at: .top, animated: true)
+            })
             .disposed(by: disposeBag)
     }
     

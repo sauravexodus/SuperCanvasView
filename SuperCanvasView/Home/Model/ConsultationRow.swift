@@ -11,7 +11,7 @@ import Foundation
 struct ConsultationRow {
     let id = UUID().uuidString
     var height: Float
-    var medicalSection: MedicalSection
+    var medicalTerm: MedicalTerm
 }
 
 extension ConsultationRow: Equatable { }

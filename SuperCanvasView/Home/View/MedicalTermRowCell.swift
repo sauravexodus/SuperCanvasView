@@ -1,8 +1,8 @@
 //
-//  MedicalTermRowCell.swift
+//  DiagnosisRowCell.swift
 //  SuperCanvasView
 //
-//  Created by Krishna C Aluru on 10/6/18.
+//  Created by Krishna C Aluru on 10/7/18.
 //  Copyright © 2018 Sourav Chandra. All rights reserved.
 //
 
@@ -51,10 +51,10 @@ final class MedicalTermRowCell: UITableViewCell, Reusable {
 
     let innerContentView = UIView().then {
         $0.translatesAutoresizingMaskIntoConstraints = false
+        $0.clipsToBounds = true
     }
     
     let titleLabel = UILabel().then {
-        $0.text = "Random text"
         $0.textColor = .black
     }
     
@@ -67,6 +67,7 @@ final class MedicalTermRowCell: UITableViewCell, Reusable {
         // Reset stored heights
         initialHeight = nil
         lastHeight = nil
+        lastCanvasViewHeight = nil
         
         // Reset the background color
         backgroundColor = .white
@@ -97,6 +98,7 @@ final class MedicalTermRowCell: UITableViewCell, Reusable {
 
     var initialHeight: Float?
     var lastHeight: Float?
+    var lastCanvasViewHeight: Float?
     
     var startDisposeBag = DisposeBag()
     
@@ -105,10 +107,16 @@ final class MedicalTermRowCell: UITableViewCell, Reusable {
         lastHeight = height
         titleLabel.text = text
         canvasView.lines = lines
-        addSubview(titleLabel)
-        addSubview(canvasView)
-        if text == "Symptom" { backgroundColor = .blue }
-        if text == "Diagnosis" { backgroundColor = .red }
+        
+        addSubview(innerContentView)
+        innerContentView.addSubview(titleLabel)
+        innerContentView.addSubview(canvasView)
+        
+        innerContentView.snp.remakeConstraints { make in
+            make.height.equalTo(height)
+            make.top.left.right.bottom.equalToSuperview().priority(.high)
+        }
+        
         titleLabel.snp.remakeConstraints { make in
             make.height.equalTo(height)
             make.top.left.right.equalToSuperview()
@@ -117,46 +125,60 @@ final class MedicalTermRowCell: UITableViewCell, Reusable {
         }
         canvasView.snp.remakeConstraints { make in
             make.height.equalTo(height)
-            make.top.bottom.left.right.equalToSuperview()
+            make.top.left.right.equalToSuperview()
         }
         
         canvasView.rx.pencilTouchStarted.map { [weak self] in
-            guard let strongSelf = self else { return }
-            if Float(strongSelf.frame.height) == strongSelf.initialHeight {
-                strongSelf.expand(by: 100)
+                guard let strongSelf = self else { return }
                 strongSelf.startDisposeBag = DisposeBag()
                 strongSelf.canvasView.rx.pencilDidStopMoving.map { [weak self] in
-                    guard let strongSelf = self else { return }
-                    strongSelf.contract()
-                    }.subscribe().disposed(by: strongSelf.startDisposeBag)
+                        guard let strongSelf = self else { return }
+                        strongSelf.contract()
+                    }
+                    .subscribe()
+                    .disposed(by: strongSelf.startDisposeBag)
             }
-        }.subscribe().disposed(by: disposeBag)
+            .subscribe()
+            .disposed(by: disposeBag)
     }
-    
+}
+
+extension MedicalTermRowCell {
     func updateUI(_ f: @escaping () -> ()) {
-        
-        UIView.animate(withDuration: 0) {
+        UIView.animate(withDuration: 0.3) {
             f()
             self.beginUpdateCell.onNext(())
-            self.setNeedsLayout()
-            self.layoutIfNeeded()
             self.endUpdateCell.onNext(())
         }
     }
     
-    func expand(by offset: Float = 15) {
+    func expand(by offset: Float) {
         guard let lastHeight = lastHeight else {
             return
         }
         let newHeight = lastHeight + offset
         
         updateUI {
-            self.canvasView.snp.remakeConstraints { make in
-                make.height.equalTo(newHeight)
+            self.innerContentView.snp.remakeConstraints { make in
                 make.top.bottom.left.right.equalToSuperview().priority(.high)
+                make.height.equalTo(newHeight)
             }
-            self.lastHeight = newHeight
         }
+        
+        if let lastCanvasViewHeight = lastCanvasViewHeight, lastCanvasViewHeight > newHeight {
+
+        } else {
+            updateUI {
+                self.canvasView.snp.remakeConstraints { make in
+                    make.top.left.right.equalToSuperview().priority(.high)
+                    make.height.equalTo(newHeight)
+                }
+            }
+            
+            lastCanvasViewHeight = newHeight
+        }
+        
+        self.lastHeight = newHeight
     }
     
     func contract() {
@@ -165,7 +187,7 @@ final class MedicalTermRowCell: UITableViewCell, Reusable {
         }
         let newHeight = max(initialHeight, .init(canvasView.highestY))
         updateUI {
-            self.canvasView.snp.remakeConstraints { make in
+            self.innerContentView.snp.remakeConstraints { make in
                 make.height.equalTo(newHeight)
                 make.top.bottom.left.right.equalToSuperview().priority(.high)
             }

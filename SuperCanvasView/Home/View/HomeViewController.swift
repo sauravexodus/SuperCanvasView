@@ -35,20 +35,24 @@ final class HomeViewController: UIViewController, View {
         $0.translatesAutoresizingMaskIntoConstraints = false
     }
     
-    let addDrawingRow = UIButton().then {
-        $0.setTitle("Add Drawing Row", for: .normal)
+    let addSymptomRow = UIButton().then {
+        $0.setTitle("Add Symptom", for: .normal)
     }
     
-    let addMedicalTermRow = UIButton().then {
-        $0.setTitle("Add Medical Term Row", for: .normal)
+    let addDiagnosisRow = UIButton().then {
+        $0.setTitle("Add Diagnosis", for: .normal)
     }
     
-    let addTenRows = UIButton().then {
-        $0.setTitle("Add Ten Rows", for: .normal)
+    let selectSymptomRow = UIButton().then {
+        $0.setTitle("Select Symptom", for: .normal)
+    }
+    
+    let selectDiagnosisRow = UIButton().then {
+        $0.setTitle("Select Diagnosis", for: .normal)
     }
     
     let deleteAllRows = UIButton().then {
-        $0.setTitle("Delete All Rows", for: .normal)
+        $0.setTitle("Delete All", for: .normal)
     }
     
     let printButton = UIButton().then {
@@ -90,8 +94,10 @@ final class HomeViewController: UIViewController, View {
     private func addSubviews() {
         view.backgroundColor = .gray
         view.addSubview(buttonsView)
-        buttonsView.addSubview(addMedicalTermRow)
-        buttonsView.addSubview(addTenRows)
+        buttonsView.addSubview(selectSymptomRow)
+        buttonsView.addSubview(addSymptomRow)
+        buttonsView.addSubview(selectDiagnosisRow)
+        buttonsView.addSubview(addDiagnosisRow)
         buttonsView.addSubview(deleteAllRows)
         buttonsView.addSubview(printButton)
         view.addSubview(tableView)
@@ -103,24 +109,34 @@ final class HomeViewController: UIViewController, View {
             make.top.equalToSuperview().offset(48)
             make.left.right.equalToSuperview()
         }
-        addMedicalTermRow.snp.makeConstraints { make in
+        selectSymptomRow.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(8)
-            make.left.equalToSuperview().offset(8)
+            make.left.equalToSuperview().offset(16)
             make.bottom.equalToSuperview().inset(8)
         }
-        addTenRows.snp.makeConstraints { make in
+        addSymptomRow.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(8)
-            make.left.equalTo(addMedicalTermRow.snp.right).offset(8)
+            make.left.equalTo(selectSymptomRow.snp.right).offset(16)
+            make.bottom.equalToSuperview().inset(8)
+        }
+        selectDiagnosisRow.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(8)
+            make.left.equalTo(addSymptomRow.snp.right).offset(16)
+            make.bottom.equalToSuperview().inset(8)
+        }
+        addDiagnosisRow.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(8)
+            make.left.equalTo(selectDiagnosisRow.snp.right).offset(16)
             make.bottom.equalToSuperview().inset(8)
         }
         deleteAllRows.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(8)
-            make.left.equalTo(addTenRows.snp.right).offset(8)
+            make.left.equalTo(addDiagnosisRow.snp.right).offset(16)
             make.bottom.equalToSuperview().inset(8)
         }
         printButton.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(8)
-            make.left.equalTo(deleteAllRows.snp.right).offset(8)
+            make.left.equalTo(deleteAllRows.snp.right).offset(16)
             make.bottom.equalToSuperview().inset(8)
         }
         tableView.snp.makeConstraints { make in
@@ -140,15 +156,31 @@ final class HomeViewController: UIViewController, View {
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
-        addMedicalTermRow.rx.tap
-            .map { _ in
-                return .add(ConsultationRow(height: Float([50, 100, 150].randomElement() ?? 0), medicalSection: [MedicalSection.symptoms(name: "Symptom", lines: []), MedicalSection.diagnoses(name: "Diagnosis", lines: [])].randomElement() ?? MedicalSection.symptoms(name: "Shouldn't show up", lines: [])))
-            }
+        selectSymptomRow.rx.tap
+            .mapTo(.select(.symptoms(name: nil, lines: [])))
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
-        addTenRows.rx.tap
-            .mapTo(.addTen)
+        addSymptomRow.rx.tap
+            .map { _ in
+                let heightsArray = [50, 100, 150]
+                let randomHeightIndex = Int(arc4random_uniform(UInt32(heightsArray.count)))
+                return .add(ConsultationRow(height: Float(heightsArray[randomHeightIndex]), medicalSection: MedicalSection.symptoms(name: "Symptom", lines: [])))
+            }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+
+        selectDiagnosisRow.rx.tap
+            .mapTo(.select(.diagnoses(name: nil, lines: [])))
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        addDiagnosisRow.rx.tap
+            .map { _ in
+                let heightsArray = [50, 100, 150]
+                let randomHeightIndex = Int(arc4random_uniform(UInt32(heightsArray.count)))
+                return .add(ConsultationRow(height: Float(heightsArray[randomHeightIndex]), medicalSection: MedicalSection.diagnoses(name: "Diagnosis", lines: [])))
+            }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
@@ -169,7 +201,9 @@ extension HomeViewController {
     static func dataSource() -> RxTableViewSectionedReloadDataSource<ConsultationPageSection> {
         return RxTableViewSectionedReloadDataSource<ConsultationPageSection>(
             configureCell: { dataSource, tableView, indexPath, consultationRow -> UITableViewCell in
+                
                 let cell: MedicalTermRowCell = tableView.dequeueReusableCell(for: indexPath)
+
                 cell.rx.didBeginUpdate.map {
                     tableView.beginUpdates()
                 }.subscribe().disposed(by: cell.disposeBag)
@@ -178,25 +212,29 @@ extension HomeViewController {
                     tableView.endUpdates()
                 }.subscribe().disposed(by: cell.disposeBag)
 
+                let isPadder = consultationRow.medicalSection.isPadder
+                
                 switch consultationRow.medicalSection {
                 case let .symptoms(name, lines):
+                    cell.backgroundColor = isPadder ? .white : .blue
                     cell.configure(with: name, and: lines, height: consultationRow.height)
+                    return cell
                 case let .diagnoses(name, lines):
+                    cell.backgroundColor = isPadder ? .white : .red
                     cell.configure(with: name, and: lines, height: consultationRow.height)
-                default: cell.configure(with: nil, and: [], height: consultationRow.height)
+                    return cell
                 }
-                return cell
         }
     )}
 }
 
 extension HomeViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        return 100.0
+        return 25.0
     }
     
     func tableView(_ tableView: UITableView, willDisplayFooterView view: UIView, forSection section: Int) {
-        view.tintColor = .green
+        view.tintColor = .gray
     }
     
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {

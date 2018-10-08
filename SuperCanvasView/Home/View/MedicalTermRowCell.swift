@@ -131,7 +131,11 @@ final class MedicalTermRowCell: UITableViewCell, Reusable {
         selectionStyle = .none
 
         canvasView.rx.pencilTouchDidNearBottom
-            .map { [unowned self] _ in self.updateUI { self.expand(by: 200) } }
+            .map { [unowned self] _ in
+                self.updateUI { [unowned self] in
+                    self.expand(by: 200)
+                }
+            }
             .subscribe()
             .disposed(by: disposeBag)
     }
@@ -174,13 +178,17 @@ final class MedicalTermRowCell: UITableViewCell, Reusable {
         }
         
         canvasView.rx.pencilTouchStarted.map { [unowned self] in
+            
             self.startDisposeBag = DisposeBag()
-            self.canvasView.rx.pencilDidStopMoving.map { [unowned self] in
-                self.rx_wantsContract.onNext(())
+            
+            self.canvasView.rx.pencilDidStopMoving
+                .map { [unowned self] in
+                    self.rx_wantsContract.onNext(())
                 }
                 .subscribe()
                 .disposed(by: self.startDisposeBag)
             }
+            
             .subscribe()
             .disposed(by: disposeBag)
     }
@@ -193,7 +201,6 @@ extension MedicalTermRowCell {
             f()
             self.rx_didEndUpdate.onNext(())
         }
-
         /*UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 1, options: [], animations: {
             self.rx_didBeginUpdate.onNext(())
             f()
@@ -205,26 +212,16 @@ extension MedicalTermRowCell {
         guard let lastHeight = lastHeight else {
             return
         }
+        
         let newHeight = lastHeight + offset
         
-        if newHeight > .init(PDFPageSize.A4.height) {
-            return
-        }
-        self.innerContentView.snp.updateConstraints { make in
-            make.height.equalTo(newHeight)
-        }
+        setInnerContentViewHeight(to: newHeight)
 
         if let lastCanvasViewHeight = lastCanvasViewHeight, lastCanvasViewHeight > newHeight {
-
+            // do nothing
         } else {
-            self.canvasView.snp.updateConstraints { make in
-                make.height.equalTo(newHeight)
-            }
-
-            lastCanvasViewHeight = newHeight
+            setCanvasViewHeight(to: newHeight)
         }
-        
-        self.lastHeight = newHeight
     }
     
     func contract() {
@@ -232,10 +229,20 @@ extension MedicalTermRowCell {
             return
         }
         let newHeight = max(initialHeight, .init(canvasView.highestY + 10))
-
+        setInnerContentViewHeight(to: newHeight)
+    }
+    
+    func setInnerContentViewHeight(to height: Float) {
         self.innerContentView.snp.updateConstraints { make in
-            make.height.equalTo(newHeight)
+            make.height.equalTo(height)
         }
-        self.lastHeight = newHeight
+        self.lastHeight = height
+    }
+    
+    func setCanvasViewHeight(to height: Float) {
+        self.canvasView.snp.updateConstraints { make in
+            make.height.equalTo(height)
+        }
+        lastCanvasViewHeight = height
     }
 }

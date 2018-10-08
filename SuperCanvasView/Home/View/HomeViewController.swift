@@ -18,19 +18,19 @@ import RxViewController
 final class ConsultationTableView: UITableView {
     var disposeBag = DisposeBag()
     
-    var queue: [IndexPath] = []
-    var currentPathBeingEdited: IndexPath?
+    var cellsQueuedForContraction: [IndexPath] = []
+    var cellUnderEdit: IndexPath?
     
     func resetContractQueue() {
-        queue = []
+        cellsQueuedForContraction = []
     }
     
     func contract(_ indexPath: IndexPath) {
-        queue.append(indexPath)
-        if indexPath == currentPathBeingEdited {
+        cellsQueuedForContraction.append(indexPath)
+        if indexPath == cellUnderEdit {
             UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 1, options: [], animations: {
                 self.beginUpdates()
-                for path in self.queue {
+                for path in self.cellsQueuedForContraction {
                     let cell = self.cellForRow(at: path) as? MedicalTermRowCell
                     cell?.contract()
                 }
@@ -254,7 +254,7 @@ extension HomeViewController {
                 }.subscribe().disposed(by: cell.disposeBag)
 
                 cell.rx.didBeginWriting
-                    .map { tableView.currentPathBeingEdited = indexPath }
+                    .map { tableView.cellUnderEdit = indexPath }
                     .subscribe()
                     .disposed(by: cell.disposeBag)
                 

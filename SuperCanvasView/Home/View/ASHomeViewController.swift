@@ -30,8 +30,8 @@ extension UIView {
 }
 
 extension Reactive where Base: ASDisplayNode {
-    var tap: ControlEvent<UITapGestureRecognizer> {
-        return base.view.rx.tapGesture()
+    var tap: Observable<UITapGestureRecognizer> {
+        return base.view.rx.tapGesture().when(.recognized)
     }
 }
 

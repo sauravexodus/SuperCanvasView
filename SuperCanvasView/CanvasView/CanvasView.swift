@@ -111,9 +111,7 @@ class CanvasView: UIView {
     
     /// An optional `CGImage` containing the last representation of lines no longer receiving updates.
     var frozenImage: CGImage?
-    
-    var touchReachedBottom = PublishSubject<Void>()
-    
+        
     // MARK: Touches
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -122,12 +120,6 @@ class CanvasView: UIView {
             return
         }
         drawTouches(touches, withEvent: event)
-        
-        if let first = touches.first {
-            if first.location(in: self).y > (frame.size.height - 10) {
-                touchReachedBottom.onNext(())
-            }
-        }
     }
     
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -136,12 +128,6 @@ class CanvasView: UIView {
             return
         }
         drawTouches(touches, withEvent: event)
-        
-        if let first = touches.first {
-            if first.location(in: self).y > (frame.size.height - 50) {
-                touchReachedBottom.onNext(())
-            }
-        }
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -487,6 +473,60 @@ extension Reactive where Base: CanvasView {
             .unwrap()
             .filter { $0.contains(where: { $0.type == .stylus }) }
             .mapTo(())
+    }
+    
+    var pencilTouchStartedOrMoved: Observable<Void> {
+        return Observable.merge(
+                self.methodInvoked(#selector(Base.touchesBegan(_:with:))),
+                self.methodInvoked(#selector(Base.touchesMoved(_:with:)))
+            )
+            .map { $0[0] as? Set<UITouch> }
+            .unwrap()
+            .filter { $0.contains(where: { $0.type == .stylus }) }
+            .mapTo(())
+    }
+
+    var pencilTouchEnded: Observable<Void> {
+        return self.methodInvoked(#selector(Base.touchesEnded(_:with:))).map { $0[0] as? Set<UITouch> }
+            .unwrap()
+            .filter { $0.contains(where: { $0.type == .stylus }) }
+            .mapTo(())
+    }
+
+    var pencilTouchDidNearBottom: Observable<Void> {
+        let began = self.methodInvoked(#selector(Base.touchesBegan(_:with:))).map { $0[0] as? Set<UITouch> }
+            .unwrap()
+            .filter { [weak base] touches in
+                guard let base = base else { return false }
+                if let first = touches.first, first.type == .pencil {
+                    if first.location(in: base).y > (base.frame.size.height - 75) {
+                        return true
+                    }
+                }
+                return false
+            }
+            .mapTo(())
+        
+        let moved = self.methodInvoked(#selector(Base.touchesMoved(_:with:))).map { $0[0] as? Set<UITouch> }
+            .unwrap()
+            .filter { [weak base] touches in
+                guard let base = base else { return false }
+                if let first = touches.first, first.type == .pencil {
+                    if first.location(in: base).y > (base.frame.size.height - 75) {
+                        return true
+                    }
+                }
+                return false
+            }
+            .mapTo(())
+        
+        return .merge(began, moved)
+    }
+    
+    var pencilDidStopMoving: Observable<Void> {
+        return Observable
+            .merge(pencilTouchStartedOrMoved, pencilTouchEnded)
+            .timeoutNoError(1, scheduler: MainScheduler.instance)
     }
 }
 

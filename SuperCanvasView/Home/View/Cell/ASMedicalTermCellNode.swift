@@ -8,9 +8,9 @@
 
 import Foundation
 import AsyncDisplayKit
+import SnapKit
 
 final class ASMedicalTermCellNode: UIView {
-    
     let titleLabel = UILabel().then {
         $0.textColor = .black
     }
@@ -34,5 +34,4 @@ final class ASMedicalTermCellNode: UIView {
             make.top.bottom.left.right.equalToSuperview()
         }
     }
-    
 }

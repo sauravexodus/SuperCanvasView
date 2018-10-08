@@ -14,6 +14,8 @@ import RxSwift
 import RxCocoa
 import RxGesture
 import RxASDataSources
+import RxViewController
+import Then
 
 extension CGSize {
     init(width: Float, height: Float) {
@@ -45,7 +47,6 @@ final class ASDisplayNodeWithBackgroundColor: ASDisplayNode {
 }
 
 final class ContainerDisplayNode: ASDisplayNode {
-
     let addSymptomButtonNode = ASButtonNode().then {
         $0.setTitle("Add Symptom", with: .systemFont(ofSize: 13), with: .white, for: .normal)
         $0.style.preferredSize.width = 120
@@ -117,11 +118,9 @@ final class ContainerDisplayNode: ASDisplayNode {
         let insetSpec = ASInsetLayoutSpec(insets: UIEdgeInsets(top: 20, left: 0, bottom: 0, right: 0), child: mainStack)
         return insetSpec
     }
-    
 }
 
 final class ASHomeViewController: ASViewController<ContainerDisplayNode>, ReactorKit.View {
-
     var disposeBag: DisposeBag = DisposeBag()
     let dataSource: RxASTableReloadDataSource<ConsultationPageSection>
     let containerNode = ContainerDisplayNode()
@@ -154,11 +153,7 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    // MARK: Layout
-    
-    
-    
+
     // MARK: Bindings
     
     func bind(reactor: HomeViewModel) {
@@ -221,11 +216,9 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
             })
             .disposed(by: disposeBag)
     }
-    
 }
 
 extension ASHomeViewController: ASTableDelegate {
-    
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 16
     }
@@ -235,5 +228,4 @@ extension ASHomeViewController: ASTableDelegate {
         view.backgroundColor = .gray
         return view
     }
-    
 }

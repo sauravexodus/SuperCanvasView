@@ -10,11 +10,9 @@
 		7DC203FA2164C4C6007D93B7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DC203F92164C4C6007D93B7 /* AppDelegate.swift */; };
 		7DC204012164C4C8007D93B7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7DC204002164C4C8007D93B7 /* Assets.xcassets */; };
 		7DC204042164C4C8007D93B7 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7DC204022164C4C8007D93B7 /* LaunchScreen.storyboard */; };
-		7DC2040C2164C4E8007D93B7 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DC2040B2164C4E8007D93B7 /* HomeViewController.swift */; };
 		7DC2040F2164C570007D93B7 /* CanvasView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DC2040E2164C570007D93B7 /* CanvasView.swift */; };
 		7DC204112164C5A0007D93B7 /* Line.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DC204102164C5A0007D93B7 /* Line.swift */; };
 		7DC204132164C671007D93B7 /* UIBezierPath+extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DC204122164C671007D93B7 /* UIBezierPath+extensions.swift */; };
-		7DC204172164D0B4007D93B7 /* CanvasCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DC204162164D0B4007D93B7 /* CanvasCell.swift */; };
 		7DFEBCFF216A2643000DB559 /* ASHomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DFEBCFE216A2643000DB559 /* ASHomeViewController.swift */; };
 		7DFEBD01216A28F7000DB559 /* ASMedicalTermCellNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DFEBD00216A28F7000DB559 /* ASMedicalTermCellNode.swift */; };
 		E12C7DF811C83565F03590AF /* Pods_SuperCanvasView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 616E2B50C7A3D46F97B4272D /* Pods_SuperCanvasView.framework */; };
@@ -23,8 +21,6 @@
 		FF1A4DE321688373003F8BBD /* ConsultationPageSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF1A4DE221688373003F8BBD /* ConsultationPageSection.swift */; };
 		FF1A4DF02168CA37003F8BBD /* ConsultationRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF1A4DEF2168CA37003F8BBD /* ConsultationRow.swift */; };
 		FF1A4DF22168CA47003F8BBD /* MedicalTerm.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF1A4DF12168CA47003F8BBD /* MedicalTerm.swift */; };
-		FF1A4DF7216A1E4B003F8BBD /* SymptomRowCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF1A4DF6216A1E4B003F8BBD /* SymptomRowCell.swift */; };
-		FF1A4DF9216A1E52003F8BBD /* DiagnosisRowCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF1A4DF8216A1E52003F8BBD /* DiagnosisRowCell.swift */; };
 		FF53851F216659F4000D840C /* UIScrollView+Capture.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF53851E216659F4000D840C /* UIScrollView+Capture.swift */; };
 		FF53852121665A1F000D840C /* UIView+Capture.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF53852021665A1F000D840C /* UIView+Capture.swift */; };
 		FF53852321665A3E000D840C /* WKWebView+Capture.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF53852221665A3E000D840C /* WKWebView+Capture.swift */; };
@@ -39,11 +35,9 @@
 		7DC204002164C4C8007D93B7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		7DC204032164C4C8007D93B7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		7DC204052164C4C8007D93B7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		7DC2040B2164C4E8007D93B7 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		7DC2040E2164C570007D93B7 /* CanvasView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasView.swift; sourceTree = "<group>"; };
 		7DC204102164C5A0007D93B7 /* Line.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Line.swift; sourceTree = "<group>"; };
 		7DC204122164C671007D93B7 /* UIBezierPath+extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIBezierPath+extensions.swift"; sourceTree = "<group>"; };
-		7DC204162164D0B4007D93B7 /* CanvasCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasCell.swift; sourceTree = "<group>"; };
 		7DFEBCFE216A2643000DB559 /* ASHomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASHomeViewController.swift; sourceTree = "<group>"; };
 		7DFEBD00216A28F7000DB559 /* ASMedicalTermCellNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASMedicalTermCellNode.swift; sourceTree = "<group>"; };
 		FF1A4DDE216666F4003F8BBD /* PDFPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFPage.swift; sourceTree = "<group>"; };
@@ -51,8 +45,6 @@
 		FF1A4DE221688373003F8BBD /* ConsultationPageSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ConsultationPageSection.swift; path = SuperCanvasView/Home/Model/ConsultationPageSection.swift; sourceTree = SOURCE_ROOT; };
 		FF1A4DEF2168CA37003F8BBD /* ConsultationRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsultationRow.swift; sourceTree = "<group>"; };
 		FF1A4DF12168CA47003F8BBD /* MedicalTerm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicalTerm.swift; sourceTree = "<group>"; };
-		FF1A4DF6216A1E4B003F8BBD /* SymptomRowCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymptomRowCell.swift; sourceTree = "<group>"; };
-		FF1A4DF8216A1E52003F8BBD /* DiagnosisRowCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiagnosisRowCell.swift; sourceTree = "<group>"; };
 		FF53851E216659F4000D840C /* UIScrollView+Capture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScrollView+Capture.swift"; sourceTree = "<group>"; };
 		FF53852021665A1F000D840C /* UIView+Capture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Capture.swift"; sourceTree = "<group>"; };
 		FF53852221665A3E000D840C /* WKWebView+Capture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WKWebView+Capture.swift"; sourceTree = "<group>"; };
@@ -106,7 +98,6 @@
 				7DC204002164C4C8007D93B7 /* Assets.xcassets */,
 				7DC204022164C4C8007D93B7 /* LaunchScreen.storyboard */,
 				7DC204052164C4C8007D93B7 /* Info.plist */,
-				7DC204162164D0B4007D93B7 /* CanvasCell.swift */,
 			);
 			path = SuperCanvasView;
 			sourceTree = "<group>";
@@ -145,7 +136,6 @@
 			isa = PBXGroup;
 			children = (
 				FF1A4DEA2168B032003F8BBD /* Cell */,
-				7DC2040B2164C4E8007D93B7 /* HomeViewController.swift */,
 				7DFEBCFE216A2643000DB559 /* ASHomeViewController.swift */,
 			);
 			path = View;
@@ -172,10 +162,7 @@
 		FF1A4DEA2168B032003F8BBD /* Cell */ = {
 			isa = PBXGroup;
 			children = (
-				FF1A4DED2168B04E003F8BBD /* MedicalTermRowCell.swift */,
 				7DFEBD00216A28F7000DB559 /* ASMedicalTermCellNode.swift */,
-				FF1A4DF6216A1E4B003F8BBD /* SymptomRowCell.swift */,
-				FF1A4DF8216A1E52003F8BBD /* DiagnosisRowCell.swift */,
 			);
 			path = Cell;
 			sourceTree = "<group>";
@@ -337,15 +324,11 @@
 				FF1A4DF22168CA47003F8BBD /* MedicalTerm.swift in Sources */,
 				FF1A4DE12168821B003F8BBD /* HomeViewModel.swift in Sources */,
 				7DC204112164C5A0007D93B7 /* Line.swift in Sources */,
-				7DC2040C2164C4E8007D93B7 /* HomeViewController.swift in Sources */,
 				7DFEBD01216A28F7000DB559 /* ASMedicalTermCellNode.swift in Sources */,
-				7DC204172164D0B4007D93B7 /* CanvasCell.swift in Sources */,
 				FF53852321665A3E000D840C /* WKWebView+Capture.swift in Sources */,
-				FF1A4DF9216A1E52003F8BBD /* DiagnosisRowCell.swift in Sources */,
 				FF53851F216659F4000D840C /* UIScrollView+Capture.swift in Sources */,
 				7DC2040F2164C570007D93B7 /* CanvasView.swift in Sources */,
 				7DC204132164C671007D93B7 /* UIBezierPath+extensions.swift in Sources */,
-				FF1A4DF7216A1E4B003F8BBD /* SymptomRowCell.swift in Sources */,
 				FF1A4DF02168CA37003F8BBD /* ConsultationRow.swift in Sources */,
 				FF53852121665A1F000D840C /* UIView+Capture.swift in Sources */,
 				FF1A4DDF216666F4003F8BBD /* PDFPage.swift in Sources */,

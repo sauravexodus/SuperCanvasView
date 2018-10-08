@@ -18,5 +18,4 @@ extension ConsultationRow: Equatable { }
 
 func ==(lhs: ConsultationRow, rhs: ConsultationRow) -> Bool {
     return lhs.id == rhs.id
-//    return lhs.height == rhs.height && lhs.medicalSection == rhs.medicalSection
 }

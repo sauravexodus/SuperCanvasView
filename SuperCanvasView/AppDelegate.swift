@@ -18,7 +18,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window = UIWindow(frame: UIScreen.main.bounds)
         if let `window` = self.window {
             let viewModel = HomeViewModel()
-            let viewController = HomeViewController(reactor: viewModel)
+            let viewController = ASHomeViewController(viewModel: viewModel)
             window.rootViewController = viewController
             window.makeKeyAndVisible()
         }

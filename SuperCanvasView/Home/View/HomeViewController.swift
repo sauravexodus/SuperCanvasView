@@ -200,19 +200,21 @@ final class HomeViewController: UIViewController, View {
             .disposed(by: disposeBag)
         
         selectSymptomRow.rx.tap
-            .mapTo(.select(.symptoms(name: nil, lines: [])))
+            .mapTo(.select(.symptoms))
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
         addSymptomRow.rx.tap
             .map { _ in
-                return .add(ConsultationRow(height: 50, medicalSection: MedicalSection.symptoms(name: "Symptom", lines: [])))
+                let heightsArray = [50, 100, 150]
+                let randomHeightIndex = Int(arc4random_uniform(UInt32(heightsArray.count)))
+                return .add(ConsultationRow(height: Float(heightsArray[randomHeightIndex]), medicalTerm: MedicalTerm(name: "Symptom", lines: [], medicalSection: .symptoms)))
             }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
 
         selectDiagnosisRow.rx.tap
-            .mapTo(.select(.diagnoses(name: nil, lines: [])))
+            .mapTo(.select(.diagnoses))
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
@@ -220,7 +222,7 @@ final class HomeViewController: UIViewController, View {
             .map { _ in
                 let heightsArray = [50, 100, 150]
                 let randomHeightIndex = Int(arc4random_uniform(UInt32(heightsArray.count)))
-                return .add(ConsultationRow(height: Float(heightsArray[randomHeightIndex]), medicalSection: MedicalSection.diagnoses(name: "Diagnosis", lines: [])))
+                return .add(ConsultationRow(height: Float(heightsArray[randomHeightIndex]), medicalTerm: MedicalTerm(name: "Diagnosis", lines: [], medicalSection: .diagnoses)))
             }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
@@ -234,6 +236,15 @@ final class HomeViewController: UIViewController, View {
     private func bindState(reactor: HomeViewModel) {
         reactor.state.map { $0.pages }
             .bind(to: tableView.rx.items(dataSource: consultationRowsDataSource))
+            .disposed(by: disposeBag)
+        
+        reactor.state.map { $0.focusedIndexPath }
+            .unwrap()
+            .distinctUntilChanged()
+            .subscribe(onNext: { [weak self] indexPath in
+                guard let strongSelf = self else { return }
+                strongSelf.tableView.scrollToRow(at: indexPath, at: .top, animated: true)
+            })
             .disposed(by: disposeBag)
     }
 }
@@ -263,14 +274,16 @@ extension HomeViewController {
                     .subscribe()
                     .disposed(by: cell.disposeBag)
 
-                let isPadder = consultationRow.medicalSection.isPadder
+                let name = consultationRow.medicalTerm.name
+                let lines = consultationRow.medicalTerm.lines
+                let isPadder = consultationRow.medicalTerm.isPadder
                 
-                switch consultationRow.medicalSection {
-                case let .symptoms(name, lines):
+                switch consultationRow.medicalTerm.medicalSection {
+                case .symptoms:
                     cell.backgroundColor = isPadder ? .white : .blue
                     cell.configure(with: name, and: lines, height: consultationRow.height)
                     return cell
-                case let .diagnoses(name, lines):
+                case .diagnoses:
                     cell.backgroundColor = isPadder ? .white : .red
                     cell.configure(with: name, and: lines, height: consultationRow.height)
                     return cell

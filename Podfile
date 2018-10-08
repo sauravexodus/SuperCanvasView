@@ -3,6 +3,7 @@
 
 target 'SuperCanvasView' do
   # Comment the next line if you're not using Swift and don't want to use dynamic frameworks
+  inhibit_all_warnings!
   use_frameworks!
 
   pod 'RxSwift'
@@ -14,5 +15,10 @@ target 'SuperCanvasView' do
   pod 'RxDataSources'
   pod 'ReactorKit'
   pod 'RxViewController'
+  pod 'RxGesture'
+  
+  # Texture
+  pod 'Texture'
+  pod 'RxASDataSources'
 
 end

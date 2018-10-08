@@ -15,12 +15,14 @@
 		7DC204112164C5A0007D93B7 /* Line.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DC204102164C5A0007D93B7 /* Line.swift */; };
 		7DC204132164C671007D93B7 /* UIBezierPath+extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DC204122164C671007D93B7 /* UIBezierPath+extensions.swift */; };
 		7DC204172164D0B4007D93B7 /* CanvasCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DC204162164D0B4007D93B7 /* CanvasCell.swift */; };
+		7DFEBCFF216A2643000DB559 /* ASHomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DFEBCFE216A2643000DB559 /* ASHomeViewController.swift */; };
+		D423D83F216B8C6500A69F42 /* ASMedicalTermCellNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = D423D83E216B8C6500A69F42 /* ASMedicalTermCellNode.swift */; };
 		E12C7DF811C83565F03590AF /* Pods_SuperCanvasView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 616E2B50C7A3D46F97B4272D /* Pods_SuperCanvasView.framework */; };
 		FF1A4DDF216666F4003F8BBD /* PDFPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF1A4DDE216666F4003F8BBD /* PDFPage.swift */; };
 		FF1A4DE12168821B003F8BBD /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF1A4DE02168821B003F8BBD /* HomeViewModel.swift */; };
 		FF1A4DE321688373003F8BBD /* ConsultationPageSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF1A4DE221688373003F8BBD /* ConsultationPageSection.swift */; };
 		FF1A4DF02168CA37003F8BBD /* ConsultationRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF1A4DEF2168CA37003F8BBD /* ConsultationRow.swift */; };
-		FF1A4DF22168CA47003F8BBD /* MedicalSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF1A4DF12168CA47003F8BBD /* MedicalSection.swift */; };
+		FF1A4DF22168CA47003F8BBD /* MedicalTerm.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF1A4DF12168CA47003F8BBD /* MedicalTerm.swift */; };
 		FF1A4DF9216A1E52003F8BBD /* MedicalTermRowCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF1A4DF8216A1E52003F8BBD /* MedicalTermRowCell.swift */; };
 		FF53851F216659F4000D840C /* UIScrollView+Capture.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF53851E216659F4000D840C /* UIScrollView+Capture.swift */; };
 		FF53852121665A1F000D840C /* UIView+Capture.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF53852021665A1F000D840C /* UIView+Capture.swift */; };
@@ -41,11 +43,13 @@
 		7DC204102164C5A0007D93B7 /* Line.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Line.swift; sourceTree = "<group>"; };
 		7DC204122164C671007D93B7 /* UIBezierPath+extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIBezierPath+extensions.swift"; sourceTree = "<group>"; };
 		7DC204162164D0B4007D93B7 /* CanvasCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasCell.swift; sourceTree = "<group>"; };
+		7DFEBCFE216A2643000DB559 /* ASHomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASHomeViewController.swift; sourceTree = "<group>"; };
+		D423D83E216B8C6500A69F42 /* ASMedicalTermCellNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ASMedicalTermCellNode.swift; path = Cell/ASMedicalTermCellNode.swift; sourceTree = "<group>"; };
 		FF1A4DDE216666F4003F8BBD /* PDFPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFPage.swift; sourceTree = "<group>"; };
 		FF1A4DE02168821B003F8BBD /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		FF1A4DE221688373003F8BBD /* ConsultationPageSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ConsultationPageSection.swift; path = SuperCanvasView/Home/Model/ConsultationPageSection.swift; sourceTree = SOURCE_ROOT; };
 		FF1A4DEF2168CA37003F8BBD /* ConsultationRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsultationRow.swift; sourceTree = "<group>"; };
-		FF1A4DF12168CA47003F8BBD /* MedicalSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicalSection.swift; sourceTree = "<group>"; };
+		FF1A4DF12168CA47003F8BBD /* MedicalTerm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicalTerm.swift; sourceTree = "<group>"; };
 		FF1A4DF8216A1E52003F8BBD /* MedicalTermRowCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicalTermRowCell.swift; sourceTree = "<group>"; };
 		FF53851E216659F4000D840C /* UIScrollView+Capture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScrollView+Capture.swift"; sourceTree = "<group>"; };
 		FF53852021665A1F000D840C /* UIView+Capture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Capture.swift"; sourceTree = "<group>"; };
@@ -138,8 +142,10 @@
 		FF1A4DE72168AFC4003F8BBD /* View */ = {
 			isa = PBXGroup;
 			children = (
+				D423D83E216B8C6500A69F42 /* ASMedicalTermCellNode.swift */,
 				FF1A4DF8216A1E52003F8BBD /* MedicalTermRowCell.swift */,
 				7DC2040B2164C4E8007D93B7 /* HomeViewController.swift */,
+				7DFEBCFE216A2643000DB559 /* ASHomeViewController.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -157,7 +163,7 @@
 			children = (
 				FF1A4DE221688373003F8BBD /* ConsultationPageSection.swift */,
 				FF1A4DEF2168CA37003F8BBD /* ConsultationRow.swift */,
-				FF1A4DF12168CA47003F8BBD /* MedicalSection.swift */,
+				FF1A4DF12168CA47003F8BBD /* MedicalTerm.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -266,27 +272,39 @@
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-SuperCanvasView/Pods-SuperCanvasView-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/Differentiator/Differentiator.framework",
+				"${BUILT_PRODUCTS_DIR}/PINCache/PINCache.framework",
+				"${BUILT_PRODUCTS_DIR}/PINOperation/PINOperation.framework",
+				"${BUILT_PRODUCTS_DIR}/PINRemoteImage/PINRemoteImage.framework",
 				"${BUILT_PRODUCTS_DIR}/ReactorKit/ReactorKit.framework",
 				"${BUILT_PRODUCTS_DIR}/Reusable/Reusable.framework",
+				"${BUILT_PRODUCTS_DIR}/RxASDataSources/RxASDataSources.framework",
 				"${BUILT_PRODUCTS_DIR}/RxCocoa/RxCocoa.framework",
 				"${BUILT_PRODUCTS_DIR}/RxDataSources/RxDataSources.framework",
+				"${BUILT_PRODUCTS_DIR}/RxGesture/RxGesture.framework",
 				"${BUILT_PRODUCTS_DIR}/RxSwift/RxSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/RxSwiftExt/RxSwiftExt.framework",
 				"${BUILT_PRODUCTS_DIR}/RxViewController/RxViewController.framework",
 				"${BUILT_PRODUCTS_DIR}/SnapKit/SnapKit.framework",
+				"${BUILT_PRODUCTS_DIR}/Texture/AsyncDisplayKit.framework",
 				"${BUILT_PRODUCTS_DIR}/Then/Then.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Differentiator.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PINCache.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PINOperation.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PINRemoteImage.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ReactorKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Reusable.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxASDataSources.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxCocoa.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxDataSources.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxGesture.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxSwift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxSwiftExt.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxViewController.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SnapKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/AsyncDisplayKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Then.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -302,8 +320,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				FF1A4DE321688373003F8BBD /* ConsultationPageSection.swift in Sources */,
+				7DFEBCFF216A2643000DB559 /* ASHomeViewController.swift in Sources */,
 				7DC203FA2164C4C6007D93B7 /* AppDelegate.swift in Sources */,
-				FF1A4DF22168CA47003F8BBD /* MedicalSection.swift in Sources */,
+				FF1A4DF22168CA47003F8BBD /* MedicalTerm.swift in Sources */,
+				D423D83F216B8C6500A69F42 /* ASMedicalTermCellNode.swift in Sources */,
 				FF1A4DE12168821B003F8BBD /* HomeViewModel.swift in Sources */,
 				7DC204112164C5A0007D93B7 /* Line.swift in Sources */,
 				7DC2040C2164C4E8007D93B7 /* HomeViewController.swift in Sources */,

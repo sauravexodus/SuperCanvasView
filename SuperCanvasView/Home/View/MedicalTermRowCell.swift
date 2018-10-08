@@ -11,6 +11,42 @@ import UIKit
 import Reusable
 import RxSwift
 
+extension UIView {
+    var frameInDisplay: CGRect {
+        var frame = self.frame
+        
+        guard let superviewFrame = superview?.frame else {
+            return frame
+        }
+        
+        if frame.origin.x > 0 {
+            let xExtension = (frame.origin.x + frame.size.width) - superviewFrame.width
+            if xExtension > 0 {
+                frame.size.width = superviewFrame.width - frame.origin.x
+            }
+        } else if frame.origin.x < 0 {
+            let widthInDisplay = frame.size.width + frame.origin.x
+            frame.size.width = min(widthInDisplay, superviewFrame.width)
+        } else {
+            frame.size.width = min(frame.width, superviewFrame.width)
+        }
+        
+        if frame.origin.y > 0 {
+            let yExtension = (frame.origin.y + frame.size.height) - superviewFrame.height
+            if yExtension > 0 {
+                frame.size.height = superviewFrame.height - frame.origin.y
+            }
+        } else if frame.origin.y < 0 {
+            let heightInDisplay = frame.size.height + frame.origin.y
+            frame.size.height = min(heightInDisplay, superviewFrame.height)
+        } else {
+            frame.size.height = min(frame.height, superviewFrame.height)
+        }
+
+        return frame
+    }
+}
+
 extension ObservableType {
     func ignoringErrors() -> Observable<E> {
         return self
@@ -36,19 +72,27 @@ extension ObservableType {
 }
 
 extension Reactive where Base: MedicalTermRowCell {
+    var didBeginWriting: Observable<Void> {
+        return base.canvasView.rx.pencilTouchStarted
+    }
+    var wantsContract: Observable<Void> {
+        return base.rx_wantsContract.asObservable()
+    }
     var didBeginUpdate: Observable<Void> {
-        return base.beginUpdateCell.asObservable()
+        return base.rx_didBeginUpdate.asObservable()
     }
     var didEndUpdate: Observable<Void> {
-        return base.endUpdateCell.asObservable()
+        return base.rx_didEndUpdate.asObservable()
     }
 }
 
 final class MedicalTermRowCell: UITableViewCell, Reusable {
     var disposeBag = DisposeBag()
-    var beginUpdateCell = PublishSubject<Void>()
-    var endUpdateCell = PublishSubject<Void>()
-
+    
+    fileprivate var rx_didBeginUpdate = PublishSubject<Void>()
+    fileprivate var rx_didEndUpdate = PublishSubject<Void>()
+    fileprivate var rx_wantsContract = PublishSubject<Void>()
+    
     let innerContentView = UIView().then {
         $0.translatesAutoresizingMaskIntoConstraints = false
         $0.clipsToBounds = true
@@ -87,7 +131,7 @@ final class MedicalTermRowCell: UITableViewCell, Reusable {
         selectionStyle = .none
 
         canvasView.rx.pencilTouchDidNearBottom
-            .map { [unowned self] _ in self.expand(by: 100) }
+            .map { [unowned self] _ in self.updateUI { self.expand(by: 200) } }
             .subscribe()
             .disposed(by: disposeBag)
     }
@@ -123,20 +167,19 @@ final class MedicalTermRowCell: UITableViewCell, Reusable {
             make.bottom.lessThanOrEqualToSuperview()
             make.bottom.equalToSuperview().priority(.low)
         }
+        
         canvasView.snp.remakeConstraints { make in
             make.height.equalTo(height)
             make.top.left.right.equalToSuperview()
         }
         
-        canvasView.rx.pencilTouchStarted.map { [weak self] in
-                guard let strongSelf = self else { return }
-                strongSelf.startDisposeBag = DisposeBag()
-                strongSelf.canvasView.rx.pencilDidStopMoving.map { [weak self] in
-                        guard let strongSelf = self else { return }
-                        strongSelf.contract()
-                    }
-                    .subscribe()
-                    .disposed(by: strongSelf.startDisposeBag)
+        canvasView.rx.pencilTouchStarted.map { [unowned self] in
+            self.startDisposeBag = DisposeBag()
+            self.canvasView.rx.pencilDidStopMoving.map { [unowned self] in
+                self.rx_wantsContract.onNext(())
+                }
+                .subscribe()
+                .disposed(by: self.startDisposeBag)
             }
             .subscribe()
             .disposed(by: disposeBag)
@@ -145,11 +188,17 @@ final class MedicalTermRowCell: UITableViewCell, Reusable {
 
 extension MedicalTermRowCell {
     func updateUI(_ f: @escaping () -> ()) {
-        UIView.animate(withDuration: 0.3) {
+        UIView.performWithoutAnimation {
+            self.rx_didBeginUpdate.onNext(())
             f()
-            self.beginUpdateCell.onNext(())
-            self.endUpdateCell.onNext(())
+            self.rx_didEndUpdate.onNext(())
         }
+
+        /*UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 1, options: [], animations: {
+            self.rx_didBeginUpdate.onNext(())
+            f()
+            self.rx_didEndUpdate.onNext(())
+        }, completion: nil)*/
     }
     
     func expand(by offset: Float) {
@@ -158,23 +207,20 @@ extension MedicalTermRowCell {
         }
         let newHeight = lastHeight + offset
         
-        updateUI {
-            self.innerContentView.snp.remakeConstraints { make in
-                make.top.bottom.left.right.equalToSuperview().priority(.high)
-                make.height.equalTo(newHeight)
-            }
+        if newHeight > .init(PDFPageSize.A4.height) {
+            return
         }
-        
+        self.innerContentView.snp.updateConstraints { make in
+            make.height.equalTo(newHeight)
+        }
+
         if let lastCanvasViewHeight = lastCanvasViewHeight, lastCanvasViewHeight > newHeight {
 
         } else {
-            updateUI {
-                self.canvasView.snp.remakeConstraints { make in
-                    make.top.left.right.equalToSuperview().priority(.high)
-                    make.height.equalTo(newHeight)
-                }
+            self.canvasView.snp.updateConstraints { make in
+                make.height.equalTo(newHeight)
             }
-            
+
             lastCanvasViewHeight = newHeight
         }
         
@@ -185,13 +231,11 @@ extension MedicalTermRowCell {
         guard let initialHeight = initialHeight else {
             return
         }
-        let newHeight = max(initialHeight, .init(canvasView.highestY))
-        updateUI {
-            self.innerContentView.snp.remakeConstraints { make in
-                make.height.equalTo(newHeight)
-                make.top.bottom.left.right.equalToSuperview().priority(.high)
-            }
-            self.lastHeight = newHeight
+        let newHeight = max(initialHeight, .init(canvasView.highestY + 10))
+
+        self.innerContentView.snp.updateConstraints { make in
+            make.height.equalTo(newHeight)
         }
+        self.lastHeight = newHeight
     }
 }

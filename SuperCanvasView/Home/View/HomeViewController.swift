@@ -15,16 +15,59 @@ import ReactorKit
 import RxDataSources
 import RxViewController
 
+final class ConsultationTableView: UITableView {
+    var disposeBag = DisposeBag()
+    
+    var queue: [IndexPath] = []
+    var currentPathBeingEdited: IndexPath?
+    
+    func resetContractQueue() {
+        queue = []
+    }
+    
+    func contract(_ indexPath: IndexPath) {
+        queue.append(indexPath)
+        if indexPath == currentPathBeingEdited {
+            UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 1, options: [], animations: {
+                self.beginUpdates()
+                for path in self.queue {
+                    let cell = self.cellForRow(at: path) as? MedicalTermRowCell
+                    cell?.contract()
+                }
+                self.endUpdates()
+                self.resetContractQueue()
+            }, completion: nil)
+        }
+    }
+
+    public override init(frame: CGRect, style: UITableView.Style) {
+        super.init(frame: frame, style: style)
+    }
+    
+    override func reloadData() {
+        resetContractQueue()
+        super.reloadData()
+    }
+    
+    convenience init() {
+        self.init(frame: CGRect.zero, style: .plain)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
 final class HomeViewController: UIViewController, View {
     var disposeBag = DisposeBag()
     
     // MARK: UI Elements
     
-    let tableView = UITableView().then {
+    let tableView = ConsultationTableView().then {
         $0.rowHeight = UITableViewAutomaticDimension
         $0.estimatedRowHeight = 100.0
         $0.register(cellType: MedicalTermRowCell.self)
-        $0.separatorStyle = .none
+        $0.separatorStyle = .singleLine
         $0.backgroundColor = .gray
         $0.panGestureRecognizer.allowedTouchTypes = [UITouchType.direct.rawValue as NSNumber]
         $0.translatesAutoresizingMaskIntoConstraints = false
@@ -163,9 +206,7 @@ final class HomeViewController: UIViewController, View {
         
         addSymptomRow.rx.tap
             .map { _ in
-                let heightsArray = [50, 100, 150]
-                let randomHeightIndex = Int(arc4random_uniform(UInt32(heightsArray.count)))
-                return .add(ConsultationRow(height: Float(heightsArray[randomHeightIndex]), medicalSection: MedicalSection.symptoms(name: "Symptom", lines: [])))
+                return .add(ConsultationRow(height: 50, medicalSection: MedicalSection.symptoms(name: "Symptom", lines: [])))
             }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
@@ -201,7 +242,7 @@ extension HomeViewController {
     static func dataSource() -> RxTableViewSectionedReloadDataSource<ConsultationPageSection> {
         return RxTableViewSectionedReloadDataSource<ConsultationPageSection>(
             configureCell: { dataSource, tableView, indexPath, consultationRow -> UITableViewCell in
-                
+                let tableView = tableView as! ConsultationTableView
                 let cell: MedicalTermRowCell = tableView.dequeueReusableCell(for: indexPath)
 
                 cell.rx.didBeginUpdate.map {
@@ -211,6 +252,16 @@ extension HomeViewController {
                 cell.rx.didEndUpdate.map {
                     tableView.endUpdates()
                 }.subscribe().disposed(by: cell.disposeBag)
+
+                cell.rx.didBeginWriting
+                    .map { tableView.currentPathBeingEdited = indexPath }
+                    .subscribe()
+                    .disposed(by: cell.disposeBag)
+                
+                cell.rx.wantsContract
+                    .map { tableView.contract(indexPath) }
+                    .subscribe()
+                    .disposed(by: cell.disposeBag)
 
                 let isPadder = consultationRow.medicalSection.isPadder
                 

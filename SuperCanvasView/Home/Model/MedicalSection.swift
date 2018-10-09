@@ -28,6 +28,15 @@ enum MedicalSection {
         default: return []
         }
     }
+    
+    var isPadder: Bool {
+        switch self {
+        case let .symptoms(name, lines):
+            return name == nil && lines.isEmpty
+        case let .diagnoses(name, lines):
+            return name == nil && lines.isEmpty
+        }
+    }
 }
 
 extension MedicalSection: Equatable { }
@@ -38,7 +47,6 @@ func ==(lhs: MedicalSection, rhs: MedicalSection) -> Bool {
         return nameA == nameB && linesA == linesB
     case (let .diagnoses(nameA, linesA), let .diagnoses(nameB, linesB)):
         return nameA == nameB && linesA == linesB
-    case (.none, .none): return true
     default: return false
     }
 }

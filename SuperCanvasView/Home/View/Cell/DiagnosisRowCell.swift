@@ -1,8 +1,8 @@
 //
-//  MedicalTermRowCell.swift
+//  DiagnosisRowCell.swift
 //  SuperCanvasView
 //
-//  Created by Krishna C Aluru on 10/6/18.
+//  Created by Krishna C Aluru on 10/7/18.
 //  Copyright © 2018 Sourav Chandra. All rights reserved.
 //
 
@@ -11,7 +11,7 @@ import UIKit
 import Reusable
 import RxSwift
 
-final class MedicalTermRowCell: UITableViewCell, Reusable {
+final class DiagnosisRowCell: UITableViewCell, Reusable {
     let titleLabel = UILabel().then {
         $0.textColor = .black
     }
@@ -22,7 +22,6 @@ final class MedicalTermRowCell: UITableViewCell, Reusable {
     }
     
     override func prepareForReuse() {
-//        canvasView.clearForReuse()
     }
     
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
@@ -50,3 +49,4 @@ final class MedicalTermRowCell: UITableViewCell, Reusable {
         }
     }
 }
+

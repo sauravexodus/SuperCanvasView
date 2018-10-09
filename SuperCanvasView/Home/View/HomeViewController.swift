@@ -23,7 +23,8 @@ final class HomeViewController: UIViewController, View {
     let tableView = UITableView().then {
         $0.rowHeight = UITableViewAutomaticDimension
         $0.estimatedRowHeight = 100.0
-        $0.register(cellType: MedicalTermRowCell.self)
+        $0.register(cellType: SymptomRowCell.self)
+        $0.register(cellType: DiagnosisRowCell.self)
         $0.separatorStyle = .none
         $0.backgroundColor = .gray
         $0.panGestureRecognizer.allowedTouchTypes = [UITouchType.direct.rawValue as NSNumber]
@@ -35,8 +36,20 @@ final class HomeViewController: UIViewController, View {
         $0.translatesAutoresizingMaskIntoConstraints = false
     }
     
-    let addMedicalTermRow = UIButton().then {
-        $0.setTitle("Add", for: .normal)
+    let addSymptomRow = UIButton().then {
+        $0.setTitle("Add Symptom", for: .normal)
+    }
+    
+    let addDiagnosisRow = UIButton().then {
+        $0.setTitle("Add Diagnosis", for: .normal)
+    }
+    
+    let selectSymptomRow = UIButton().then {
+        $0.setTitle("Select Symptom", for: .normal)
+    }
+    
+    let selectDiagnosisRow = UIButton().then {
+        $0.setTitle("Select Diagnosis", for: .normal)
     }
     
     let deleteAllRows = UIButton().then {
@@ -80,7 +93,10 @@ final class HomeViewController: UIViewController, View {
     private func addSubviews() {
         view.backgroundColor = .gray
         view.addSubview(buttonsView)
-        buttonsView.addSubview(addMedicalTermRow)
+        buttonsView.addSubview(selectSymptomRow)
+        buttonsView.addSubview(addSymptomRow)
+        buttonsView.addSubview(selectDiagnosisRow)
+        buttonsView.addSubview(addDiagnosisRow)
         buttonsView.addSubview(deleteAllRows)
         buttonsView.addSubview(printButton)
         view.addSubview(tableView)
@@ -92,19 +108,34 @@ final class HomeViewController: UIViewController, View {
             make.top.equalToSuperview().offset(48)
             make.left.right.equalToSuperview()
         }
-        addMedicalTermRow.snp.makeConstraints { make in
+        selectSymptomRow.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(8)
             make.left.equalToSuperview().offset(16)
             make.bottom.equalToSuperview().inset(8)
         }
+        addSymptomRow.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(8)
+            make.left.equalTo(selectSymptomRow.snp.right).offset(16)
+            make.bottom.equalToSuperview().inset(8)
+        }
+        selectDiagnosisRow.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(8)
+            make.left.equalTo(addSymptomRow.snp.right).offset(16)
+            make.bottom.equalToSuperview().inset(8)
+        }
+        addDiagnosisRow.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(8)
+            make.left.equalTo(selectDiagnosisRow.snp.right).offset(16)
+            make.bottom.equalToSuperview().inset(8)
+        }
         deleteAllRows.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(8)
-            make.left.equalTo(addMedicalTermRow.snp.right).offset(32)
+            make.left.equalTo(addDiagnosisRow.snp.right).offset(16)
             make.bottom.equalToSuperview().inset(8)
         }
         printButton.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(8)
-            make.left.equalTo(deleteAllRows.snp.right).offset(32)
+            make.left.equalTo(deleteAllRows.snp.right).offset(16)
             make.bottom.equalToSuperview().inset(8)
         }
         tableView.snp.makeConstraints { make in
@@ -124,13 +155,30 @@ final class HomeViewController: UIViewController, View {
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
-        addMedicalTermRow.rx.tap
+        selectSymptomRow.rx.tap
+            .mapTo(.select(.symptoms))
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        addSymptomRow.rx.tap
             .map { _ in
                 let heightsArray = [50, 100, 150]
                 let randomHeightIndex = Int(arc4random_uniform(UInt32(heightsArray.count)))
-                let medicalSectionsArray = [MedicalSection.symptoms(name: "Symptom", lines: []), MedicalSection.diagnoses(name: "Diagnosis", lines: [])]
-                let randomSectionIndex = Int(arc4random_uniform(UInt32(medicalSectionsArray.count)))
-                return .add(ConsultationRow(height: Float(heightsArray[randomHeightIndex]), medicalSection: medicalSectionsArray[randomSectionIndex]))
+                return .add(ConsultationRow(height: Float(heightsArray[randomHeightIndex]), medicalTerm: MedicalTerm(name: "Symptom", lines: [], medicalSection: .symptoms)))
+            }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+
+        selectDiagnosisRow.rx.tap
+            .mapTo(.select(.diagnoses))
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        addDiagnosisRow.rx.tap
+            .map { _ in
+                let heightsArray = [50, 100, 150]
+                let randomHeightIndex = Int(arc4random_uniform(UInt32(heightsArray.count)))
+                return .add(ConsultationRow(height: Float(heightsArray[randomHeightIndex]), medicalTerm: MedicalTerm(name: "Diagnosis", lines: [], medicalSection: .diagnoses)))
             }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
@@ -145,6 +193,15 @@ final class HomeViewController: UIViewController, View {
         reactor.state.map { $0.pages }
             .bind(to: tableView.rx.items(dataSource: consultationRowsDataSource))
             .disposed(by: disposeBag)
+        
+        reactor.state.map { $0.focusedIndexPath }
+            .unwrap()
+            .distinctUntilChanged()
+            .subscribe(onNext: { [weak self] indexPath in
+                guard let strongSelf = self else { return }
+                strongSelf.tableView.scrollToRow(at: indexPath, at: .top, animated: true)
+            })
+            .disposed(by: disposeBag)
     }
 }
 
@@ -152,15 +209,18 @@ extension HomeViewController {
     static func dataSource() -> RxTableViewSectionedReloadDataSource<ConsultationPageSection> {
         return RxTableViewSectionedReloadDataSource<ConsultationPageSection>(
             configureCell: { dataSource, tableView, indexPath, consultationRow -> UITableViewCell in
-                let cell: MedicalTermRowCell = tableView.dequeueReusableCell(for: indexPath)
-                switch consultationRow.medicalSection {
-                case let .symptoms(name, lines):
+                let name = consultationRow.medicalTerm.name
+                let lines = consultationRow.medicalTerm.lines
+                switch consultationRow.medicalTerm.medicalSection {
+                case .symptoms:
+                    let cell: SymptomRowCell = tableView.dequeueReusableCell(for: indexPath)
                     cell.configure(with: name, and: lines, height: consultationRow.height)
-                case let .diagnoses(name, lines):
+                    return cell
+                case .diagnoses:
+                    let cell: DiagnosisRowCell = tableView.dequeueReusableCell(for: indexPath)
                     cell.configure(with: name, and: lines, height: consultationRow.height)
-                default: cell.configure(with: nil, and: [], height: consultationRow.height)
+                    return cell
                 }
-                return cell
         }
     )}
 }

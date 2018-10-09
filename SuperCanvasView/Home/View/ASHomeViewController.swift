@@ -131,12 +131,20 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
         
         let configureCell: RxASTableReloadDataSource<ConsultationPageSection>.ConfigureCellBlock = { (ds, tableNode, index, item) in
             return { () -> ASCellNode in
-                let cellNode = ASCellNode(viewBlock: { () -> UIView in
-                    let view = ASMedicalTermCellNode()
+                var cellNode: ASCellNode!
+                cellNode = ASCellNode(viewBlock: { () -> UIView in
+                    let view = MedicalTermRowCellNode()
                     view.backgroundColor = .white
-                    view.configure(with: item.medicalTerm.name, and: [])
+                    view.configure(with: item.medicalTerm.name, and: [], height: item.height)
+                    
+                    view.updateBlock = { f in
+                        tableNode.performBatchUpdates({ f() }, completion: nil)
+                        cellNode.layout()
+                    }
+
                     return view
                 })
+                cellNode.selectionStyle = .none
                 cellNode.style.preferredSize = CGSize(width: Float.greatestFiniteMagnitude, height: item.height)
                 return cellNode
             }

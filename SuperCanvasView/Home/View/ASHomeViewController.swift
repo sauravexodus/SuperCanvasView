@@ -214,7 +214,8 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
-        containerNode.printButtonNode.rx.tap
+        containerNode.printButtonNode.rx
+            .tap
             .flatMap { [weak self] _ -> Observable<[UIImage]> in
                 guard let strongSelf = self  else { return .empty() }
                 return strongSelf.generateImages()

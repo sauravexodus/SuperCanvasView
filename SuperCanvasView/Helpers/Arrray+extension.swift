@@ -20,7 +20,7 @@ extension Array where Element: UIImage {
         UIGraphicsBeginImageContextWithOptions(newImageSize, false, UIScreen.main.scale)
 
         var y: CGFloat = 0
-        let _ = self.forEach {
+        self.forEach {
             $0.draw(at: CGPoint(x: 0,  y: y))
             y += $0.size.height
         }

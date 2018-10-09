@@ -17,6 +17,12 @@ import RxASDataSources
 import RxViewController
 import Then
 
+extension Float {
+    var cgFloat: CGFloat {
+        return CGFloat(self)
+    }
+}
+
 extension CGSize {
     init(width: Float, height: Float) {
         self.init(width: CGFloat(width), height: CGFloat(height))
@@ -131,21 +137,9 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
         
         let configureCell: RxASTableReloadDataSource<ConsultationPageSection>.ConfigureCellBlock = { (ds, tableNode, index, item) in
             return { () -> ASCellNode in
-                var cellNode: ASCellNode!
-                cellNode = ASCellNode(viewBlock: { () -> UIView in
-                    let view = MedicalTermRowCellNode()
-                    view.backgroundColor = .white
-                    view.configure(with: item.medicalTerm.name, and: [], height: item.height)
-                    
-                    view.updateBlock = { f in
-                        tableNode.performBatchUpdates({ f() }, completion: nil)
-                        cellNode.layout()
-                    }
-
-                    return view
-                })
+                let cellNode = ASMedicalTermCellNode(height: item.height.cgFloat)
+                cellNode.configure(with: item.medicalTerm.name, and: [])
                 cellNode.selectionStyle = .none
-                cellNode.style.preferredSize = CGSize(width: Float.greatestFiniteMagnitude, height: item.height)
                 return cellNode
             }
         }
@@ -175,12 +169,14 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
-        containerNode.selectSymptomButtonNode.rx.tap
+        containerNode.selectSymptomButtonNode.rx
+            .tap
             .mapTo(.select(.symptoms))
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
-        containerNode.addSymptomButtonNode.rx.tap
+        containerNode.addSymptomButtonNode.rx
+            .tap
             .map { _ in
                 let heightsArray = [50, 100, 150]
                 let randomHeightIndex = Int(arc4random_uniform(UInt32(heightsArray.count)))
@@ -189,12 +185,14 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
-        containerNode.selectDiagnosisButtonNode.rx.tap
+        containerNode.selectDiagnosisButtonNode.rx
+            .tap
             .mapTo(.select(.diagnoses))
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
-        containerNode.addDiagnosisButtonNode.rx.tap
+        containerNode.addDiagnosisButtonNode.rx
+            .tap
             .map { _ in
                 let heightsArray = [50, 100, 150]
                 let randomHeightIndex = Int(arc4random_uniform(UInt32(heightsArray.count)))

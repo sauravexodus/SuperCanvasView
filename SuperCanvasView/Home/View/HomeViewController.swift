@@ -40,7 +40,7 @@ final class ConsultationTableView: UITableView {
         }
     }
 
-    public override init(frame: CGRect, style: UITableView.Style) {
+    public override init(frame: CGRect, style: UITableViewStyle) {
         super.init(frame: frame, style: style)
     }
     

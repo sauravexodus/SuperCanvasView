@@ -68,7 +68,9 @@ extension HomeViewModel {
         
         let indexPath = currentState.pages.enumerated()
             .reduce([], { result, page in
-                return result + page.element.items.enumerated().map { offset, item in return (sectionIndex: page.offset, itemIndex: offset, item: item) }
+                return result + page.element.items.enumerated().map { offset, item in
+                    return (sectionIndex: page.offset, itemIndex: offset, item: item)
+                }
             })
             .first {
                 sectionIndex, itemIndex, item in item.medicalTerm.medicalSection == medicalSection
@@ -79,7 +81,10 @@ extension HomeViewModel {
                     scrollPosition: .top)
             }
         
-        guard let foundPath = indexPath else { return .empty() }
+        guard let foundPath = indexPath else {
+            return .empty()
+        }
+        
         return .just(.setFocusedIndexPath(foundPath))
     }
     
@@ -90,7 +95,9 @@ extension HomeViewModel {
         
         let indexPath = pages.enumerated()
             .reduce([], { result, page in
-                return result + page.element.items.enumerated().map { offset, item in return (sectionIndex: page.offset, itemIndex: offset, item: item) }
+                return result + page.element.items.enumerated().map { offset, item in
+                    return (sectionIndex: page.offset, itemIndex: offset, item: item)
+                }
             })
             .first { sectionIndex, itemIndex, item in
                 item == consultationRow
@@ -99,7 +106,10 @@ extension HomeViewModel {
                 IndexPathWithScrollPosition(indexPath: IndexPath(row: itemIndex, section: sectionIndex), scrollPosition: .none)
             }
         
-        guard let foundPath = indexPath else { return .empty() }
+        guard let foundPath = indexPath else {
+            return .empty()
+        }
+        
         return .concat(.just(.setPages(pages)), .just(.setFocusedIndexPath(foundPath)))
     }
 }

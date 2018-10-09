@@ -12,6 +12,8 @@ import ReactorKit
 import RxSwift
 
 final class HomeViewModel: Reactor {
+    typealias IndexPathWithScrollPosition = (indexPath: IndexPath, scrollPosition: UITableViewScrollPosition)
+
     enum Action {
         case initialLoad
         case select(MedicalTerm.MedicalSection)
@@ -30,8 +32,6 @@ final class HomeViewModel: Reactor {
         var focusedIndexPath: IndexPathWithScrollPosition?
     }
     
-    typealias IndexPathWithScrollPosition = (indexPath: IndexPath, scrollPosition: UITableViewScrollPosition)
-    
     let initialState = State()
     
     init() { }
@@ -45,36 +45,68 @@ final class HomeViewModel: Reactor {
         }
     }
     
+    func reduce(state: HomeViewModel.State, mutation: HomeViewModel.Mutation) -> HomeViewModel.State {
+        var state = state
+        switch mutation {
+        case let .setPages(pages):
+            state.pages = pages
+        case let .setFocusedIndexPath(indexPath):
+            state.focusedIndexPath = indexPath
+        }
+        return state
+    }
+}
+
+// MARK: Mutations
+
+extension HomeViewModel {
     private func mutateInitialLoad() -> Observable<Mutation> {
         return .just(.setPages([ConsultationPageSection(items: [ConsultationRow(height: currentState.pageHeight, medicalTerm: MedicalTerm(name: nil, lines: [], medicalSection: .symptoms), needsHeader: true)], pageHeight: currentState.pageHeight)]))
     }
     
     private func mutateSelectMedicalSection(_ medicalSection: MedicalTerm.MedicalSection) -> Observable<Mutation> {
+        
         let indexPath = currentState.pages.enumerated()
             .reduce([], { result, page in
                 return result + page.element.items.enumerated().map { offset, item in return (sectionIndex: page.offset, itemIndex: offset, item: item) }
             })
-            .first { sectionIndex, itemIndex, item in item.medicalTerm.medicalSection == medicalSection }
-            .map { sectionIndex, itemIndex, _ in IndexPathWithScrollPosition(indexPath: IndexPath(row: itemIndex, section: sectionIndex), scrollPosition: .top) }
+            .first {
+                sectionIndex, itemIndex, item in item.medicalTerm.medicalSection == medicalSection
+            }
+            .map { sectionIndex, itemIndex, _ in
+                IndexPathWithScrollPosition(
+                    indexPath: IndexPath(row: itemIndex, section: sectionIndex),
+                    scrollPosition: .top)
+            }
+        
         guard let foundPath = indexPath else { return .empty() }
         return .just(.setFocusedIndexPath(foundPath))
     }
     
     private func mutateAppendConsultationRow(_ consultationRow: ConsultationRow) -> Observable<Mutation> {
+        
         let consultationRows = currentState.pages.reduce([], { result, page in return result + page.items.filter { row in !row.medicalTerm.isPadder } })
         let pages = createPages(for: consultationRows, appending: consultationRow)
+        
         let indexPath = pages.enumerated()
             .reduce([], { result, page in
                 return result + page.element.items.enumerated().map { offset, item in return (sectionIndex: page.offset, itemIndex: offset, item: item) }
             })
-            .first { sectionIndex, itemIndex, item in item == consultationRow }
+            .first { sectionIndex, itemIndex, item in
+                item == consultationRow
+            }
             .map { sectionIndex, itemIndex, item in
                 IndexPathWithScrollPosition(indexPath: IndexPath(row: itemIndex, section: sectionIndex), scrollPosition: .none)
-        }
+            }
+        
         guard let foundPath = indexPath else { return .empty() }
         return .concat(.just(.setPages(pages)), .just(.setFocusedIndexPath(foundPath)))
     }
-    
+}
+
+// MARK: Helpers
+
+extension HomeViewModel {
     private func createPages(for consultationRows: [ConsultationRow], appending consultationRow: ConsultationRow) -> [ConsultationPageSection] {
         var consultationRows = consultationRows
         var consultationRow = consultationRow
@@ -112,16 +144,5 @@ final class HomeViewModel: Reactor {
             pagesCopy.append(nextPage)
         }
         return pagesCopy
-    }
-    
-    func reduce(state: HomeViewModel.State, mutation: HomeViewModel.Mutation) -> HomeViewModel.State {
-        var state = state
-        switch mutation {
-        case let .setPages(pages):
-            state.pages = pages
-        case let .setFocusedIndexPath(indexPath):
-            state.focusedIndexPath = indexPath
-        }
-        return state
     }
 }

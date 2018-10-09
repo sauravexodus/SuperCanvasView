@@ -45,17 +45,22 @@ final class ASMedicalTermCellNode: ASCellNode {
     // MARK: Instance methods
     
     override func didLoad() {
-        guard let canvasView = canvasNode.view as? CanvasView, let tableNode = owningNode as? ASAwareTableNode else { return }
-        let tapObservable = Observable.merge(rx.tapGesture(configuration: { gesture, _ in
+        guard let canvasView = canvasNode.view as? CanvasView,
+            let tableNode = owningNode as? ASAwareTableNode else { return }
+        
+        let tapObservable = rx.tapGesture { gesture, _ in
             gesture.allowedTouchTypes = [NSNumber(value: UITouchType.direct.rawValue)]
-        }))
+            }
             .mapTo(())
-        Observable.merge(tapObservable, canvasView.rx.pencilTouchDidNearBottom)
-            .subscribe(onNext: { [weak self] _ in
-                guard let strongSelf = self else { return }
+        
+        Observable.merge(
+            tapObservable,
+            canvasView.rx.pencilTouchDidNearBottom
+            )
+            .subscribe(onNext: { [unowned self] _ in
                 UIView.setAnimationsEnabled(false)
-                strongSelf.style.preferredSize.height = canvasView.highestY + 200
-                strongSelf.transitionLayout(withAnimation: false, shouldMeasureAsync: false) {
+                self.style.preferredSize.height = canvasView.highestY + 200
+                self.transitionLayout(withAnimation: false, shouldMeasureAsync: false) {
                     canvasView.setNeedsDisplay()
                 }
             })
@@ -85,12 +90,17 @@ final class ASMedicalTermCellNode: ASCellNode {
     
     override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
         let insets = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
-        let relativeSpec = ASRelativeLayoutSpec(horizontalPosition: .start, verticalPosition: .start, sizingOption: [], child: titleTextNode)
+        let relativeSpec = ASRelativeLayoutSpec(horizontalPosition: .start,
+                                                verticalPosition: .start,
+                                                sizingOption: [],
+                                                child: titleTextNode)
         return ASOverlayLayoutSpec(
             child: ASInsetLayoutSpec(insets: insets, child: relativeSpec),
             overlay: canvasNode
         )
     }
     
-    override func animateLayoutTransition(_ context: ASContextTransitioning) {}
+    override func animateLayoutTransition(_ context: ASContextTransitioning) {
+        
+    }
 }

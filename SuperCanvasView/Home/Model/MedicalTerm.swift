@@ -19,6 +19,17 @@ struct MedicalTerm {
     enum MedicalSection {
         case symptoms
         case diagnoses
+        
+        var title: String {
+            switch self {
+            case .symptoms: return "Chief Complaints"
+            case .diagnoses: return "Diagnosis"
+            }
+        }
+        
+        var displayTitle: String {
+            return title
+        }
     }
 }
 

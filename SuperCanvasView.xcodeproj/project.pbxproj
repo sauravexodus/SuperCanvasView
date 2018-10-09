@@ -7,204 +7,203 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		7DC203FA2164C4C6007D93B7 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DC203F92164C4C6007D93B7 /* AppDelegate.swift */; };
-		7DC204012164C4C8007D93B7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7DC204002164C4C8007D93B7 /* Assets.xcassets */; };
-		7DC204042164C4C8007D93B7 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7DC204022164C4C8007D93B7 /* LaunchScreen.storyboard */; };
-		7DC2040C2164C4E8007D93B7 /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DC2040B2164C4E8007D93B7 /* HomeViewController.swift */; };
-		7DC2040F2164C570007D93B7 /* CanvasView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DC2040E2164C570007D93B7 /* CanvasView.swift */; };
-		7DC204112164C5A0007D93B7 /* Line.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DC204102164C5A0007D93B7 /* Line.swift */; };
-		7DC204132164C671007D93B7 /* UIBezierPath+extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DC204122164C671007D93B7 /* UIBezierPath+extensions.swift */; };
-		7DC204172164D0B4007D93B7 /* CanvasCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DC204162164D0B4007D93B7 /* CanvasCell.swift */; };
-		7DFEBCFF216A2643000DB559 /* ASHomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DFEBCFE216A2643000DB559 /* ASHomeViewController.swift */; };
-		7DFEBD01216A28F7000DB559 /* ASMedicalTermCellNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DFEBD00216A28F7000DB559 /* ASMedicalTermCellNode.swift */; };
-		BAC096D5216CBF50004D78F0 /* Arrray+extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAC096D4216CBF50004D78F0 /* Arrray+extension.swift */; };
-		E12C7DF811C83565F03590AF /* Pods_SuperCanvasView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 616E2B50C7A3D46F97B4272D /* Pods_SuperCanvasView.framework */; };
-		FF1A4DDF216666F4003F8BBD /* PDFPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF1A4DDE216666F4003F8BBD /* PDFPage.swift */; };
-		FF1A4DE12168821B003F8BBD /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF1A4DE02168821B003F8BBD /* HomeViewModel.swift */; };
-		FF1A4DE321688373003F8BBD /* ConsultationPageSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF1A4DE221688373003F8BBD /* ConsultationPageSection.swift */; };
-		FF1A4DF02168CA37003F8BBD /* ConsultationRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF1A4DEF2168CA37003F8BBD /* ConsultationRow.swift */; };
-		FF1A4DF22168CA47003F8BBD /* MedicalTerm.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF1A4DF12168CA47003F8BBD /* MedicalTerm.swift */; };
-		FF1A4DF7216A1E4B003F8BBD /* SymptomRowCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF1A4DF6216A1E4B003F8BBD /* SymptomRowCell.swift */; };
-		FF1A4DF9216A1E52003F8BBD /* DiagnosisRowCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF1A4DF8216A1E52003F8BBD /* DiagnosisRowCell.swift */; };
-		FF53851F216659F4000D840C /* UIScrollView+Capture.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF53851E216659F4000D840C /* UIScrollView+Capture.swift */; };
-		FF53852121665A1F000D840C /* UIView+Capture.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF53852021665A1F000D840C /* UIView+Capture.swift */; };
-		FF53852321665A3E000D840C /* WKWebView+Capture.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF53852221665A3E000D840C /* WKWebView+Capture.swift */; };
+		05704475B95E7D35BD53184473FB68A2 /* CanvasView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDF6E483FBB5955FBD6AAE91C66C8E8D /* CanvasView.swift */; };
+		099F6EC139402C90879C0FDF8F9F49D5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60EE8825F387828E200971BCE0B2DB2B /* AppDelegate.swift */; };
+		152E229403718F2BFB2866381E478392 /* Pods_SuperCanvasView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A577A35071FD9836AD9C2904F6B30174 /* Pods_SuperCanvasView.framework */; };
+		279B0FCABA4AE2445649A643B3E77015 /* MedicalTerm.swift in Sources */ = {isa = PBXBuildFile; fileRef = B18DCA121A2E903656C7988756DAAA19 /* MedicalTerm.swift */; };
+		2BD63062F615C0E019CD4908C62C946C /* Line.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BED7C52289D80A62B95B0C952021488 /* Line.swift */; };
+		31C1A4B743788AEC65E535A88C994DB9 /* PDFPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B7EE83444C4A49CA8F4769BF8C1EDCF /* PDFPage.swift */; };
+		4338832969589F7AC8D575E76DA7FFE6 /* UIView+Capture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ABE977715B0FDAF2433C93C2FC69A82 /* UIView+Capture.swift */; };
+		5204D069BD91314633190C1DABAE9729 /* ConsultationPageSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = D07FFA17D9AE8A9555A56A40D706252C /* ConsultationPageSection.swift */; };
+		67A469CC49FC75876E22E53FB71C38E2 /* ASHomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC29120EC3DE5785E8660B63F0FD3915 /* ASHomeViewController.swift */; };
+		94E192DA7D5D0DCE2CC82238C1DF7DAF /* UIScrollView+Capture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451B7D26FD297BBE66F6B0DB9E95E277 /* UIScrollView+Capture.swift */; };
+		982CF99D8A0527878DC238F183FF1279 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5D4B7B67EB41F821C8C25B23F01FE83C /* Assets.xcassets */; };
+		AB90864BE77259AF0654B27216AB6CB6 /* WKWebView+Capture.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7A4B358B214252D8284B41F69BBA33A /* WKWebView+Capture.swift */; };
+		AE639C27C5E66689A39C85C0D1A047CE /* UIBezierPath+extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45A514AA0511D8EB536B182E7E307E8B /* UIBezierPath+extensions.swift */; };
+		BABBB4D4216D1BB7002D8B83 /* Arrray+extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BABBB4D3216D1BB7002D8B83 /* Arrray+extension.swift */; };
+		C48226222CDAF9B542076645F718778F /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C5DB4E931E4D96ECDD82324F6D664FC /* HomeViewModel.swift */; };
+		C7827C272517091E2CCAED622F6C810F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C318CE3D39793DC76B21BF7A520708D1 /* LaunchScreen.storyboard */; };
+		D0D7C673A60B921651A67B85F97C738F /* ConsultationRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCFBE2251E720056AC847FA603F5C0B8 /* ConsultationRow.swift */; };
+		D46C18F4216D07D40033312E /* ObservableType+extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D46C18F3216D07D40033312E /* ObservableType+extensions.swift */; };
+		D46C18F6216D07F20033312E /* UIView+extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D46C18F5216D07F20033312E /* UIView+extensions.swift */; };
+		D4E68F61216D0DE300789347 /* UIKit+helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4E68F60216D0DE300789347 /* UIKit+helpers.swift */; };
+		D4E68F63216D0DFA00789347 /* ASDisplayNode+extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4E68F62216D0DFA00789347 /* ASDisplayNode+extensions.swift */; };
+		FCFC864FA86EF209C44F27A91E7B9F8E /* ASMedicalTermCellNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3F9AF9D78978A62A892FF45D0E28AEE /* ASMedicalTermCellNode.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		5D0A1C39A2E4617ADDD11B16 /* Pods-SuperCanvasView.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SuperCanvasView.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SuperCanvasView/Pods-SuperCanvasView.debug.xcconfig"; sourceTree = "<group>"; };
-		616E2B50C7A3D46F97B4272D /* Pods_SuperCanvasView.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SuperCanvasView.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		6ECE9AAC46BC542E347C69DA /* Pods-SuperCanvasView.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SuperCanvasView.release.xcconfig"; path = "Pods/Target Support Files/Pods-SuperCanvasView/Pods-SuperCanvasView.release.xcconfig"; sourceTree = "<group>"; };
-		7DC203F62164C4C6007D93B7 /* SuperCanvasView.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SuperCanvasView.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		7DC203F92164C4C6007D93B7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		7DC204002164C4C8007D93B7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		7DC204032164C4C8007D93B7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		7DC204052164C4C8007D93B7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		7DC2040B2164C4E8007D93B7 /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
-		7DC2040E2164C570007D93B7 /* CanvasView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasView.swift; sourceTree = "<group>"; };
-		7DC204102164C5A0007D93B7 /* Line.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Line.swift; sourceTree = "<group>"; };
-		7DC204122164C671007D93B7 /* UIBezierPath+extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIBezierPath+extensions.swift"; sourceTree = "<group>"; };
-		7DC204162164D0B4007D93B7 /* CanvasCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasCell.swift; sourceTree = "<group>"; };
-		7DFEBCFE216A2643000DB559 /* ASHomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASHomeViewController.swift; sourceTree = "<group>"; };
-		7DFEBD00216A28F7000DB559 /* ASMedicalTermCellNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASMedicalTermCellNode.swift; sourceTree = "<group>"; };
-		BAC096D4216CBF50004D78F0 /* Arrray+extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Arrray+extension.swift"; sourceTree = "<group>"; };
-		FF1A4DDE216666F4003F8BBD /* PDFPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFPage.swift; sourceTree = "<group>"; };
-		FF1A4DE02168821B003F8BBD /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
-		FF1A4DE221688373003F8BBD /* ConsultationPageSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ConsultationPageSection.swift; path = SuperCanvasView/Home/Model/ConsultationPageSection.swift; sourceTree = SOURCE_ROOT; };
-		FF1A4DEF2168CA37003F8BBD /* ConsultationRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsultationRow.swift; sourceTree = "<group>"; };
-		FF1A4DF12168CA47003F8BBD /* MedicalTerm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicalTerm.swift; sourceTree = "<group>"; };
-		FF1A4DF6216A1E4B003F8BBD /* SymptomRowCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SymptomRowCell.swift; sourceTree = "<group>"; };
-		FF1A4DF8216A1E52003F8BBD /* DiagnosisRowCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiagnosisRowCell.swift; sourceTree = "<group>"; };
-		FF53851E216659F4000D840C /* UIScrollView+Capture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScrollView+Capture.swift"; sourceTree = "<group>"; };
-		FF53852021665A1F000D840C /* UIView+Capture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Capture.swift"; sourceTree = "<group>"; };
-		FF53852221665A3E000D840C /* WKWebView+Capture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WKWebView+Capture.swift"; sourceTree = "<group>"; };
+		1ABE977715B0FDAF2433C93C2FC69A82 /* UIView+Capture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Capture.swift"; sourceTree = "<group>"; };
+		37355E13581DC354D76B994B28C4EE17 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		451B7D26FD297BBE66F6B0DB9E95E277 /* UIScrollView+Capture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScrollView+Capture.swift"; sourceTree = "<group>"; };
+		45A514AA0511D8EB536B182E7E307E8B /* UIBezierPath+extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIBezierPath+extensions.swift"; sourceTree = "<group>"; };
+		59260F0DE9961F6ADE255A1DE0CA5488 /* Pods-SuperCanvasView.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SuperCanvasView.release.xcconfig"; path = "Pods/Target Support Files/Pods-SuperCanvasView/Pods-SuperCanvasView.release.xcconfig"; sourceTree = "<group>"; };
+		5BED7C52289D80A62B95B0C952021488 /* Line.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Line.swift; sourceTree = "<group>"; };
+		5D4B7B67EB41F821C8C25B23F01FE83C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		60EE8825F387828E200971BCE0B2DB2B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		711F304B985845E6140848240FC26BD2 /* SuperCanvasView.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SuperCanvasView.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		79FD0C4BBE37312BD01B24F413C99F8B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		7C5DB4E931E4D96ECDD82324F6D664FC /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
+		8B7EE83444C4A49CA8F4769BF8C1EDCF /* PDFPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFPage.swift; sourceTree = "<group>"; };
+		8B881CB9FB04C4D2FE9D0FE0ED63487B /* Pods-SuperCanvasView.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SuperCanvasView.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SuperCanvasView/Pods-SuperCanvasView.debug.xcconfig"; sourceTree = "<group>"; };
+		A577A35071FD9836AD9C2904F6B30174 /* Pods_SuperCanvasView.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SuperCanvasView.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B18DCA121A2E903656C7988756DAAA19 /* MedicalTerm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicalTerm.swift; sourceTree = "<group>"; };
+		B7A4B358B214252D8284B41F69BBA33A /* WKWebView+Capture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WKWebView+Capture.swift"; sourceTree = "<group>"; };
+		BABBB4D3216D1BB7002D8B83 /* Arrray+extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Arrray+extension.swift"; sourceTree = "<group>"; };
+		BCFBE2251E720056AC847FA603F5C0B8 /* ConsultationRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsultationRow.swift; sourceTree = "<group>"; };
+		CDF6E483FBB5955FBD6AAE91C66C8E8D /* CanvasView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasView.swift; sourceTree = "<group>"; };
+		D07FFA17D9AE8A9555A56A40D706252C /* ConsultationPageSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ConsultationPageSection.swift; path = SuperCanvasView/Home/Model/ConsultationPageSection.swift; sourceTree = SOURCE_ROOT; };
+		D3F9AF9D78978A62A892FF45D0E28AEE /* ASMedicalTermCellNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ASMedicalTermCellNode.swift; path = Cell/ASMedicalTermCellNode.swift; sourceTree = "<group>"; };
+		D46C18F3216D07D40033312E /* ObservableType+extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ObservableType+extensions.swift"; sourceTree = "<group>"; };
+		D46C18F5216D07F20033312E /* UIView+extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+extensions.swift"; sourceTree = "<group>"; };
+		D4E68F60216D0DE300789347 /* UIKit+helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIKit+helpers.swift"; sourceTree = "<group>"; };
+		D4E68F62216D0DFA00789347 /* ASDisplayNode+extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ASDisplayNode+extensions.swift"; sourceTree = "<group>"; };
+		DC29120EC3DE5785E8660B63F0FD3915 /* ASHomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASHomeViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		7DC203F32164C4C6007D93B7 /* Frameworks */ = {
+		8EB700F3B25E1926E00BE6610E12ED76 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E12C7DF811C83565F03590AF /* Pods_SuperCanvasView.framework in Frameworks */,
+				152E229403718F2BFB2866381E478392 /* Pods_SuperCanvasView.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		09208EC5813ECF2965829838 /* Frameworks */ = {
+		02C1C9AB047C26E9FA5AAA49C5040774 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				616E2B50C7A3D46F97B4272D /* Pods_SuperCanvasView.framework */,
+				A577A35071FD9836AD9C2904F6B30174 /* Pods_SuperCanvasView.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		7DC203ED2164C4C6007D93B7 = {
+		083B9ECAD5D0D7DCA4557E4710F4514A /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				7DC203F82164C4C6007D93B7 /* SuperCanvasView */,
-				7DC203F72164C4C6007D93B7 /* Products */,
-				91AB2DFD3BD7373371A1FECE /* Pods */,
-				09208EC5813ECF2965829838 /* Frameworks */,
-			);
-			sourceTree = "<group>";
-		};
-		7DC203F72164C4C6007D93B7 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				7DC203F62164C4C6007D93B7 /* SuperCanvasView.app */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		7DC203F82164C4C6007D93B7 /* SuperCanvasView */ = {
-			isa = PBXGroup;
-			children = (
-				FF1A4DE62168AFAC003F8BBD /* Home */,
-				FF53851D216659DA000D840C /* ViewCapture */,
-				7DC2040D2164C55A007D93B7 /* CanvasView */,
-				7DC203F92164C4C6007D93B7 /* AppDelegate.swift */,
-				7DC204002164C4C8007D93B7 /* Assets.xcassets */,
-				7DC204022164C4C8007D93B7 /* LaunchScreen.storyboard */,
-				7DC204052164C4C8007D93B7 /* Info.plist */,
-				7DC204162164D0B4007D93B7 /* CanvasCell.swift */,
-				BAC096D4216CBF50004D78F0 /* Arrray+extension.swift */,
-			);
-			path = SuperCanvasView;
-			sourceTree = "<group>";
-		};
-		7DC2040D2164C55A007D93B7 /* CanvasView */ = {
-			isa = PBXGroup;
-			children = (
-				7DC2040E2164C570007D93B7 /* CanvasView.swift */,
-				7DC204102164C5A0007D93B7 /* Line.swift */,
-				7DC204122164C671007D93B7 /* UIBezierPath+extensions.swift */,
-				FF1A4DDE216666F4003F8BBD /* PDFPage.swift */,
-			);
-			path = CanvasView;
-			sourceTree = "<group>";
-		};
-		91AB2DFD3BD7373371A1FECE /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				5D0A1C39A2E4617ADDD11B16 /* Pods-SuperCanvasView.debug.xcconfig */,
-				6ECE9AAC46BC542E347C69DA /* Pods-SuperCanvasView.release.xcconfig */,
+				8B881CB9FB04C4D2FE9D0FE0ED63487B /* Pods-SuperCanvasView.debug.xcconfig */,
+				59260F0DE9961F6ADE255A1DE0CA5488 /* Pods-SuperCanvasView.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
 		};
-		FF1A4DE62168AFAC003F8BBD /* Home */ = {
+		43C5449144A5A8A5BAE72738BB2087B6 /* SuperCanvasView */ = {
 			isa = PBXGroup;
 			children = (
-				FF1A4DE92168B00D003F8BBD /* Model */,
-				FF1A4DE82168B003003F8BBD /* ViewModel */,
-				FF1A4DE72168AFC4003F8BBD /* View */,
+				908FD928C16193BA0C48E12C24745FAE /* CanvasView */,
+				D46C18F2216D07B80033312E /* Helpers */,
+				A49C5AE6949E9CAA4195802E44934E7B /* Home */,
+				4F781CA2A475AC0AE32C2E79EBD1114D /* ViewCapture */,
+				60EE8825F387828E200971BCE0B2DB2B /* AppDelegate.swift */,
+				5D4B7B67EB41F821C8C25B23F01FE83C /* Assets.xcassets */,
+				37355E13581DC354D76B994B28C4EE17 /* Info.plist */,
+				C318CE3D39793DC76B21BF7A520708D1 /* LaunchScreen.storyboard */,
 			);
-			path = Home;
+			path = SuperCanvasView;
 			sourceTree = "<group>";
 		};
-		FF1A4DE72168AFC4003F8BBD /* View */ = {
+		4F781CA2A475AC0AE32C2E79EBD1114D /* ViewCapture */ = {
 			isa = PBXGroup;
 			children = (
-				FF1A4DEA2168B032003F8BBD /* Cell */,
-				7DC2040B2164C4E8007D93B7 /* HomeViewController.swift */,
-				7DFEBCFE216A2643000DB559 /* ASHomeViewController.swift */,
+				451B7D26FD297BBE66F6B0DB9E95E277 /* UIScrollView+Capture.swift */,
+				1ABE977715B0FDAF2433C93C2FC69A82 /* UIView+Capture.swift */,
+				B7A4B358B214252D8284B41F69BBA33A /* WKWebView+Capture.swift */,
 			);
-			path = View;
+			path = ViewCapture;
 			sourceTree = "<group>";
 		};
-		FF1A4DE82168B003003F8BBD /* ViewModel */ = {
+		6E24356AEC306AFD2571E28D78A7EDC1 /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
-				FF1A4DE02168821B003F8BBD /* HomeViewModel.swift */,
+				7C5DB4E931E4D96ECDD82324F6D664FC /* HomeViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
 		};
-		FF1A4DE92168B00D003F8BBD /* Model */ = {
+		6EE663483F6F27A1439FFBBB5A41C01F /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				FF1A4DE221688373003F8BBD /* ConsultationPageSection.swift */,
-				FF1A4DEF2168CA37003F8BBD /* ConsultationRow.swift */,
-				FF1A4DF12168CA47003F8BBD /* MedicalTerm.swift */,
+				711F304B985845E6140848240FC26BD2 /* SuperCanvasView.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		908FD928C16193BA0C48E12C24745FAE /* CanvasView */ = {
+			isa = PBXGroup;
+			children = (
+				CDF6E483FBB5955FBD6AAE91C66C8E8D /* CanvasView.swift */,
+				5BED7C52289D80A62B95B0C952021488 /* Line.swift */,
+				8B7EE83444C4A49CA8F4769BF8C1EDCF /* PDFPage.swift */,
+				45A514AA0511D8EB536B182E7E307E8B /* UIBezierPath+extensions.swift */,
+			);
+			path = CanvasView;
+			sourceTree = "<group>";
+		};
+		A49C5AE6949E9CAA4195802E44934E7B /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				F8014D0D9204D04AC63F0A5A24B7D632 /* Model */,
+				AC902BE4E4781AB3092346D25201EBE9 /* View */,
+				6E24356AEC306AFD2571E28D78A7EDC1 /* ViewModel */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
+		AC902BE4E4781AB3092346D25201EBE9 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				DC29120EC3DE5785E8660B63F0FD3915 /* ASHomeViewController.swift */,
+				D3F9AF9D78978A62A892FF45D0E28AEE /* ASMedicalTermCellNode.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		D46C18F2216D07B80033312E /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				BABBB4D3216D1BB7002D8B83 /* Arrray+extension.swift */,
+				D4E68F62216D0DFA00789347 /* ASDisplayNode+extensions.swift */,
+				D46C18F3216D07D40033312E /* ObservableType+extensions.swift */,
+				D4E68F60216D0DE300789347 /* UIKit+helpers.swift */,
+				D46C18F5216D07F20033312E /* UIView+extensions.swift */,
+			);
+			path = Helpers;
+			sourceTree = "<group>";
+		};
+		F8014D0D9204D04AC63F0A5A24B7D632 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				D07FFA17D9AE8A9555A56A40D706252C /* ConsultationPageSection.swift */,
+				BCFBE2251E720056AC847FA603F5C0B8 /* ConsultationRow.swift */,
+				B18DCA121A2E903656C7988756DAAA19 /* MedicalTerm.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
 		};
-		FF1A4DEA2168B032003F8BBD /* Cell */ = {
+		FB4D7BEE127FBBBF809D112C7ED40C70 = {
 			isa = PBXGroup;
 			children = (
-				FF1A4DED2168B04E003F8BBD /* MedicalTermRowCell.swift */,
-				7DFEBD00216A28F7000DB559 /* ASMedicalTermCellNode.swift */,
-				FF1A4DF6216A1E4B003F8BBD /* SymptomRowCell.swift */,
-				FF1A4DF8216A1E52003F8BBD /* DiagnosisRowCell.swift */,
+				02C1C9AB047C26E9FA5AAA49C5040774 /* Frameworks */,
+				083B9ECAD5D0D7DCA4557E4710F4514A /* Pods */,
+				6EE663483F6F27A1439FFBBB5A41C01F /* Products */,
+				43C5449144A5A8A5BAE72738BB2087B6 /* SuperCanvasView */,
 			);
-			path = Cell;
-			sourceTree = "<group>";
-		};
-		FF53851D216659DA000D840C /* ViewCapture */ = {
-			isa = PBXGroup;
-			children = (
-				FF53851E216659F4000D840C /* UIScrollView+Capture.swift */,
-				FF53852021665A1F000D840C /* UIView+Capture.swift */,
-				FF53852221665A3E000D840C /* WKWebView+Capture.swift */,
-			);
-			path = ViewCapture;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		7DC203F52164C4C6007D93B7 /* SuperCanvasView */ = {
+		7BC45D5D73AC1FCF77630F4F201B9BBA /* SuperCanvasView */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 7DC204082164C4C8007D93B7 /* Build configuration list for PBXNativeTarget "SuperCanvasView" */;
+			buildConfigurationList = D0109B3DA4D301001D252331208925DF /* Build configuration list for PBXNativeTarget "SuperCanvasView" */;
 			buildPhases = (
-				1286AC262D5518153FB706E4 /* [CP] Check Pods Manifest.lock */,
-				7DC203F22164C4C6007D93B7 /* Sources */,
-				7DC203F32164C4C6007D93B7 /* Frameworks */,
-				7DC203F42164C4C6007D93B7 /* Resources */,
-				233EE57E174357F9FC8C905C /* [CP] Embed Pods Frameworks */,
+				B762374E04EEA4A913790E84BFF2BBC4 /* [CP] Check Pods Manifest.lock */,
+				BA75A6DEB0A3DD26685022A3CEFB4C48 /* Sources */,
+				8EB700F3B25E1926E00BE6610E12ED76 /* Frameworks */,
+				E54539B368658AF92E6BA2EDD101046F /* Resources */,
+				D558C6838B978BEE2F3F05EDB1C2FD68 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -212,25 +211,25 @@
 			);
 			name = SuperCanvasView;
 			productName = SuperCanvasView;
-			productReference = 7DC203F62164C4C6007D93B7 /* SuperCanvasView.app */;
+			productReference = 711F304B985845E6140848240FC26BD2 /* SuperCanvasView.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		7DC203EE2164C4C6007D93B7 /* Project object */ = {
+		7451C69666F3B49F57040B8BEF9391BC /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0940;
 				LastUpgradeCheck = 0940;
 				ORGANIZATIONNAME = "Sourav Chandra";
 				TargetAttributes = {
-					7DC203F52164C4C6007D93B7 = {
+					7BC45D5D73AC1FCF77630F4F201B9BBA = {
 						CreatedOnToolsVersion = 9.4.1;
 					};
 				};
 			};
-			buildConfigurationList = 7DC203F12164C4C6007D93B7 /* Build configuration list for PBXProject "SuperCanvasView" */;
+			buildConfigurationList = 14D60B532CF86602D53E4809EC5B697E /* Build configuration list for PBXProject "SuperCanvasView" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -238,30 +237,30 @@
 				en,
 				Base,
 			);
-			mainGroup = 7DC203ED2164C4C6007D93B7;
-			productRefGroup = 7DC203F72164C4C6007D93B7 /* Products */;
+			mainGroup = FB4D7BEE127FBBBF809D112C7ED40C70;
+			productRefGroup = 6EE663483F6F27A1439FFBBB5A41C01F /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				7DC203F52164C4C6007D93B7 /* SuperCanvasView */,
+				7BC45D5D73AC1FCF77630F4F201B9BBA /* SuperCanvasView */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		7DC203F42164C4C6007D93B7 /* Resources */ = {
+		E54539B368658AF92E6BA2EDD101046F /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7DC204042164C4C8007D93B7 /* LaunchScreen.storyboard in Resources */,
-				7DC204012164C4C8007D93B7 /* Assets.xcassets in Resources */,
+				982CF99D8A0527878DC238F183FF1279 /* Assets.xcassets in Resources */,
+				C7827C272517091E2CCAED622F6C810F /* LaunchScreen.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		1286AC262D5518153FB706E4 /* [CP] Check Pods Manifest.lock */ = {
+		B762374E04EEA4A913790E84BFF2BBC4 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -279,7 +278,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		233EE57E174357F9FC8C905C /* [CP] Embed Pods Frameworks */ = {
+		D558C6838B978BEE2F3F05EDB1C2FD68 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -330,41 +329,39 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		7DC203F22164C4C6007D93B7 /* Sources */ = {
+		BA75A6DEB0A3DD26685022A3CEFB4C48 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FF1A4DE321688373003F8BBD /* ConsultationPageSection.swift in Sources */,
-				7DFEBCFF216A2643000DB559 /* ASHomeViewController.swift in Sources */,
-				7DC203FA2164C4C6007D93B7 /* AppDelegate.swift in Sources */,
-				BAC096D5216CBF50004D78F0 /* Arrray+extension.swift in Sources */,
-				FF1A4DF22168CA47003F8BBD /* MedicalSection.swift in Sources */,
-				FF1A4DEE2168B04E003F8BBD /* MedicalTermRowCell.swift in Sources */,
-				FF1A4DF22168CA47003F8BBD /* MedicalTerm.swift in Sources */,
-				FF1A4DE12168821B003F8BBD /* HomeViewModel.swift in Sources */,
-				7DC204112164C5A0007D93B7 /* Line.swift in Sources */,
-				7DC2040C2164C4E8007D93B7 /* HomeViewController.swift in Sources */,
-				7DFEBD01216A28F7000DB559 /* ASMedicalTermCellNode.swift in Sources */,
-				7DC204172164D0B4007D93B7 /* CanvasCell.swift in Sources */,
-				FF53852321665A3E000D840C /* WKWebView+Capture.swift in Sources */,
-				FF1A4DF9216A1E52003F8BBD /* DiagnosisRowCell.swift in Sources */,
-				FF53851F216659F4000D840C /* UIScrollView+Capture.swift in Sources */,
-				7DC2040F2164C570007D93B7 /* CanvasView.swift in Sources */,
-				7DC204132164C671007D93B7 /* UIBezierPath+extensions.swift in Sources */,
-				FF1A4DF7216A1E4B003F8BBD /* SymptomRowCell.swift in Sources */,
-				FF1A4DF02168CA37003F8BBD /* ConsultationRow.swift in Sources */,
-				FF53852121665A1F000D840C /* UIView+Capture.swift in Sources */,
-				FF1A4DDF216666F4003F8BBD /* PDFPage.swift in Sources */,
+				67A469CC49FC75876E22E53FB71C38E2 /* ASHomeViewController.swift in Sources */,
+				FCFC864FA86EF209C44F27A91E7B9F8E /* ASMedicalTermCellNode.swift in Sources */,
+				099F6EC139402C90879C0FDF8F9F49D5 /* AppDelegate.swift in Sources */,
+				D46C18F4216D07D40033312E /* ObservableType+extensions.swift in Sources */,
+				05704475B95E7D35BD53184473FB68A2 /* CanvasView.swift in Sources */,
+				5204D069BD91314633190C1DABAE9729 /* ConsultationPageSection.swift in Sources */,
+				D4E68F61216D0DE300789347 /* UIKit+helpers.swift in Sources */,
+				D0D7C673A60B921651A67B85F97C738F /* ConsultationRow.swift in Sources */,
+				C48226222CDAF9B542076645F718778F /* HomeViewModel.swift in Sources */,
+				2BD63062F615C0E019CD4908C62C946C /* Line.swift in Sources */,
+				279B0FCABA4AE2445649A643B3E77015 /* MedicalTerm.swift in Sources */,
+				D46C18F6216D07F20033312E /* UIView+extensions.swift in Sources */,
+				31C1A4B743788AEC65E535A88C994DB9 /* PDFPage.swift in Sources */,
+				AE639C27C5E66689A39C85C0D1A047CE /* UIBezierPath+extensions.swift in Sources */,
+				D4E68F63216D0DFA00789347 /* ASDisplayNode+extensions.swift in Sources */,
+				94E192DA7D5D0DCE2CC82238C1DF7DAF /* UIScrollView+Capture.swift in Sources */,
+				4338832969589F7AC8D575E76DA7FFE6 /* UIView+Capture.swift in Sources */,
+				BABBB4D4216D1BB7002D8B83 /* Arrray+extension.swift in Sources */,
+				AB90864BE77259AF0654B27216AB6CB6 /* WKWebView+Capture.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		7DC204022164C4C8007D93B7 /* LaunchScreen.storyboard */ = {
+		C318CE3D39793DC76B21BF7A520708D1 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
-				7DC204032164C4C8007D93B7 /* Base */,
+				79FD0C4BBE37312BD01B24F413C99F8B /* Base */,
 			);
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
@@ -372,7 +369,81 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
-		7DC204062164C4C8007D93B7 /* Debug */ = {
+		45EEC62C4F1F3E48AC0D2AC25906D332 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 8B881CB9FB04C4D2FE9D0FE0ED63487B /* Pods-SuperCanvasView.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 39X2W7W8G7;
+				INFOPLIST_FILE = SuperCanvasView/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.doctalk.SuperCanvasView;
+				PRODUCT_MODULE_NAME = "$(PRODUCT_NAME:c99extidentifier)";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		8EC41810835BE1FAD22A94E351808831 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		D7B8356B4EE59F477BD704DCC93B4864 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -432,63 +503,9 @@
 			};
 			name = Debug;
 		};
-		7DC204072164C4C8007D93B7 /* Release */ = {
+		E977C4BC5CBD5A0C3C970183E4D30748 /* Release */ = {
 			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
-				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_COMMA = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu11;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 11.4;
-				MTL_ENABLE_DEBUG_INFO = NO;
-				SDKROOT = iphoneos;
-				SWIFT_COMPILATION_MODE = wholemodule;
-				SWIFT_OPTIMIZATION_LEVEL = "-O";
-				VALIDATE_PRODUCT = YES;
-			};
-			name = Release;
-		};
-		7DC204092164C4C8007D93B7 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5D0A1C39A2E4617ADDD11B16 /* Pods-SuperCanvasView.debug.xcconfig */;
+			baseConfigurationReference = 59260F0DE9961F6ADE255A1DE0CA5488 /* Pods-SuperCanvasView.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
@@ -498,27 +515,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.doctalk.SuperCanvasView2;
-				PRODUCT_MODULE_NAME = "$(PRODUCT_NAME:c99extidentifier)";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		7DC2040A2164C4C8007D93B7 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 6ECE9AAC46BC542E347C69DA /* Pods-SuperCanvasView.release.xcconfig */;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 39X2W7W8G7;
-				INFOPLIST_FILE = SuperCanvasView/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.doctalk.SuperCanvasView2;
+				PRODUCT_BUNDLE_IDENTIFIER = com.doctalk.SuperCanvasView;
 				PRODUCT_MODULE_NAME = "$(PRODUCT_NAME:c99extidentifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
@@ -529,25 +526,25 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		7DC203F12164C4C6007D93B7 /* Build configuration list for PBXProject "SuperCanvasView" */ = {
+		14D60B532CF86602D53E4809EC5B697E /* Build configuration list for PBXProject "SuperCanvasView" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				7DC204062164C4C8007D93B7 /* Debug */,
-				7DC204072164C4C8007D93B7 /* Release */,
+				D7B8356B4EE59F477BD704DCC93B4864 /* Debug */,
+				8EC41810835BE1FAD22A94E351808831 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		7DC204082164C4C8007D93B7 /* Build configuration list for PBXNativeTarget "SuperCanvasView" */ = {
+		D0109B3DA4D301001D252331208925DF /* Build configuration list for PBXNativeTarget "SuperCanvasView" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				7DC204092164C4C8007D93B7 /* Debug */,
-				7DC2040A2164C4C8007D93B7 /* Release */,
+				45EEC62C4F1F3E48AC0D2AC25906D332 /* Debug */,
+				E977C4BC5CBD5A0C3C970183E4D30748 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = 7DC203EE2164C4C6007D93B7 /* Project object */;
+	rootObject = 7451C69666F3B49F57040B8BEF9391BC /* Project object */;
 }

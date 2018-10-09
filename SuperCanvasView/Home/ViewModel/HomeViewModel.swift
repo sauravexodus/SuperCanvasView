@@ -12,6 +12,8 @@ import ReactorKit
 import RxSwift
 
 final class HomeViewModel: Reactor {
+    typealias IndexPathWithScrollPosition = (indexPath: IndexPath, scrollPosition: UITableViewScrollPosition)
+
     enum Action {
         case initialLoad
         case select(MedicalTerm.MedicalSection)
@@ -22,13 +24,13 @@ final class HomeViewModel: Reactor {
     
     enum Mutation {
         case setPages([ConsultationPageSection])
-        case setFocusedIndexPath(IndexPath)
+        case setFocusedIndexPath(IndexPathWithScrollPosition)
     }
     
     struct State {
         var pages: [ConsultationPageSection] = []
         let pageHeight: Float = 300
-        var focusedIndexPath: IndexPath?
+        var focusedIndexPath: IndexPathWithScrollPosition?
     }
     
     let initialState = State()
@@ -45,36 +47,94 @@ final class HomeViewModel: Reactor {
         }
     }
     
+    func reduce(state: HomeViewModel.State, mutation: HomeViewModel.Mutation) -> HomeViewModel.State {
+        var state = state
+        switch mutation {
+        case let .setPages(pages):
+            state.pages = pages
+        case let .setFocusedIndexPath(indexPath):
+            state.focusedIndexPath = indexPath
+        }
+        return state
+    }
+}
+
+// MARK: Mutations
+
+extension HomeViewModel {
     private func mutateInitialLoad() -> Observable<Mutation> {
-        return .just(.setPages([ConsultationPageSection(items: [ConsultationRow(height: currentState.pageHeight, medicalTerm: MedicalTerm(name: nil, lines: [], medicalSection: .symptoms))], pageHeight: currentState.pageHeight)]))
+        return .just(.setPages([ConsultationPageSection(items: [ConsultationRow(height: currentState.pageHeight, medicalTerm: MedicalTerm(name: nil, lines: [], medicalSection: .symptoms), needsHeader: true)], pageHeight: currentState.pageHeight)]))
     }
     
     private func mutateSelectMedicalSection(_ medicalSection: MedicalTerm.MedicalSection) -> Observable<Mutation> {
+        
         let indexPath = currentState.pages.enumerated()
             .reduce([], { result, page in
                 return result + page.element.items.enumerated().map { offset, item in return (sectionIndex: page.offset, itemIndex: offset, item: item) }
             })
-            .first { sectionIndex, itemIndex, item in
-                item.medicalTerm.medicalSection == medicalSection }
+            .first {
+                sectionIndex, itemIndex, item in item.medicalTerm.medicalSection == medicalSection
+            }
             .map { sectionIndex, itemIndex, _ in
-                IndexPath(row: itemIndex, section: sectionIndex) }
+                IndexPathWithScrollPosition(
+                    indexPath: IndexPath(row: itemIndex, section: sectionIndex),
+                    scrollPosition: .top)
+            }
+        
         guard let foundPath = indexPath else { return .empty() }
         return .just(.setFocusedIndexPath(foundPath))
     }
     
     private func mutateAppendConsultationRow(_ consultationRow: ConsultationRow) -> Observable<Mutation> {
+        
         let consultationRows = currentState.pages.reduce([], { result, page in return result + page.items.filter { row in !row.medicalTerm.isPadder } })
-        return .just(.setPages(createPages(for: consultationRows, appending: consultationRow)))
+        let pages = createPages(for: consultationRows, appending: consultationRow)
+        
+        let indexPath = pages.enumerated()
+            .reduce([], { result, page in
+                return result + page.element.items.enumerated().map { offset, item in return (sectionIndex: page.offset, itemIndex: offset, item: item) }
+            })
+            .first { sectionIndex, itemIndex, item in
+                item == consultationRow
+            }
+            .map { sectionIndex, itemIndex, item in
+                IndexPathWithScrollPosition(indexPath: IndexPath(row: itemIndex, section: sectionIndex), scrollPosition: .none)
+            }
+        
+        guard let foundPath = indexPath else { return .empty() }
+        return .concat(.just(.setPages(pages)), .just(.setFocusedIndexPath(foundPath)))
     }
     
+    private func mutatePrint(images: [UIImage]) -> Observable<Mutation> {
+        let pi = UIPrintInfo(dictionary: nil)
+        pi.outputType = .general
+        pi.jobName = "JOB"
+        pi.orientation = .portrait
+        pi.duplex = .longEdge
+        let pic = UIPrintInteractionController.shared
+        pic.printInfo = pi
+        pic.printingItems = images
+        pic.present(animated: true)
+        return .empty()
+    }
+}
+
+// MARK: Helpers
+
+extension HomeViewModel {
     private func createPages(for consultationRows: [ConsultationRow], appending consultationRow: ConsultationRow) -> [ConsultationPageSection] {
         var consultationRows = consultationRows
+        var consultationRow = consultationRow
+        // set needs header if it is the first item of it's kind
+        consultationRow.needsHeader = !consultationRows.contains(where: { row in row.medicalTerm.medicalSection == consultationRow.medicalTerm.medicalSection })
+        // find index to insert the new row in
         let indexToInsert = consultationRows.reduce(consultationRows.count, { result, row in
             guard consultationRow.medicalTerm.medicalSection == row.medicalTerm.medicalSection else { return result }
             if let index = consultationRows.index(of: row) { return index + 1 }
             return result
         })
         consultationRows.insert(consultationRow, at: indexToInsert)
+        // create pages after inserting row
         let pages = consultationRows.reduce([], { result, row -> [ConsultationPageSection] in
             var result = result
             guard !result.isEmpty else { return [ConsultationPageSection(items: [row], pageHeight: currentState.pageHeight)] }
@@ -84,6 +144,7 @@ final class HomeViewModel: Reactor {
             lastPage.items += [row]
             return result + [lastPage]
         })
+        // pad the pages and return them
         return padPages(pages)
     }
     
@@ -98,33 +159,5 @@ final class HomeViewModel: Reactor {
             pagesCopy.append(nextPage)
         }
         return pagesCopy
-    }
-    
-    func reduce(state: HomeViewModel.State, mutation: HomeViewModel.Mutation) -> HomeViewModel.State {
-        var state = state
-        switch mutation {
-        case let .setPages(pages):
-            state.pages = pages
-        case let .setFocusedIndexPath(indexPath):
-            state.focusedIndexPath = indexPath
-        }
-        return state
-    }
-
-    private func mutatePrint(images: [UIImage]) -> Observable<Mutation> {
-        let pi = UIPrintInfo(dictionary: nil)
-        pi.outputType = .general
-        pi.jobName = "JOB"
-        pi.orientation = .portrait
-        pi.duplex = .longEdge
-        let pic = UIPrintInteractionController.shared
-        pic.printInfo = pi
-        pic.printingItems = images
-        pic.present(animated: true)
-        return .empty()
-    }
-
-    func transform(state: Observable<HomeViewModel.State>) -> Observable<HomeViewModel.State> {
-        return state.debug("State Emitted :)")
     }
 }

@@ -14,6 +14,8 @@ import RxSwift
 import RxCocoa
 import RxGesture
 import RxASDataSources
+import RxViewController
+import Then
 
 extension Reactive where Base: UIScrollView {
     func swCapture() -> Observable<UIImage?> {
@@ -47,37 +49,19 @@ extension Reactive where Base: UIView {
     }
 }
 
-extension CGSize {
-    init(width: Float, height: Float) {
-        self.init(width: CGFloat(width), height: CGFloat(height))
-    }
-}
-
-extension UIView {
-    var asNode: ASDisplayNode {
-        return ASDisplayNode.init(viewBlock: { () -> UIView in
-            return self
-        }, didLoad: nil)
-    }
-}
-
-extension Reactive where Base: ASDisplayNode {
-    var tap: Observable<UITapGestureRecognizer> {
-        return base.view.rx.tapGesture().when(.recognized)
-    }
-}
 
 final class ASDisplayNodeWithBackgroundColor: ASDisplayNode {
-    
     init(color: UIColor) {
         super.init()
         backgroundColor = color
     }
-    
+}
+
+final class ASAwareTableNode: ASTableNode {
+    let endUpdateSubject = PublishSubject<Void>()
 }
 
 final class ContainerDisplayNode: ASDisplayNode {
-
     let addSymptomButtonNode = ASButtonNode().then {
         $0.setTitle("Add Symptom", with: .systemFont(ofSize: 13), with: .white, for: .normal)
         $0.style.preferredSize.width = 120
@@ -108,12 +92,14 @@ final class ContainerDisplayNode: ASDisplayNode {
         $0.style.preferredSize.width = 120
     }
     
-    let tableNode = ASTableNode(style: .plain).then {
+    let tableNode = ASAwareTableNode(style: .plain).then {
         $0.view.panGestureRecognizer.allowedTouchTypes = [NSNumber(value: UITouchType.direct.rawValue)]
         $0.view.tableFooterView = UIView()
         $0.view.backgroundColor = .yellow
         $0.style.flexGrow = 1
     }
+    
+    let idleSubject = PublishSubject<Void>()
     
     override init() {
         super.init()
@@ -149,11 +135,9 @@ final class ContainerDisplayNode: ASDisplayNode {
         let insetSpec = ASInsetLayoutSpec(insets: UIEdgeInsets(top: 20, left: 0, bottom: 0, right: 0), child: mainStack)
         return insetSpec
     }
-    
 }
 
 final class ASHomeViewController: ASViewController<ContainerDisplayNode>, ReactorKit.View {
-
     var disposeBag: DisposeBag = DisposeBag()
     let dataSource: RxASTableReloadDataSource<ConsultationPageSection>
     let containerNode = ContainerDisplayNode()
@@ -164,12 +148,9 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
         
         let configureCell: RxASTableReloadDataSource<ConsultationPageSection>.ConfigureCellBlock = { (ds, tableNode, index, item) in
             return { () -> ASCellNode in
-                let cellNode = ASCellNode(viewBlock: { () -> UIView in
-                    let view = ASMedicalTermCellNode()
-                    view.configure(with: "\(item.medicalTerm.name ?? "Empty") (\(index.section), \(index.row))", and: [])
-                    return view
-                })
-                cellNode.style.preferredSize = CGSize(width: Float.greatestFiniteMagnitude, height: item.height)
+                let cellNode = ASMedicalTermCellNode(height: item.height.cgFloat)
+                cellNode.configure(with: "\(item.medicalTerm.name ?? "Empty") (\(index.section), \(index.row))", and: [])
+                cellNode.selectionStyle = .none
                 return cellNode
             }
         }
@@ -185,11 +166,7 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    // MARK: Layout
-    
-    
-    
+
     // MARK: Bindings
     
     func bind(reactor: HomeViewModel) {
@@ -203,30 +180,30 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
-        containerNode.selectSymptomButtonNode.rx.tap
+        containerNode.selectSymptomButtonNode.rx
+            .tap
             .mapTo(.select(.symptoms))
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
-        containerNode.addSymptomButtonNode.rx.tap
+        containerNode.addSymptomButtonNode.rx
+            .tap
             .map { _ in
-                let heightsArray = [50, 100, 150]
-                let randomHeightIndex = Int(arc4random_uniform(UInt32(heightsArray.count)))
-                return .add(ConsultationRow(height: Float(heightsArray[randomHeightIndex]), medicalTerm: MedicalTerm(name: "Symptom", lines: [], medicalSection: .symptoms)))
+                return .add(ConsultationRow(height: 50, medicalTerm: MedicalTerm(name: "Symptom", lines: [], medicalSection: .symptoms)))
             }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
-        containerNode.selectDiagnosisButtonNode.rx.tap
+        containerNode.selectDiagnosisButtonNode.rx
+            .tap
             .mapTo(.select(.diagnoses))
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
-        containerNode.addDiagnosisButtonNode.rx.tap
+        containerNode.addDiagnosisButtonNode.rx
+            .tap
             .map { _ in
-                let heightsArray = [50, 100, 150]
-                let randomHeightIndex = Int(arc4random_uniform(UInt32(heightsArray.count)))
-                return .add(ConsultationRow(height: Float(heightsArray[randomHeightIndex]), medicalTerm: MedicalTerm(name: "Diagnosis", lines: [], medicalSection: .diagnoses)))
+                return .add(ConsultationRow(height: 50, medicalTerm: MedicalTerm(name: "Diagnosis", lines: [], medicalSection: .diagnoses)))
             }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
@@ -254,10 +231,10 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
         
         reactor.state.map { $0.focusedIndexPath }
             .unwrap()
-            .distinctUntilChanged()
-            .subscribe(onNext: { [weak self] indexPath in
+            .distinctUntilChanged { lhs, rhs in lhs.indexPath == rhs.indexPath }
+            .subscribe(onNext: { [weak self] (result) in
                 guard let strongSelf = self else { return }
-                strongSelf.containerNode.tableNode.scrollToRow(at: indexPath, at: .top, animated: true)
+                strongSelf.containerNode.tableNode.scrollToRow(at: result.indexPath, at: result.scrollPosition, animated: true)
             })
             .disposed(by: disposeBag)
     }
@@ -295,7 +272,6 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
 }
 
 extension ASHomeViewController: ASTableDelegate {
-    
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 16
     }
@@ -305,5 +281,4 @@ extension ASHomeViewController: ASTableDelegate {
         view.backgroundColor = .gray
         return view
     }
-    
 }

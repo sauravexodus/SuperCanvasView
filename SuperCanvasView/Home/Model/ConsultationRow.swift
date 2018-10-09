@@ -10,13 +10,23 @@ import Foundation
 
 struct ConsultationRow {
     let id = UUID().uuidString
-    var height: Float
-    var medicalTerm: MedicalTerm
+    let height: Float
+    let medicalTerm: MedicalTerm
+    var needsHeader: Bool
+    var header: String? {
+        guard needsHeader else { return nil }
+        return medicalTerm.medicalSection.displayTitle
+    }
+    
+    init(height: Float, medicalTerm: MedicalTerm, needsHeader: Bool = false) {
+        self.height = height
+        self.medicalTerm = medicalTerm
+        self.needsHeader = needsHeader
+    }
 }
 
 extension ConsultationRow: Equatable { }
 
 func ==(lhs: ConsultationRow, rhs: ConsultationRow) -> Bool {
     return lhs.id == rhs.id
-//    return lhs.height == rhs.height && lhs.medicalSection == rhs.medicalSection
 }

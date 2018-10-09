@@ -13,6 +13,8 @@ final class ASMedicalTermCellNode: UIView {
     
     let titleLabel = UILabel().then {
         $0.textColor = .black
+        $0.textAlignment = .center
+        $0.sizeToFit()
     }
     
     let canvasView = CanvasView().then {
@@ -21,7 +23,14 @@ final class ASMedicalTermCellNode: UIView {
     }
     
     func configure(with text: String?, and lines: [Line]) {
-        titleLabel.text = text
+        if let `text` = text, text.contains("Symptom") {
+            self.backgroundColor = .red
+        } else if let `text` = text, text.contains("Diagnosis") {
+            self.backgroundColor = .blue
+        } else {
+            self.backgroundColor = .white
+        }
+        titleLabel.text = text ?? "Empty"
         canvasView.lines = lines
         addSubview(titleLabel)
         addSubview(canvasView)

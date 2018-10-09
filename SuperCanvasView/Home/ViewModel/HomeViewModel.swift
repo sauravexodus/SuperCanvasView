@@ -16,6 +16,7 @@ final class HomeViewModel: Reactor {
         case initialLoad
         case add(ConsultationRow)
         case deleteAll
+        case print([UIImage])
     }
     
     enum Mutation {
@@ -36,6 +37,7 @@ final class HomeViewModel: Reactor {
         case .initialLoad: return mutateInitialLoad()
         case let .add(consultationRow): return mutateAppendConsultationRow(consultationRow)
         case .deleteAll: return mutateInitialLoad()
+        case let .print(images): return mutatePrint(images: images)
         }
     }
     
@@ -90,34 +92,17 @@ final class HomeViewModel: Reactor {
         }
         return state
     }
-//    private func showPrint() {
-//        var images: [UIImage] = []
-//        for section in 0...tableView.numberOfSections - 1 {
-//            for row in 0...tableView.numberOfRows(inSection: section) - 1 {
-//                let indexPath = IndexPath(row: row, section: section)
-//                tableView.scrollToRow(at: indexPath, at: .top, animated: false)
-//                //                tableView.reloadData()
-//                //                tableView.setNeedsLayout()
-//                tableView.layoutIfNeeded()
-//                let cell = tableView.cellForRow(at: indexPath)
-//                cell?.swCapture { image in
-//                    guard let `image` = image else { return }
-//                    images.append(image)
-//                }
-//            }
-//        }
-//        printConsultation(images: images)
-//    }
-//
-//    private func printConsultation(images: [UIImage]) {
-//        let pi = UIPrintInfo(dictionary: nil)
-//        pi.outputType = .general
-//        pi.jobName = "JOB"
-//        pi.orientation = .portrait
-//        pi.duplex = .longEdge
-//        let pic = UIPrintInteractionController.shared
-//        pic.printInfo = pi
-//        pic.printingItems = images
-//        pic.present(animated: true)
-//    }
+
+    private func mutatePrint(images: [UIImage]) -> Observable<Mutation> {
+        let pi = UIPrintInfo(dictionary: nil)
+        pi.outputType = .general
+        pi.jobName = "JOB"
+        pi.orientation = .portrait
+        pi.duplex = .longEdge
+        let pic = UIPrintInteractionController.shared
+        pic.printInfo = pi
+        pic.printingItems = images
+        pic.present(animated: true)
+        return .empty()
+    }
 }

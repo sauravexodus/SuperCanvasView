@@ -15,6 +15,38 @@ import RxCocoa
 import RxGesture
 import RxASDataSources
 
+extension Reactive where Base: UIScrollView {
+    func swCapture() -> Observable<UIImage?> {
+        return Observable.create { [weak base] observer in
+            guard let strongBase = base else {
+                observer.onError(NSError.init(domain: "Failed to get base", code: 0, userInfo: nil))
+                return Disposables.create()
+            }
+            strongBase.swContentCapture({ (image) in
+                observer.onNext(image)
+                observer.onCompleted()
+            })
+            return Disposables.create()
+        }
+    }
+}
+
+extension Reactive where Base: UIView {
+    func swCapture() -> Observable<UIImage?> {
+        return Observable.create { [weak base] observer in
+            guard let strongBase = base else {
+                observer.onError(NSError.init(domain: "Failed to get base", code: 0, userInfo: nil))
+                return Disposables.create()
+            }
+            strongBase.swCapture({ (image) in
+                observer.onNext(image)
+                observer.onCompleted()
+            })
+            return Disposables.create()
+        }
+    }
+}
+
 extension CGSize {
     init(width: Float, height: Float) {
         self.init(width: CGFloat(width), height: CGFloat(height))
@@ -30,8 +62,8 @@ extension UIView {
 }
 
 extension Reactive where Base: ASDisplayNode {
-    var tap: ControlEvent<UITapGestureRecognizer> {
-        return base.view.rx.tapGesture()
+    var tap: Observable<UITapGestureRecognizer> {
+        return base.view.rx.tapGesture().when(.recognized)
     }
 }
 
@@ -109,8 +141,7 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
             return { () -> ASCellNode in
                 let cellNode = ASCellNode(viewBlock: { () -> UIView in
                     let view = ASMedicalTermCellNode()
-                    view.backgroundColor = .white
-                    view.configure(with: item.medicalSection.name, and: [])
+                    view.configure(with: "\(item.medicalSection.name ?? "Empty") (\(index.section), \(index.row))", and: [])
                     return view
                 })
                 cellNode.style.preferredSize = CGSize(width: Float.greatestFiniteMagnitude, height: item.height)
@@ -164,6 +195,15 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
             .mapTo(.deleteAll)
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
+        
+        containerNode.printButtonNode.rx.tap
+            .flatMap { [weak self] _ -> Observable<[UIImage]> in
+                guard let strongSelf = self  else { return .empty() }
+                return strongSelf.generateImages()
+            }
+            .map { .print($0) }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
     }
     
     private func bindState(reactor: HomeViewModel) {
@@ -172,6 +212,36 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
             .disposed(by: disposeBag)
     }
     
+    private func generateImages() -> Observable<[UIImage]> {
+        return Observable<Int>.interval(0.2, scheduler: MainScheduler.instance)
+            .take(containerNode.tableNode.numberOfSections)
+            .concatMap { [weak self] section -> Observable<UIImage?> in
+                guard let strongSelf = self else { return .just(nil) }
+                return Observable.from(Array(0...strongSelf.containerNode.tableNode.numberOfRows(inSection: section) - 1))
+                    .concatMap { row -> Observable<UIImage?> in
+                        let indexPath = IndexPath(row: row, section: section)
+                        strongSelf.containerNode.tableNode.scrollToRow(at: indexPath, at: .top, animated: true)
+                        let cell = strongSelf.containerNode.tableNode.cellForRow(at: indexPath)
+                        return cell?.contentView.rx.swCapture() ?? .just(nil)
+                    }
+                    .unwrap()
+                    .reduce([], accumulator: { images, image in
+                        var `images` = images
+                        images.append(image)
+                        return images
+                    })
+                    .map { $0.mergeToSingleImage() }
+            }
+            .unwrap()
+            .reduce([], accumulator: { images, page in
+                var `images` = images
+                images.append(page)
+                return images
+            })
+            .do(onDispose: { [weak self] in
+                self?.containerNode.tableNode.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
+            })
+    }
 }
 
 extension ASHomeViewController: ASTableDelegate {

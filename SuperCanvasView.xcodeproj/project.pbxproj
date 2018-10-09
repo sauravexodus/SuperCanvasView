@@ -17,6 +17,7 @@
 		7DC204172164D0B4007D93B7 /* CanvasCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DC204162164D0B4007D93B7 /* CanvasCell.swift */; };
 		7DFEBCFF216A2643000DB559 /* ASHomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DFEBCFE216A2643000DB559 /* ASHomeViewController.swift */; };
 		7DFEBD01216A28F7000DB559 /* ASMedicalTermCellNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DFEBD00216A28F7000DB559 /* ASMedicalTermCellNode.swift */; };
+		BAC096D5216CBF50004D78F0 /* Arrray+extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAC096D4216CBF50004D78F0 /* Arrray+extension.swift */; };
 		E12C7DF811C83565F03590AF /* Pods_SuperCanvasView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 616E2B50C7A3D46F97B4272D /* Pods_SuperCanvasView.framework */; };
 		FF1A4DDF216666F4003F8BBD /* PDFPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF1A4DDE216666F4003F8BBD /* PDFPage.swift */; };
 		FF1A4DE12168821B003F8BBD /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF1A4DE02168821B003F8BBD /* HomeViewModel.swift */; };
@@ -45,6 +46,7 @@
 		7DC204162164D0B4007D93B7 /* CanvasCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasCell.swift; sourceTree = "<group>"; };
 		7DFEBCFE216A2643000DB559 /* ASHomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASHomeViewController.swift; sourceTree = "<group>"; };
 		7DFEBD00216A28F7000DB559 /* ASMedicalTermCellNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASMedicalTermCellNode.swift; sourceTree = "<group>"; };
+		BAC096D4216CBF50004D78F0 /* Arrray+extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Arrray+extension.swift"; sourceTree = "<group>"; };
 		FF1A4DDE216666F4003F8BBD /* PDFPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFPage.swift; sourceTree = "<group>"; };
 		FF1A4DE02168821B003F8BBD /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		FF1A4DE221688373003F8BBD /* ConsultationPageSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ConsultationPageSection.swift; path = SuperCanvasView/Home/Model/ConsultationPageSection.swift; sourceTree = SOURCE_ROOT; };
@@ -105,6 +107,7 @@
 				7DC204022164C4C8007D93B7 /* LaunchScreen.storyboard */,
 				7DC204052164C4C8007D93B7 /* Info.plist */,
 				7DC204162164D0B4007D93B7 /* CanvasCell.swift */,
+				BAC096D4216CBF50004D78F0 /* Arrray+extension.swift */,
 			);
 			path = SuperCanvasView;
 			sourceTree = "<group>";
@@ -330,6 +333,7 @@
 				FF1A4DE321688373003F8BBD /* ConsultationPageSection.swift in Sources */,
 				7DFEBCFF216A2643000DB559 /* ASHomeViewController.swift in Sources */,
 				7DC203FA2164C4C6007D93B7 /* AppDelegate.swift in Sources */,
+				BAC096D5216CBF50004D78F0 /* Arrray+extension.swift in Sources */,
 				FF1A4DF22168CA47003F8BBD /* MedicalSection.swift in Sources */,
 				FF1A4DEE2168B04E003F8BBD /* MedicalTermRowCell.swift in Sources */,
 				FF1A4DE12168821B003F8BBD /* HomeViewModel.swift in Sources */,

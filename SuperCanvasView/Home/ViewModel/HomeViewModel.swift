@@ -46,7 +46,7 @@ final class HomeViewModel: Reactor {
     }
     
     private func mutateInitialLoad() -> Observable<Mutation> {
-        return .just(.setPages([ConsultationPageSection(items: [ConsultationRow(height: currentState.pageHeight, medicalTerm: MedicalTerm(name: nil, lines: [], medicalSection: .symptoms))], pageHeight: currentState.pageHeight)]))
+        return .just(.setPages([ConsultationPageSection(items: [ConsultationRow(height: currentState.pageHeight, medicalTerm: MedicalTerm(name: nil, lines: [], medicalSection: .symptoms), needsHeader: true)], pageHeight: currentState.pageHeight)]))
     }
     
     private func mutateSelectMedicalSection(_ medicalSection: MedicalTerm.MedicalSection) -> Observable<Mutation> {
@@ -68,19 +68,26 @@ final class HomeViewModel: Reactor {
                 return result + page.element.items.enumerated().map { offset, item in return (sectionIndex: page.offset, itemIndex: offset, item: item) }
             })
             .first { sectionIndex, itemIndex, item in item == consultationRow }
-            .map { sectionIndex, itemIndex, item in IndexPathWithScrollPosition(indexPath: IndexPath(row: itemIndex, section: sectionIndex), scrollPosition: .none) }
+            .map { sectionIndex, itemIndex, item in
+                IndexPathWithScrollPosition(indexPath: IndexPath(row: itemIndex, section: sectionIndex), scrollPosition: .none)
+        }
         guard let foundPath = indexPath else { return .empty() }
         return .concat(.just(.setPages(pages)), .just(.setFocusedIndexPath(foundPath)))
     }
     
     private func createPages(for consultationRows: [ConsultationRow], appending consultationRow: ConsultationRow) -> [ConsultationPageSection] {
         var consultationRows = consultationRows
+        var consultationRow = consultationRow
+        // set needs header if it is the first item of it's kind
+        consultationRow.needsHeader = !consultationRows.contains(where: { row in row.medicalTerm.medicalSection == consultationRow.medicalTerm.medicalSection })
+        // find index to insert the new row in
         let indexToInsert = consultationRows.reduce(consultationRows.count, { result, row in
             guard consultationRow.medicalTerm.medicalSection == row.medicalTerm.medicalSection else { return result }
             if let index = consultationRows.index(of: row) { return index + 1 }
             return result
         })
         consultationRows.insert(consultationRow, at: indexToInsert)
+        // create pages after inserting row
         let pages = consultationRows.reduce([], { result, row -> [ConsultationPageSection] in
             var result = result
             guard !result.isEmpty else { return [ConsultationPageSection(items: [row], pageHeight: currentState.pageHeight)] }
@@ -90,6 +97,7 @@ final class HomeViewModel: Reactor {
             lastPage.items += [row]
             return result + [lastPage]
         })
+        // pad the pages and return them
         return padPages(pages)
     }
     
@@ -115,9 +123,5 @@ final class HomeViewModel: Reactor {
             state.focusedIndexPath = indexPath
         }
         return state
-    }
-    
-    func transform(state: Observable<HomeViewModel.State>) -> Observable<HomeViewModel.State> {
-        return state.debug("State Emitted :)")
     }
 }

@@ -20,9 +20,12 @@ final class ASMedicalTermCellNode: UIView {
         $0.translatesAutoresizingMaskIntoConstraints = false
     }
     
-    func configure(with text: String?, and lines: [Line]) {
+    var headerText: String?
+    
+    func configure(with text: String?, and lines: [Line], headerText: String? = nil) {
         titleLabel.text = text
         canvasView.lines = lines
+        self.headerText = headerText
         addSubview(titleLabel)
         addSubview(canvasView)
         titleLabel.snp.remakeConstraints { make in

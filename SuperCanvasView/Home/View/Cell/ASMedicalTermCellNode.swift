@@ -67,12 +67,10 @@ final class ASMedicalTermCellNode: ASCellNode {
             .disposed(by: disposeBag)
 
         Observable.merge(tapObservable, canvasView.rx.pencilDidStopMoving)
-            .debug("Pencil Did Stop Moving")
             .bind(to: tableNode.endUpdateSubject)
             .disposed(by: disposeBag)
         
         tableNode.endUpdateSubject.debounce(1, scheduler: MainScheduler.instance)
-            .debug("End Updates")
             .subscribe(onNext: { [weak self] _ in
                 guard let strongSelf = self else { return }
                 UIView.setAnimationsEnabled(true)

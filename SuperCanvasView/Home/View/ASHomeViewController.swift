@@ -17,6 +17,12 @@ import RxASDataSources
 import RxViewController
 import Then
 
+extension Float {
+    var cgFloat: CGFloat {
+        return CGFloat(self)
+    }
+}
+
 extension CGSize {
     init(width: Float, height: Float) {
         self.init(width: CGFloat(width), height: CGFloat(height))
@@ -34,6 +40,12 @@ extension UIView {
 extension Reactive where Base: ASDisplayNode {
     var tap: Observable<UITapGestureRecognizer> {
         return base.view.rx.tapGesture().when(.recognized)
+    }
+}
+
+extension Reactive where Base: ASTableNode {
+    var didEndUpdates: Observable<Void> {
+        return methodInvoked(#selector(base.view.endUpdates(animated:completion:))).mapTo(())
     }
 }
 
@@ -129,20 +141,14 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
     init(viewModel: HomeViewModel) {
         defer { self.reactor = viewModel }
         
-        let configureCell: RxASTableReloadDataSource<ConsultationPageSection>.ConfigureCellBlock = { (ds, tableNode, index, item) in
-            return { () -> ASCellNode in
-                let cellNode = ASCellNode(viewBlock: { () -> UIView in
-                    let view = ASMedicalTermCellNode()
-                    view.backgroundColor = .white
-                    view.configure(with: item.medicalTerm.name, and: [])
-                    return view
-                })
-                cellNode.style.preferredSize = CGSize(width: Float.greatestFiniteMagnitude, height: item.height)
-                return cellNode
-            }
+        let configureCell: RxASTableReloadDataSource<ConsultationPageSection>.ConfigureCell = { (ds, tableNode, index, item) in
+            let cellNode = ASMedicalTermCellNode(height: item.height.cgFloat)
+            cellNode.configure(with: item.medicalTerm.name, and: [])
+            cellNode.selectionStyle = .none
+            return cellNode
         }
         
-        dataSource = RxASTableReloadDataSource(configureCellBlock: configureCell)
+        dataSource = RxASTableReloadDataSource(configureCell: configureCell)
 
         super.init(node: containerNode)
         containerNode.frame = self.view.bounds
@@ -167,12 +173,14 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
-        containerNode.selectSymptomButtonNode.rx.tap
+        containerNode.selectSymptomButtonNode.rx
+            .tap
             .mapTo(.select(.symptoms))
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
-        containerNode.addSymptomButtonNode.rx.tap
+        containerNode.addSymptomButtonNode.rx
+            .tap
             .map { _ in
                 let heightsArray = [50, 100, 150]
                 let randomHeightIndex = Int(arc4random_uniform(UInt32(heightsArray.count)))
@@ -181,12 +189,14 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
-        containerNode.selectDiagnosisButtonNode.rx.tap
+        containerNode.selectDiagnosisButtonNode.rx
+            .tap
             .mapTo(.select(.diagnoses))
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
-        containerNode.addDiagnosisButtonNode.rx.tap
+        containerNode.addDiagnosisButtonNode.rx
+            .tap
             .map { _ in
                 let heightsArray = [50, 100, 150]
                 let randomHeightIndex = Int(arc4random_uniform(UInt32(heightsArray.count)))
@@ -215,6 +225,11 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
                 strongSelf.containerNode.tableNode.scrollToRow(at: result.indexPath, at: result.scrollPosition, animated: true)
             })
             .disposed(by: disposeBag)
+        
+        containerNode.tableNode.rx.didEndUpdates.subscribe(onNext: {
+            print("End updates")
+        })
+        .disposed(by: disposeBag)
     }
 }
 

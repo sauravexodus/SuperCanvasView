@@ -17,36 +17,6 @@ import RxASDataSources
 import RxViewController
 import Then
 
-extension Float {
-    var cgFloat: CGFloat {
-        return CGFloat(self)
-    }
-}
-
-extension CGSize {
-    init(width: Float, height: Float) {
-        self.init(width: CGFloat(width), height: CGFloat(height))
-    }
-}
-
-extension UIView {
-    var asNode: ASDisplayNode {
-        return ASDisplayNode.init(viewBlock: { () -> UIView in
-            return self
-        }, didLoad: nil)
-    }
-}
-
-extension Reactive where Base: ASDisplayNode {
-    var tap: Observable<UITapGestureRecognizer> {
-        return base.view.rx.tapGesture().when(.recognized)
-    }
-    
-    func tapGesture(configuration: TapConfiguration?) -> Observable<UITapGestureRecognizer> {
-        return base.view.rx.tapGesture(configuration: configuration).when(.recognized)
-    }
-}
-
 final class ASDisplayNodeWithBackgroundColor: ASDisplayNode {
     
     init(color: UIColor) {

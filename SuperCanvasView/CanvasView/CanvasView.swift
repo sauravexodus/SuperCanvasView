@@ -494,7 +494,7 @@ extension Reactive where Base: CanvasView {
     }
 
     var pencilTouchDidNearBottom: Observable<Void> {
-        let began = self.methodInvoked(#selector(Base.touchesBegan(_:with:))).map { $0[0] as? Set<UITouch> }
+        let began: Observable<CGFloat> = self.methodInvoked(#selector(Base.touchesBegan(_:with:))).map { $0[0] as? Set<UITouch> }
             .unwrap()
             .filter { [weak base] touches in
                 guard let base = base else { return false }
@@ -505,9 +505,10 @@ extension Reactive where Base: CanvasView {
                 }
                 return false
             }
-            .mapTo(())
+            .map { [weak base] touches in touches.map { $0.location(in: base).y }.sorted().last }
+            .unwrap()
         
-        let moved = self.methodInvoked(#selector(Base.touchesMoved(_:with:))).map { $0[0] as? Set<UITouch> }
+        let moved: Observable<CGFloat> = self.methodInvoked(#selector(Base.touchesMoved(_:with:))).map { $0[0] as? Set<UITouch> }
             .unwrap()
             .filter { [weak base] touches in
                 guard let base = base else { return false }
@@ -518,9 +519,10 @@ extension Reactive where Base: CanvasView {
                 }
                 return false
             }
-            .mapTo(())
+            .map { [weak base] touches in touches.map { $0.location(in: base).y }.sorted().last }
+            .unwrap()
         
-        return .merge(began, moved)
+        return Observable.merge(began, moved).distinctUntilChanged().mapTo(())
     }
     
     var pencilDidStopMoving: Observable<Void> {

@@ -20,14 +20,21 @@ final class ASMedicalTermCellNode: ASCellNode {
     let canvasNode = ASDisplayNode {
         CanvasView().then { $0.backgroundColor = .clear }
     }
+
+    let headerTextNode = ASTextNode().then {
+        $0.maximumNumberOfLines = 0
+        $0.backgroundColor = .darkGray
+    }
     
     var height: CGFloat
+    var headerText: String?
     let disposeBag = DisposeBag()
     
     // MARK: Init methods
     
-    init(height: CGFloat) {
+    init(height: CGFloat, headerText: String? = nil) {
         self.height = height
+        self.headerText = headerText
         super.init()
         backgroundColor = .white
         style.preferredSize.height = height
@@ -44,7 +51,7 @@ final class ASMedicalTermCellNode: ASCellNode {
             .subscribe(onNext: { [weak self] _ in
                 guard let strongSelf = self else { return }
                 UIView.setAnimationsEnabled(false)
-                strongSelf.style.preferredSize.height += 200
+                strongSelf.style.preferredSize.height = canvasView.highestY + 200
                 strongSelf.transitionLayout(withAnimation: false, shouldMeasureAsync: false) {
                     canvasView.setNeedsDisplay()
                 }
@@ -68,7 +75,7 @@ final class ASMedicalTermCellNode: ASCellNode {
             })
             .disposed(by: disposeBag)
     }
-    
+
     func configure(with text: String?, and lines: [Line]) {
         titleTextNode.attributedText = NSAttributedString(string: text ?? "", attributes: [NSAttributedStringKey.foregroundColor: UIColor.darkGray])
     }

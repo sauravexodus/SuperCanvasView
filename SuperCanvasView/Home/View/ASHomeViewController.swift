@@ -219,10 +219,10 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
         
         reactor.state.map { $0.focusedIndexPath }
             .unwrap()
-            .distinctUntilChanged()
-            .subscribe(onNext: { [weak self] indexPath in
+            .distinctUntilChanged { lhs, rhs in lhs.indexPath == rhs.indexPath }
+            .subscribe(onNext: { [weak self] (result) in
                 guard let strongSelf = self else { return }
-                strongSelf.containerNode.tableNode.scrollToRow(at: indexPath, at: .top, animated: true)
+                strongSelf.containerNode.tableNode.scrollToRow(at: result.indexPath, at: result.scrollPosition, animated: true)
             })
             .disposed(by: disposeBag)
     }

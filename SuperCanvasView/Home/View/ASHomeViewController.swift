@@ -43,6 +43,12 @@ extension Reactive where Base: ASDisplayNode {
     }
 }
 
+extension Reactive where Base: ASTableNode {
+    var didEndUpdates: Observable<Void> {
+        return methodInvoked(#selector(base.view.endUpdates(animated:completion:))).mapTo(())
+    }
+}
+
 final class ASDisplayNodeWithBackgroundColor: ASDisplayNode {
     
     init(color: UIColor) {
@@ -135,16 +141,14 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
     init(viewModel: HomeViewModel) {
         defer { self.reactor = viewModel }
         
-        let configureCell: RxASTableReloadDataSource<ConsultationPageSection>.ConfigureCellBlock = { (ds, tableNode, index, item) in
-            return { () -> ASCellNode in
-                let cellNode = ASMedicalTermCellNode(height: item.height.cgFloat)
-                cellNode.configure(with: item.medicalTerm.name, and: [])
-                cellNode.selectionStyle = .none
-                return cellNode
-            }
+        let configureCell: RxASTableReloadDataSource<ConsultationPageSection>.ConfigureCell = { (ds, tableNode, index, item) in
+            let cellNode = ASMedicalTermCellNode(height: item.height.cgFloat)
+            cellNode.configure(with: item.medicalTerm.name, and: [])
+            cellNode.selectionStyle = .none
+            return cellNode
         }
         
-        dataSource = RxASTableReloadDataSource(configureCellBlock: configureCell)
+        dataSource = RxASTableReloadDataSource(configureCell: configureCell)
 
         super.init(node: containerNode)
         containerNode.frame = self.view.bounds
@@ -221,6 +225,11 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
                 strongSelf.containerNode.tableNode.scrollToRow(at: indexPath, at: .top, animated: true)
             })
             .disposed(by: disposeBag)
+        
+        containerNode.tableNode.rx.didEndUpdates.subscribe(onNext: {
+            print("End updates")
+        })
+        .disposed(by: disposeBag)
     }
 }
 

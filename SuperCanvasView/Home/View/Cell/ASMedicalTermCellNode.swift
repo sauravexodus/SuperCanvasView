@@ -32,7 +32,7 @@ final class ASMedicalTermCellNode: ASCellNode {
         backgroundColor = .white
         style.preferredSize.height = height
         automaticallyManagesSubnodes = true
-        shouldAnimateSizeChanges = true
+        canvasNode.style.preferredSize.height = height
     }
     
     // MARK: Instance methods
@@ -40,20 +40,26 @@ final class ASMedicalTermCellNode: ASCellNode {
     override func didLoad() {
         guard let canvasView = canvasNode.view as? CanvasView else { return }
         canvasView.rx.pencilTouchDidNearBottom
-            .debug("Highest Y", trimOutput: true)
+            .throttle(3, scheduler: MainScheduler.instance)
             .subscribe(onNext: { [weak self] _ in
                 guard let strongSelf = self else { return }
+                UIView.setAnimationsEnabled(false)
                 strongSelf.style.preferredSize.height += 200
-                strongSelf.transitionLayout(withAnimation: true, shouldMeasureAsync: true)
+                strongSelf.transitionLayout(withAnimation: false, shouldMeasureAsync: false) {
+                    canvasView.setNeedsDisplay()
+                }
             })
             .disposed(by: disposeBag)
-        
-        canvasView.rx.pencilDidStopMoving
-            .debug("Highest Y", trimOutput: true)
+
+        canvasView.rx.pencilTouchEnded
+            .debounce(2, scheduler: MainScheduler.instance)
             .subscribe(onNext: { [weak self] _ in
                 guard let strongSelf = self else { return }
-                strongSelf.style.preferredSize.height = max(300, canvasView.highestY + 50)
-                strongSelf.transitionLayout(withAnimation: true, shouldMeasureAsync: true)
+                UIView.setAnimationsEnabled(true)
+                strongSelf.style.preferredSize.height = max(strongSelf.titleTextNode.frame.height, canvasView.highestY + 2)
+                strongSelf.transitionLayout(withAnimation: false, shouldMeasureAsync: true) {
+                    canvasView.setNeedsDisplay()
+                }
             })
             .disposed(by: disposeBag)
     }
@@ -66,14 +72,12 @@ final class ASMedicalTermCellNode: ASCellNode {
     
     override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
         let insets = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
-        canvasNode.style.preferredSize = CGSize(width: .greatestFiniteMagnitude, height: height)
+        let relativeSpec = ASRelativeLayoutSpec(horizontalPosition: .start, verticalPosition: .start, sizingOption: [], child: titleTextNode)
         return ASOverlayLayoutSpec(
-            child: ASInsetLayoutSpec(insets: insets, child: titleTextNode),
+            child: ASInsetLayoutSpec(insets: insets, child: relativeSpec),
             overlay: canvasNode
         )
     }
     
-    override func animateLayoutTransition(_ context: ASContextTransitioning) {
-        super.animateLayoutTransition(context)
-    }
+    override func animateLayoutTransition(_ context: ASContextTransitioning) {}
 }

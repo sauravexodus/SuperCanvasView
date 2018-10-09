@@ -526,7 +526,6 @@ extension Reactive where Base: CanvasView {
     var pencilDidStopMoving: Observable<Void> {
         return Observable
             .merge(pencilTouchStartedOrMoved, pencilTouchEnded)
-            .timeoutNoError(0.85, scheduler: MainScheduler.instance)
     }
 }
 

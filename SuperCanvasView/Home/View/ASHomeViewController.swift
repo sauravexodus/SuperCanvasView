@@ -43,12 +43,6 @@ extension Reactive where Base: ASDisplayNode {
     }
 }
 
-extension Reactive where Base: ASTableNode {
-    var didEndUpdates: Observable<Void> {
-        return methodInvoked(#selector(base.view.endUpdates(animated:completion:))).mapTo(())
-    }
-}
-
 final class ASDisplayNodeWithBackgroundColor: ASDisplayNode {
     
     init(color: UIColor) {
@@ -56,6 +50,10 @@ final class ASDisplayNodeWithBackgroundColor: ASDisplayNode {
         backgroundColor = color
     }
     
+}
+
+final class ASAwareTableNode: ASTableNode {
+    let endUpdateSubject = PublishSubject<Void>()
 }
 
 final class ContainerDisplayNode: ASDisplayNode {
@@ -89,12 +87,14 @@ final class ContainerDisplayNode: ASDisplayNode {
         $0.style.preferredSize.width = 120
     }
     
-    let tableNode = ASTableNode(style: .plain).then {
+    let tableNode = ASAwareTableNode(style: .plain).then {
         $0.view.panGestureRecognizer.allowedTouchTypes = [NSNumber(value: UITouchType.direct.rawValue)]
         $0.view.tableFooterView = UIView()
         $0.view.backgroundColor = .yellow
         $0.style.flexGrow = 1
     }
+    
+    let idleSubject = PublishSubject<Void>()
     
     override init() {
         super.init()
@@ -225,11 +225,6 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
                 strongSelf.containerNode.tableNode.scrollToRow(at: indexPath, at: .top, animated: true)
             })
             .disposed(by: disposeBag)
-        
-        containerNode.tableNode.rx.didEndUpdates.subscribe(onNext: {
-            print("End updates")
-        })
-        .disposed(by: disposeBag)
     }
 }
 

@@ -38,7 +38,7 @@ final class ASMedicalTermCellNode: ASCellNode {
     // MARK: Instance methods
     
     override func didLoad() {
-        guard let canvasView = canvasNode.view as? CanvasView else { return }
+        guard let canvasView = canvasNode.view as? CanvasView, let tableNode = owningNode as? ASAwareTableNode else { return }
         canvasView.rx.pencilTouchDidNearBottom
             .throttle(3, scheduler: MainScheduler.instance)
             .subscribe(onNext: { [weak self] _ in
@@ -51,8 +51,13 @@ final class ASMedicalTermCellNode: ASCellNode {
             })
             .disposed(by: disposeBag)
 
-        canvasView.rx.pencilTouchEnded
-            .debounce(2, scheduler: MainScheduler.instance)
+        canvasView.rx.pencilDidStopMoving
+            .debug("Pencil Did Stop Moving")
+            .bind(to: tableNode.endUpdateSubject)
+            .disposed(by: disposeBag)
+        
+        tableNode.endUpdateSubject.debounce(2, scheduler: MainScheduler.instance)
+            .debug("End Updates")
             .subscribe(onNext: { [weak self] _ in
                 guard let strongSelf = self else { return }
                 UIView.setAnimationsEnabled(true)

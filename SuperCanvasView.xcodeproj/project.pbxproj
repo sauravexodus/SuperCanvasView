@@ -363,13 +363,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = LJ5GB865HX;
+				DEVELOPMENT_TEAM = 39X2W7W8G7;
 				INFOPLIST_FILE = SuperCanvasView/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.doctalk.SuperCanvasView2;
+				PRODUCT_BUNDLE_IDENTIFIER = com.doctalk.SuperCanvasView;
 				PRODUCT_MODULE_NAME = "$(PRODUCT_NAME:c99extidentifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
@@ -497,13 +497,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = LJ5GB865HX;
+				DEVELOPMENT_TEAM = 39X2W7W8G7;
 				INFOPLIST_FILE = SuperCanvasView/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.doctalk.SuperCanvasView2;
+				PRODUCT_BUNDLE_IDENTIFIER = com.doctalk.SuperCanvasView;
 				PRODUCT_MODULE_NAME = "$(PRODUCT_NAME:c99extidentifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;

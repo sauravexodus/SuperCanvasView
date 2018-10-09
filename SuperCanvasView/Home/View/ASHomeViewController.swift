@@ -41,6 +41,10 @@ extension Reactive where Base: ASDisplayNode {
     var tap: Observable<UITapGestureRecognizer> {
         return base.view.rx.tapGesture().when(.recognized)
     }
+    
+    func tapGesture(configuration: TapConfiguration?) -> Observable<UITapGestureRecognizer> {
+        return base.view.rx.tapGesture(configuration: configuration).when(.recognized)
+    }
 }
 
 final class ASDisplayNodeWithBackgroundColor: ASDisplayNode {
@@ -141,14 +145,16 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
     init(viewModel: HomeViewModel) {
         defer { self.reactor = viewModel }
         
-        let configureCell: RxASTableReloadDataSource<ConsultationPageSection>.ConfigureCell = { (ds, tableNode, index, item) in
-            let cellNode = ASMedicalTermCellNode(height: item.height.cgFloat)
-            cellNode.configure(with: item.medicalTerm.name, and: [])
-            cellNode.selectionStyle = .none
-            return cellNode
+        let configureCell: RxASTableReloadDataSource<ConsultationPageSection>.ConfigureCellBlock = { (ds, tableNode, index, item) in
+            return { () -> ASCellNode in
+                let cellNode = ASMedicalTermCellNode(height: item.height.cgFloat)
+                cellNode.configure(with: item.medicalTerm.name, and: [])
+                cellNode.selectionStyle = .none
+                return cellNode
+            }
         }
         
-        dataSource = RxASTableReloadDataSource(configureCell: configureCell)
+        dataSource = RxASTableReloadDataSource(configureCellBlock: configureCell)
 
         super.init(node: containerNode)
         containerNode.frame = self.view.bounds
@@ -182,9 +188,7 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
         containerNode.addSymptomButtonNode.rx
             .tap
             .map { _ in
-                let heightsArray = [50, 100, 150]
-                let randomHeightIndex = Int(arc4random_uniform(UInt32(heightsArray.count)))
-                return .add(ConsultationRow(height: Float(heightsArray[randomHeightIndex]), medicalTerm: MedicalTerm(name: "Symptom", lines: [], medicalSection: .symptoms)))
+                return .add(ConsultationRow(height: 50, medicalTerm: MedicalTerm(name: "Symptom", lines: [], medicalSection: .symptoms)))
             }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
@@ -198,9 +202,7 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
         containerNode.addDiagnosisButtonNode.rx
             .tap
             .map { _ in
-                let heightsArray = [50, 100, 150]
-                let randomHeightIndex = Int(arc4random_uniform(UInt32(heightsArray.count)))
-                return .add(ConsultationRow(height: Float(heightsArray[randomHeightIndex]), medicalTerm: MedicalTerm(name: "Diagnosis", lines: [], medicalSection: .diagnoses)))
+                return .add(ConsultationRow(height: 50, medicalTerm: MedicalTerm(name: "Diagnosis", lines: [], medicalSection: .diagnoses)))
             }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)

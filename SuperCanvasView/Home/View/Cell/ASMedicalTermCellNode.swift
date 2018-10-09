@@ -46,8 +46,11 @@ final class ASMedicalTermCellNode: ASCellNode {
     
     override func didLoad() {
         guard let canvasView = canvasNode.view as? CanvasView, let tableNode = owningNode as? ASAwareTableNode else { return }
-        canvasView.rx.pencilTouchDidNearBottom
-            .throttle(3, scheduler: MainScheduler.instance)
+        let tapObservable = Observable.merge(rx.tapGesture(configuration: { gesture, _ in
+            gesture.allowedTouchTypes = [NSNumber(value: UITouchType.direct.rawValue)]
+        }))
+            .mapTo(())
+        Observable.merge(tapObservable, canvasView.rx.pencilTouchDidNearBottom)
             .subscribe(onNext: { [weak self] _ in
                 guard let strongSelf = self else { return }
                 UIView.setAnimationsEnabled(false)
@@ -58,17 +61,17 @@ final class ASMedicalTermCellNode: ASCellNode {
             })
             .disposed(by: disposeBag)
 
-        canvasView.rx.pencilDidStopMoving
+        Observable.merge(tapObservable, canvasView.rx.pencilDidStopMoving)
             .debug("Pencil Did Stop Moving")
             .bind(to: tableNode.endUpdateSubject)
             .disposed(by: disposeBag)
         
-        tableNode.endUpdateSubject.debounce(2, scheduler: MainScheduler.instance)
+        tableNode.endUpdateSubject.debounce(1, scheduler: MainScheduler.instance)
             .debug("End Updates")
             .subscribe(onNext: { [weak self] _ in
                 guard let strongSelf = self else { return }
                 UIView.setAnimationsEnabled(true)
-                strongSelf.style.preferredSize.height = max(strongSelf.titleTextNode.frame.height, canvasView.highestY + 2)
+                strongSelf.style.preferredSize.height = max(strongSelf.titleTextNode.frame.height, canvasView.highestY + 2, 50)
                 strongSelf.transitionLayout(withAnimation: false, shouldMeasureAsync: true) {
                     canvasView.setNeedsDisplay()
                 }

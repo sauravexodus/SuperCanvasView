@@ -17,7 +17,7 @@ final class HomeViewModel: Reactor {
     enum Action {
         case initialLoad
         case select(MedicalTerm.MedicalSection)
-        case add(ConsultationRow)
+        case add(MedicalTerm)
         case deleteAll
     }
     
@@ -40,7 +40,7 @@ final class HomeViewModel: Reactor {
         switch action {
         case .initialLoad: return mutateInitialLoad()
         case let .select(medicalSection): return mutateSelectMedicalSection(medicalSection)
-        case let .add(consultationRow): return mutateAppendConsultationRow(consultationRow)
+        case let .add(medicalTerm): return mutateAppendMedicalTerm(medicalTerm)
         case .deleteAll: return mutateInitialLoad()
         }
     }
@@ -65,7 +65,6 @@ extension HomeViewModel {
     }
     
     private func mutateSelectMedicalSection(_ medicalSection: MedicalTerm.MedicalSection) -> Observable<Mutation> {
-        
         let indexPath = currentState.pages.enumerated()
             .reduce([], { result, page in
                 return result + page.element.items.enumerated().map { offset, item in return (sectionIndex: page.offset, itemIndex: offset, item: item) }
@@ -78,16 +77,14 @@ extension HomeViewModel {
                     indexPath: IndexPath(row: itemIndex, section: sectionIndex),
                     scrollPosition: .top)
             }
-        
         guard let foundPath = indexPath else { return .empty() }
         return .just(.setFocusedIndexPath(foundPath))
     }
     
-    private func mutateAppendConsultationRow(_ consultationRow: ConsultationRow) -> Observable<Mutation> {
-        
+    private func mutateAppendMedicalTerm(_ medicalTerm: MedicalTerm) -> Observable<Mutation> {
         let consultationRows = currentState.pages.reduce([], { result, page in return result + page.items.filter { row in !row.medicalTerm.isPadder } })
+        let consultationRow = ConsultationRow(height: 50, medicalTerm: medicalTerm)
         let pages = createPages(for: consultationRows, appending: consultationRow)
-        
         let indexPath = pages.enumerated()
             .reduce([], { result, page in
                 return result + page.element.items.enumerated().map { offset, item in return (sectionIndex: page.offset, itemIndex: offset, item: item) }
@@ -98,7 +95,6 @@ extension HomeViewModel {
             .map { sectionIndex, itemIndex, item in
                 IndexPathWithScrollPosition(indexPath: IndexPath(row: itemIndex, section: sectionIndex), scrollPosition: .none)
             }
-        
         guard let foundPath = indexPath else { return .empty() }
         return .concat(.just(.setPages(pages)), .just(.setFocusedIndexPath(foundPath)))
     }
@@ -110,14 +106,15 @@ extension HomeViewModel {
     private func createPages(for consultationRows: [ConsultationRow], appending consultationRow: ConsultationRow) -> [ConsultationPageSection] {
         var consultationRows = consultationRows
         var consultationRow = consultationRow
-        // set needs header if it is the first item of it's kind
-        consultationRow.needsHeader = !consultationRows.contains(where: { row in row.medicalTerm.medicalSection == consultationRow.medicalTerm.medicalSection })
         // find index to insert the new row in
         let indexToInsert = consultationRows.reduce(consultationRows.count, { result, row in
             guard consultationRow.medicalTerm.medicalSection == row.medicalTerm.medicalSection else { return result }
             if let index = consultationRows.index(of: row) { return index + 1 }
             return result
         })
+        // set needs header if it is the first item of it's kind
+        consultationRow.needsHeader = indexToInsert == 0 || !(consultationRows[indexToInsert - 1].medicalTerm.medicalSection == consultationRow.medicalTerm.medicalSection)
+        // insert new medical term into consultation rows
         consultationRows.insert(consultationRow, at: indexToInsert)
         // create pages after inserting row
         let pages = consultationRows.reduce([], { result, row -> [ConsultationPageSection] in

@@ -18,12 +18,10 @@ import RxViewController
 import Then
 
 final class ASDisplayNodeWithBackgroundColor: ASDisplayNode {
-    
     init(color: UIColor) {
         super.init()
         backgroundColor = color
     }
-    
 }
 
 final class ASAwareTableNode: ASTableNode {
@@ -158,7 +156,7 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
         containerNode.addSymptomButtonNode.rx
             .tap
             .map { _ in
-                return .add(ConsultationRow(height: 50, medicalTerm: MedicalTerm(name: "Symptom", lines: [], medicalSection: .symptoms)))
+                return .add(MedicalTerm(name: "Symptom", lines: [], medicalSection: .symptoms))
             }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
@@ -172,7 +170,7 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
         containerNode.addDiagnosisButtonNode.rx
             .tap
             .map { _ in
-                return .add(ConsultationRow(height: 50, medicalTerm: MedicalTerm(name: "Diagnosis", lines: [], medicalSection: .diagnoses)))
+                return .add(MedicalTerm(name: "Diagnosis", lines: [], medicalSection: .diagnoses))
             }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)

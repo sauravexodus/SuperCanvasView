@@ -11,15 +11,20 @@ import Foundation
 struct ConsultationRow {
     let id = UUID().uuidString
     let height: Float
-    let medicalTerm: MedicalTerm
+    let lines: [Line]
+    let medicalTerm: MedicalTermType
     var needsHeader: Bool
     var header: String? {
         guard needsHeader else { return nil }
-        return medicalTerm.medicalSection.displayTitle
+        return medicalTerm.sectionOfSelf.displayTitle
     }
     
-    init(height: Float, medicalTerm: MedicalTerm, needsHeader: Bool = false) {
+    var isPadder: Bool {
+        return medicalTerm.name == nil && lines.isEmpty
+    }
+    init(height: Float, lines: [Line], medicalTerm: MedicalTermType, needsHeader: Bool = false) {
         self.height = height
+        self.lines = lines
         self.medicalTerm = medicalTerm
         self.needsHeader = needsHeader
     }

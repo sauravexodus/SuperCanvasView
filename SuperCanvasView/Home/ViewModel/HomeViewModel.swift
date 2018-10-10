@@ -22,6 +22,7 @@ final class HomeViewModel: Reactor {
         case add(MedicalTermType)
         case updateHeights([IndexPathWithHeight])
         case deleteAll
+        case print([UIImage])
     }
     
     enum Mutation {
@@ -45,6 +46,7 @@ final class HomeViewModel: Reactor {
         case let .updateHeights(newHeights): return mutateUpdateHeights(newHeights)
         case .deleteAll: return mutateInitialLoad()
         case let .updateLines(indexPath, lines): return mutateUpdatingLines(at: indexPath, lines: lines)
+        case let .print(images): return mutatePrint(images: images)
         }
     }
     
@@ -76,22 +78,38 @@ extension HomeViewModel {
     }
     
     private func mutateSelectMedicalSection(_ medicalSection: MedicalSection) -> Observable<Mutation> {
-        let indexPath = currentState.pages.enumerated()
+        let currentSectionItems = currentState.pages.enumerated()
             .reduce([], { result, page in
                 return result + page.element.items.enumerated().map { offset, item in
                     return (sectionIndex: page.offset, itemIndex: offset, item: item)
                 }
             })
-            .first { sectionIndex, itemIndex, item in
-                item.medicalTerm.sectionOfSelf == medicalSection
+            .filter {
+                sectionIndex, itemIndex, item in item.medicalTerm.sectionOfSelf == medicalSection
             }
-            .map { sectionIndex, itemIndex, _ in
-                IndexPathWithScrollPosition(
-                    indexPath: IndexPath(row: itemIndex, section: sectionIndex),
-                    scrollPosition: .top)
-            }
-        guard let foundPath = indexPath else { return .empty() }
-        return .just(.setFocusedIndexPath(foundPath))
+
+        guard let firstRow = currentSectionItems.first else { return .empty() }
+        guard let lastRow = currentSectionItems.last else { return .empty() }
+        var mutations: [Observable<Mutation>] = []
+        
+        if (lastRow.item.isPadder && lastRow.item.height < 50) || !lastRow.item.isPadder {
+            var medicalTerm = lastRow.item.medicalTerm
+            medicalTerm.name = nil
+            mutations.append(mutateAppendMedicalTerm(medicalTerm))
+        } else {
+            let consultationRows = currentState.pages.reduce([], { result, page in return result + page.items.filter { row in !row.isPadder } })
+            let pages = createPages(for: consultationRows)
+
+            mutations.append(.just(.setPages(pages)))
+        }
+        
+        let indexPath = IndexPathWithScrollPosition(
+            indexPath: IndexPath(row: firstRow.itemIndex, section: firstRow.sectionIndex),
+            scrollPosition: .top
+        )
+        
+        mutations.append(.just(.setFocusedIndexPath(indexPath)))
+        return Observable.concat(mutations)
     }
     
     private func mutateAppendMedicalTerm(_ medicalTerm: MedicalTermType) -> Observable<Mutation> {
@@ -122,6 +140,19 @@ extension HomeViewModel {
         let consultationRows = pages.reduce([], { result, page in return result + page.items.filter { row in !row.isPadder } })
         return .just(.setPages(createPages(for: consultationRows)))
     }
+    
+    private func mutatePrint(images: [UIImage]) -> Observable<Mutation> {
+        let pi = UIPrintInfo(dictionary: nil)
+        pi.outputType = .general
+        pi.jobName = "JOB"
+        pi.orientation = .portrait
+        pi.duplex = .longEdge
+        let pic = UIPrintInteractionController.shared
+        pic.printInfo = pi
+        pic.printingItems = images
+        pic.present(animated: true)
+        return .empty()
+    }
 }
 
 // MARK: Helpers
@@ -132,9 +163,7 @@ extension HomeViewModel {
         var consultationRow = consultationRow
         // find index to insert the new row in
         let indexToInsert = consultationRows.reduce(consultationRows.count, { result, row in
-            guard consultationRow.medicalTerm.sectionOfSelf == row.medicalTerm.sectionOfSelf else {
-                return result
-            }
+            guard consultationRow.medicalTerm.sectionOfSelf == row.medicalTerm.sectionOfSelf else { return result }
             if let index = consultationRows.index(of: row) { return index + 1 }
             return result
         })

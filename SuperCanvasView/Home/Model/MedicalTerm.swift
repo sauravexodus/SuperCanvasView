@@ -10,7 +10,7 @@ import Foundation
 
 protocol MedicalTermType {
     static var section: MedicalSection { get }
-    var name: String? { get }
+    var name: String? { get set }
     var hashValue: Int { get }
     
     init() // initialize as term with no content

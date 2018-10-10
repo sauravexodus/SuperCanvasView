@@ -31,6 +31,13 @@ func == (lhs: MedicalTermType, rhs: MedicalTermType) -> Bool {
 
 // MARK: Concrete Types
 
+// TODO: Remove this when using Swift 4.2
+extension MedicalTermType where Self: Hashable {
+    var hashValue: Int {
+        return name?.hashValue ?? 0
+    }
+}
+
 struct Symptom: MedicalTermType, Hashable {
     static let section: MedicalSection = .symptoms
     var name: String?

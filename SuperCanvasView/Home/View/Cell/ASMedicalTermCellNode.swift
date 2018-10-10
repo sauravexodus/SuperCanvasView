@@ -29,9 +29,20 @@ final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode wher
         $0.backgroundColor = .darkGray
     }
     
+    let editButtonNode = ASButtonNode().then {
+        $0.setTitle("EDIT", with: UIFont.systemFont(ofSize: 12, weight: .semibold), with: .black, for: .normal)
+        $0.contentEdgeInsets = UIEdgeInsets(top: 8, left: 12, bottom: 8, right: 12)
+    }
+    
+    let deleteButtonNode = ASButtonNode().then {
+        $0.setTitle("DELETE", with: UIFont.systemFont(ofSize: 12, weight: .semibold), with: .black, for: .normal)
+        $0.contentEdgeInsets = UIEdgeInsets(top: 8, left: 12, bottom: 8, right: 12)
+    }
+
     var header: String?
     let maximumHeight: CGFloat = 300
     let disposeBag = DisposeBag()
+    var item: ConsultationRow?
     
     // MARK: Init methods
     
@@ -45,6 +56,25 @@ final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode wher
     // MARK: Instance methods
     
     override func didLoad() {
+        setupStyles()
+        setupBindings()
+        setupCanvasExpanding()
+        setupCanvas()
+    }
+    
+    private func setupCanvas() {
+        guard let `item` = item, let canvasView = canvasNode.view as? CanvasView else { return }
+        canvasView.lines = item.lines
+        canvasView.setNeedsDisplay()
+        
+        canvasView.rx.lines.subscribe(onNext: { [weak self] lines in
+            guard let strongSelf = self else { return }
+            strongSelf.item?.lines = lines
+        })
+        .disposed(by: disposeBag)
+    }
+    
+    private func setupCanvasExpanding() {
         guard let canvasView = canvasNode.view as? CanvasView,
             let tableNode = owningNode as? ASAwareTableNode else { return }
         
@@ -62,7 +92,7 @@ final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode wher
                 self.expand()
             })
             .disposed(by: disposeBag)
-
+        
         Observable.merge(tapObservable, canvasView.rx.pencilDidStopMoving)
             .bind(to: tableNode.endUpdateSubject)
             .disposed(by: disposeBag)
@@ -75,40 +105,54 @@ final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode wher
             .disposed(by: disposeBag)
     }
     
+    private func setupBindings() {
+        editButtonNode.rx.tap
+            .subscribe(onNext: { _ in
+                print("Edit Tapped")
+            })
+            .disposed(by: disposeBag)
+        
+        deleteButtonNode.rx.tap
+            .subscribe(onNext: { _ in
+                print("Delete Tapped")
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    private func setupStyles() {
+        editButtonNode.layer.borderColor = UIColor.black.cgColor
+        editButtonNode.layer.borderWidth = 2
+        editButtonNode.layer.cornerRadius = 3
+        
+        deleteButtonNode.layer.borderColor = UIColor.black.cgColor
+        deleteButtonNode.layer.borderWidth = 2
+        deleteButtonNode.layer.cornerRadius = 3
+    }
+
     func configure(with item: ConsultationRow) {
         guard let term = item.medicalTerm as? ContentNode.RepresentationTarget else {
             print("Something has gone horribly, horribly awry...")
             return
         }
         header = item.header
-        style.preferredSize.height = .init(item.height)
+        style.preferredSize.height = min(CGFloat(max(CGFloat(item.height), item.lines.highestY ?? 0)), maximumHeight)
         canvasNode.style.preferredSize.height = .init(item.height)
         titleTextNode.attributedText = .init(string: term.name ?? "", attributes: [.foregroundColor: UIColor.darkGray])
         
         contentNode.configure(with: term)
+        self.item = item
     }
     
     // MARK: Lifecycle methods
     
     override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
-        let insets = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
-        let titleSpec = ASRelativeLayoutSpec(horizontalPosition: .start,
-                                                verticalPosition: .start,
-                                                sizingOption: [],
-                                                child: titleTextNode)
-
-        let contentSpec = ASRelativeLayoutSpec(horizontalPosition: .start,
-                                                verticalPosition: .start,
-                                                sizingOption: [],
-                                                child: contentNode)
-
-        let layoutspec = ASStackLayoutSpec.vertical()
-        layoutspec.children = [titleSpec, contentSpec]
-        
-        return ASOverlayLayoutSpec(
-            child: ASInsetLayoutSpec(insets: insets, child: titleSpec),
-            overlay: canvasNode
-        )
+        return [
+            titleTextNode.insets(.all(16)).relative(horizontalPosition: .start, verticalPosition: .start, sizingOption: []),
+            contentNode.relative(horizontalPosition: .start, verticalPosition: .start, sizingOption: [])
+            ]
+            .stacked(.vertical)
+            .overlayed(by: canvasNode)
+            .overlayed(by: [editButtonNode, deleteButtonNode].stacked(in: .horizontal, spacing: 16, justifyContent: .end, alignItems: .start).insets(.all(16)))
     }
     
     override func animateLayoutTransition(_ context: ASContextTransitioning) {
@@ -131,13 +175,23 @@ extension ASMedicalTermCellNode {
     
     func contract() {
         guard let canvasView = canvasNode.view as? CanvasView else { return }
-        let newHeight = min(style.preferredSize.height, max(titleTextNode.frame.height, canvasView.highestY + 2, 50))
+        let newHeight = min(max(titleTextNode.frame.height, item?.lines.highestY ?? 0 + 2, 50, deleteButtonNode.frame.height + 32, contentNode.frame.height), maximumHeight)
         style.preferredSize.height = newHeight
         transitionLayout(withAnimation: false, shouldMeasureAsync: true) {
             canvasView.setNeedsDisplay()
             if let indexPath = self.indexPath, let tableNode = self.owningNode as? ASAwareTableNode {
                 tableNode.endContractSubject.onNext(HomeViewModel.IndexPathWithHeight(indexPath: indexPath, height: newHeight))
             }
+        }
+    }
+}
+
+extension ASMedicalTermCellNode {
+    var linesChanged: Observable<(lines: [Line], indexPath: IndexPath)> {
+        guard let canvasView = canvasNode.view as? CanvasView else { return .empty() }
+        return canvasView.rx.lines.map { [unowned self] lines in
+            guard let indexPath = self.indexPath else { throw NSError(domain: "CanvasView", code: 0, userInfo: [NSLocalizedDescriptionKey: "Could not find indexPath"]) }
+            return (lines: lines, indexPath: indexPath)
         }
     }
 }

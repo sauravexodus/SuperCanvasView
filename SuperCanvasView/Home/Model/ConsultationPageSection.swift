@@ -12,6 +12,12 @@ import RxDataSources
 struct ConsultationPageSection {
     var items: [Item]
     var pageHeight: CGFloat
+    var id = UUID().uuidString
+    
+    init(items: [Item], pageHeight: CGFloat) {
+        self.items = items
+        self.pageHeight = pageHeight
+    }
     
     var usedHeight: CGFloat {
         return items.filter { item in !item.isPadder }.reduce(0, { result, item in result + item.height })
@@ -40,11 +46,24 @@ struct ConsultationPageSection {
     }
 }
 
-extension ConsultationPageSection: SectionModelType {
+extension ConsultationPageSection: AnimatableSectionModelType {
     typealias Item = ConsultationRow
+    typealias Identity = String
+    
+    var identity: String {
+        return id
+    }
     
     init(original: ConsultationPageSection, items: [Item]) {
         self = original
         self.items = items
+    }
+}
+
+extension ConsultationRow: IdentifiableType {
+    typealias Identity = String
+    
+    var identity: String {
+        return id
     }
 }

@@ -167,7 +167,7 @@ extension ASMedicalTermCellNode {
         guard let canvasView = canvasNode.view as? CanvasView else {
             return
         }
-        style.preferredSize.height = min(canvasView.highestY + 200, maximumHeight)
+        style.preferredSize.height = min(item?.lines.highestY ?? 0 + 200, maximumHeight)
         transitionLayout(withAnimation: false, shouldMeasureAsync: false) {
             canvasView.setNeedsDisplay()
         }

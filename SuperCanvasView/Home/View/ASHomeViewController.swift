@@ -200,7 +200,6 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
                     .startWith(false),
                 limit: 100)
             .map { .updateHeights($0) }
-
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         

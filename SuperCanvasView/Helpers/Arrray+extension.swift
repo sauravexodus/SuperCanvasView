@@ -1,5 +1,5 @@
 //
-//  UIImage+extension.swift
+//  Array+extension.swift
 //  SuperCanvasView
 //
 //  Created by Vamsee Chamakura on 09/10/18.

@@ -17,39 +17,6 @@ import RxASDataSources
 import RxViewController
 import Then
 
-extension Reactive where Base: UIScrollView {
-    func swCapture() -> Observable<UIImage?> {
-        return Observable.create { [weak base] observer in
-            guard let strongBase = base else {
-                observer.onError(NSError.init(domain: "Failed to get base", code: 0, userInfo: nil))
-                return Disposables.create()
-            }
-            strongBase.swContentCapture({ (image) in
-                observer.onNext(image)
-                observer.onCompleted()
-            })
-            return Disposables.create()
-        }
-    }
-}
-
-extension Reactive where Base: UIView {
-    func swCapture() -> Observable<UIImage?> {
-        return Observable.create { [weak base] observer in
-            guard let strongBase = base else {
-                observer.onError(NSError.init(domain: "Failed to get base", code: 0, userInfo: nil))
-                return Disposables.create()
-            }
-            strongBase.swCapture({ (image) in
-                observer.onNext(image)
-                observer.onCompleted()
-            })
-            return Disposables.create()
-        }
-    }
-}
-
-
 final class ASDisplayNodeWithBackgroundColor: ASDisplayNode {
     init(color: UIColor) {
         super.init()
@@ -228,7 +195,7 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
             .tap
             .flatMap { [weak self] _ -> Observable<[UIImage]> in
                 guard let strongSelf = self  else { return .empty() }
-                return strongSelf.generateImages()
+                return strongSelf.generatePages()
             }
             .map { .print($0) }
             .bind(to: reactor.action)
@@ -250,25 +217,12 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
             .disposed(by: disposeBag)
     }
     
-    private func generateImages() -> Observable<[UIImage]> {
+    private func generatePages() -> Observable<[UIImage]> {
         return Observable<Int>.interval(0.2, scheduler: MainScheduler.instance)
             .take(containerNode.tableNode.numberOfSections)
             .concatMap { [weak self] section -> Observable<UIImage?> in
                 guard let strongSelf = self else { return .just(nil) }
-                return Observable.from(Array(0...strongSelf.containerNode.tableNode.numberOfRows(inSection: section) - 1))
-                    .concatMap { row -> Observable<UIImage?> in
-                        let indexPath = IndexPath(row: row, section: section)
-                        strongSelf.containerNode.tableNode.scrollToRow(at: indexPath, at: .top, animated: true)
-                        let cell = strongSelf.containerNode.tableNode.cellForRow(at: indexPath)
-                        return cell?.contentView.rx.swCapture() ?? .just(nil)
-                    }
-                    .unwrap()
-                    .reduce([], accumulator: { images, image in
-                        var `images` = images
-                        images.append(image)
-                        return images
-                    })
-                    .map { $0.mergeToSingleImage() }
+                return strongSelf.captureSinglePage(section)
             }
             .unwrap()
             .reduce([], accumulator: { images, page in
@@ -279,6 +233,24 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
             .do(onDispose: { [weak self] in
                 self?.containerNode.tableNode.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
             })
+    }
+    
+    private func captureSinglePage(_ section: Int) -> Observable<UIImage?> {
+        return Observable.from(Array(0...containerNode.tableNode.numberOfRows(inSection: section) - 1))
+            .concatMap { [weak self] row -> Observable<UIImage?> in
+                guard let strongSelf = self else { return .just(nil) }
+                let indexPath = IndexPath(row: row, section: section)
+                strongSelf.containerNode.tableNode.scrollToRow(at: indexPath, at: .top, animated: true)
+                let cell = strongSelf.containerNode.tableNode.cellForRow(at: indexPath)
+                return cell?.contentView.rx.swCapture() ?? .just(nil)
+            }
+            .unwrap()
+            .reduce([], accumulator: { images, image in
+                var `images` = images
+                images.append(image)
+                return images
+            })
+            .map { $0.mergeToSingleImage() }
     }
 }
 

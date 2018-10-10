@@ -9,30 +9,34 @@
 /* Begin PBXBuildFile section */
 		05704475B95E7D35BD53184473FB68A2 /* CanvasView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CDF6E483FBB5955FBD6AAE91C66C8E8D /* CanvasView.swift */; };
 		099F6EC139402C90879C0FDF8F9F49D5 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60EE8825F387828E200971BCE0B2DB2B /* AppDelegate.swift */; };
+		0C8AC36C3E0531D53C3A574EB28808FE /* UIEdgeInsets+extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B8408238348AFE00B408D12DF3BB0BD /* UIEdgeInsets+extensions.swift */; };
 		152E229403718F2BFB2866381E478392 /* Pods_SuperCanvasView.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A577A35071FD9836AD9C2904F6B30174 /* Pods_SuperCanvasView.framework */; };
+		1DF82FCB877D003BD4FA0B04C19BCDC2 /* UIView+extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E4D303EB45142B60B74306D0A1B5A4F /* UIView+extensions.swift */; };
 		279B0FCABA4AE2445649A643B3E77015 /* MedicalTerm.swift in Sources */ = {isa = PBXBuildFile; fileRef = B18DCA121A2E903656C7988756DAAA19 /* MedicalTerm.swift */; };
 		2BD63062F615C0E019CD4908C62C946C /* Line.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5BED7C52289D80A62B95B0C952021488 /* Line.swift */; };
 		31C1A4B743788AEC65E535A88C994DB9 /* PDFPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B7EE83444C4A49CA8F4769BF8C1EDCF /* PDFPage.swift */; };
+		4070FCC78B80474FA576AE86694BFADA /* ASLayoutSpec+extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62E97A638EC2768DF47355C2CDA5450 /* ASLayoutSpec+extensions.swift */; };
 		4338832969589F7AC8D575E76DA7FFE6 /* UIView+Capture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ABE977715B0FDAF2433C93C2FC69A82 /* UIView+Capture.swift */; };
 		5204D069BD91314633190C1DABAE9729 /* ConsultationPageSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = D07FFA17D9AE8A9555A56A40D706252C /* ConsultationPageSection.swift */; };
 		67A469CC49FC75876E22E53FB71C38E2 /* ASHomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC29120EC3DE5785E8660B63F0FD3915 /* ASHomeViewController.swift */; };
+		7AAEE50E80509DD8C8395D2899586F0D /* MedicalSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB2BCC32160D6A5098E3FA2C40D1C18E /* MedicalSection.swift */; };
+		7DFEBD0C216E3F9B000DB559 /* Hashable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7DFEBD0B216E3F9B000DB559 /* Hashable.swift */; };
 		94E192DA7D5D0DCE2CC82238C1DF7DAF /* UIScrollView+Capture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451B7D26FD297BBE66F6B0DB9E95E277 /* UIScrollView+Capture.swift */; };
 		982CF99D8A0527878DC238F183FF1279 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5D4B7B67EB41F821C8C25B23F01FE83C /* Assets.xcassets */; };
 		AB90864BE77259AF0654B27216AB6CB6 /* WKWebView+Capture.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7A4B358B214252D8284B41F69BBA33A /* WKWebView+Capture.swift */; };
 		AE639C27C5E66689A39C85C0D1A047CE /* UIBezierPath+extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45A514AA0511D8EB536B182E7E307E8B /* UIBezierPath+extensions.swift */; };
-		BA27E562216E354B0077DB15 /* UIScrollView+extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA27E561216E354B0077DB15 /* UIScrollView+extensions.swift */; };
-		BABBB4D4216D1BB7002D8B83 /* Arrray+extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = BABBB4D3216D1BB7002D8B83 /* Arrray+extension.swift */; };
 		C48226222CDAF9B542076645F718778F /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C5DB4E931E4D96ECDD82324F6D664FC /* HomeViewModel.swift */; };
 		C7827C272517091E2CCAED622F6C810F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C318CE3D39793DC76B21BF7A520708D1 /* LaunchScreen.storyboard */; };
+		CA3FE5527984B2BD22482B501E49A68F /* ASDisplayNode+extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9E57D95AFC9E892EDA9AF1341C585B9 /* ASDisplayNode+extensions.swift */; };
 		D0D7C673A60B921651A67B85F97C738F /* ConsultationRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCFBE2251E720056AC847FA603F5C0B8 /* ConsultationRow.swift */; };
-		D46C18F4216D07D40033312E /* ObservableType+extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D46C18F3216D07D40033312E /* ObservableType+extensions.swift */; };
-		D46C18F6216D07F20033312E /* UIView+extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D46C18F5216D07F20033312E /* UIView+extensions.swift */; };
-		D4E68F61216D0DE300789347 /* UIKit+helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4E68F60216D0DE300789347 /* UIKit+helpers.swift */; };
-		D4E68F63216D0DFA00789347 /* ASDisplayNode+extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4E68F62216D0DFA00789347 /* ASDisplayNode+extensions.swift */; };
-		D4E68F65216E044100789347 /* MedicalSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4E68F64216E044100789347 /* MedicalSection.swift */; };
-		D4E68F67216E05A800789347 /* CellContentNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4E68F66216E05A800789347 /* CellContentNode.swift */; };
-		D4E68F69216E0A1E00789347 /* UIFont+extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4E68F68216E0A1D00789347 /* UIFont+extensions.swift */; };
 		FCFC864FA86EF209C44F27A91E7B9F8E /* ASMedicalTermCellNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3F9AF9D78978A62A892FF45D0E28AEE /* ASMedicalTermCellNode.swift */; };
+		FFF61F3F216E6E6A002294ED /* UIScrollView+extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFF61F38216E6E6A002294ED /* UIScrollView+extensions.swift */; };
+		FFF61F41216E6E6A002294ED /* Hashable.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFF61F3A216E6E6A002294ED /* Hashable.swift */; };
+		FFF61F44216E6E6A002294ED /* Array+extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFF61F3D216E6E6A002294ED /* Array+extension.swift */; };
+		FFF61F47216E6FB2002294ED /* UIKit+helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFF61F46216E6FB2002294ED /* UIKit+helpers.swift */; };
+		FFF61F49216E6FB8002294ED /* ObservableType+extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFF61F48216E6FB8002294ED /* ObservableType+extensions.swift */; };
+		FFF61F4B216E6FC9002294ED /* UIFont+extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFF61F4A216E6FC9002294ED /* UIFont+extensions.swift */; };
+		FFF61F4D216E6FDD002294ED /* CellContentNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFF61F4C216E6FDD002294ED /* CellContentNode.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,13 +44,16 @@
 		37355E13581DC354D76B994B28C4EE17 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		451B7D26FD297BBE66F6B0DB9E95E277 /* UIScrollView+Capture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScrollView+Capture.swift"; sourceTree = "<group>"; };
 		45A514AA0511D8EB536B182E7E307E8B /* UIBezierPath+extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIBezierPath+extensions.swift"; sourceTree = "<group>"; };
+		4E4D303EB45142B60B74306D0A1B5A4F /* UIView+extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+extensions.swift"; sourceTree = "<group>"; };
 		59260F0DE9961F6ADE255A1DE0CA5488 /* Pods-SuperCanvasView.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SuperCanvasView.release.xcconfig"; path = "Pods/Target Support Files/Pods-SuperCanvasView/Pods-SuperCanvasView.release.xcconfig"; sourceTree = "<group>"; };
 		5BED7C52289D80A62B95B0C952021488 /* Line.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Line.swift; sourceTree = "<group>"; };
 		5D4B7B67EB41F821C8C25B23F01FE83C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		60EE8825F387828E200971BCE0B2DB2B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		6B8408238348AFE00B408D12DF3BB0BD /* UIEdgeInsets+extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIEdgeInsets+extensions.swift"; sourceTree = "<group>"; };
 		711F304B985845E6140848240FC26BD2 /* SuperCanvasView.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SuperCanvasView.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		79FD0C4BBE37312BD01B24F413C99F8B /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		7C5DB4E931E4D96ECDD82324F6D664FC /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
+		7DFEBD0B216E3F9B000DB559 /* Hashable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Hashable.swift; sourceTree = "<group>"; };
 		8B7EE83444C4A49CA8F4769BF8C1EDCF /* PDFPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PDFPage.swift; sourceTree = "<group>"; };
 		8B881CB9FB04C4D2FE9D0FE0ED63487B /* Pods-SuperCanvasView.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-SuperCanvasView.debug.xcconfig"; path = "Pods/Target Support Files/Pods-SuperCanvasView/Pods-SuperCanvasView.debug.xcconfig"; sourceTree = "<group>"; };
 		A577A35071FD9836AD9C2904F6B30174 /* Pods_SuperCanvasView.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_SuperCanvasView.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -54,18 +61,21 @@
 		B7A4B358B214252D8284B41F69BBA33A /* WKWebView+Capture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WKWebView+Capture.swift"; sourceTree = "<group>"; };
 		BA27E561216E354B0077DB15 /* UIScrollView+extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScrollView+extensions.swift"; sourceTree = "<group>"; };
 		BABBB4D3216D1BB7002D8B83 /* Arrray+extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Arrray+extension.swift"; sourceTree = "<group>"; };
+		BB2BCC32160D6A5098E3FA2C40D1C18E /* MedicalSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicalSection.swift; sourceTree = "<group>"; };
 		BCFBE2251E720056AC847FA603F5C0B8 /* ConsultationRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsultationRow.swift; sourceTree = "<group>"; };
+		C62E97A638EC2768DF47355C2CDA5450 /* ASLayoutSpec+extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ASLayoutSpec+extensions.swift"; sourceTree = "<group>"; };
 		CDF6E483FBB5955FBD6AAE91C66C8E8D /* CanvasView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasView.swift; sourceTree = "<group>"; };
 		D07FFA17D9AE8A9555A56A40D706252C /* ConsultationPageSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ConsultationPageSection.swift; path = SuperCanvasView/Home/Model/ConsultationPageSection.swift; sourceTree = SOURCE_ROOT; };
 		D3F9AF9D78978A62A892FF45D0E28AEE /* ASMedicalTermCellNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ASMedicalTermCellNode.swift; path = Cell/ASMedicalTermCellNode.swift; sourceTree = "<group>"; };
-		D46C18F3216D07D40033312E /* ObservableType+extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ObservableType+extensions.swift"; sourceTree = "<group>"; };
-		D46C18F5216D07F20033312E /* UIView+extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+extensions.swift"; sourceTree = "<group>"; };
-		D4E68F60216D0DE300789347 /* UIKit+helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIKit+helpers.swift"; sourceTree = "<group>"; };
-		D4E68F62216D0DFA00789347 /* ASDisplayNode+extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ASDisplayNode+extensions.swift"; sourceTree = "<group>"; };
-		D4E68F64216E044100789347 /* MedicalSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicalSection.swift; sourceTree = "<group>"; };
-		D4E68F66216E05A800789347 /* CellContentNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CellContentNode.swift; sourceTree = "<group>"; };
-		D4E68F68216E0A1D00789347 /* UIFont+extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont+extensions.swift"; sourceTree = "<group>"; };
+		D9E57D95AFC9E892EDA9AF1341C585B9 /* ASDisplayNode+extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ASDisplayNode+extensions.swift"; sourceTree = "<group>"; };
 		DC29120EC3DE5785E8660B63F0FD3915 /* ASHomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASHomeViewController.swift; sourceTree = "<group>"; };
+		FFF61F38216E6E6A002294ED /* UIScrollView+extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIScrollView+extensions.swift"; sourceTree = "<group>"; };
+		FFF61F3A216E6E6A002294ED /* Hashable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Hashable.swift; sourceTree = "<group>"; };
+		FFF61F3D216E6E6A002294ED /* Array+extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Array+extension.swift"; sourceTree = "<group>"; };
+		FFF61F46216E6FB2002294ED /* UIKit+helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIKit+helpers.swift"; sourceTree = "<group>"; };
+		FFF61F48216E6FB8002294ED /* ObservableType+extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ObservableType+extensions.swift"; sourceTree = "<group>"; };
+		FFF61F4A216E6FC9002294ED /* UIFont+extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIFont+extensions.swift"; sourceTree = "<group>"; };
+		FFF61F4C216E6FDD002294ED /* CellContentNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CellContentNode.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,8 +110,9 @@
 		43C5449144A5A8A5BAE72738BB2087B6 /* SuperCanvasView */ = {
 			isa = PBXGroup;
 			children = (
+				7399144138DDFF1F9ECF9496BF218101 /* AsyncDisplayKit+extensions */,
 				908FD928C16193BA0C48E12C24745FAE /* CanvasView */,
-				D46C18F2216D07B80033312E /* Helpers */,
+				44076D21BECF27E50B6374887FEA749E /* Helpers */,
 				A49C5AE6949E9CAA4195802E44934E7B /* Home */,
 				4F781CA2A475AC0AE32C2E79EBD1114D /* ViewCapture */,
 				60EE8825F387828E200971BCE0B2DB2B /* AppDelegate.swift */,
@@ -110,6 +121,22 @@
 				C318CE3D39793DC76B21BF7A520708D1 /* LaunchScreen.storyboard */,
 			);
 			path = SuperCanvasView;
+			sourceTree = "<group>";
+		};
+		44076D21BECF27E50B6374887FEA749E /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				FFF61F4C216E6FDD002294ED /* CellContentNode.swift */,
+				FFF61F4A216E6FC9002294ED /* UIFont+extensions.swift */,
+				FFF61F48216E6FB8002294ED /* ObservableType+extensions.swift */,
+				FFF61F46216E6FB2002294ED /* UIKit+helpers.swift */,
+				FFF61F3D216E6E6A002294ED /* Array+extension.swift */,
+				FFF61F3A216E6E6A002294ED /* Hashable.swift */,
+				FFF61F38216E6E6A002294ED /* UIScrollView+extensions.swift */,
+				4E4D303EB45142B60B74306D0A1B5A4F /* UIView+extensions.swift */,
+				7DFEBD0B216E3F9B000DB559 /* Hashable.swift */,
+			);
+			path = Helpers;
 			sourceTree = "<group>";
 		};
 		4F781CA2A475AC0AE32C2E79EBD1114D /* ViewCapture */ = {
@@ -136,6 +163,16 @@
 				711F304B985845E6140848240FC26BD2 /* SuperCanvasView.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		7399144138DDFF1F9ECF9496BF218101 /* AsyncDisplayKit+extensions */ = {
+			isa = PBXGroup;
+			children = (
+				D9E57D95AFC9E892EDA9AF1341C585B9 /* ASDisplayNode+extensions.swift */,
+				C62E97A638EC2768DF47355C2CDA5450 /* ASLayoutSpec+extensions.swift */,
+				6B8408238348AFE00B408D12DF3BB0BD /* UIEdgeInsets+extensions.swift */,
+			);
+			path = "AsyncDisplayKit+extensions";
 			sourceTree = "<group>";
 		};
 		908FD928C16193BA0C48E12C24745FAE /* CanvasView */ = {
@@ -168,27 +205,12 @@
 			path = View;
 			sourceTree = "<group>";
 		};
-		D46C18F2216D07B80033312E /* Helpers */ = {
-			isa = PBXGroup;
-			children = (
-				BABBB4D3216D1BB7002D8B83 /* Arrray+extension.swift */,
-				D4E68F68216E0A1D00789347 /* UIFont+extensions.swift */,
-				D4E68F62216D0DFA00789347 /* ASDisplayNode+extensions.swift */,
-				D4E68F66216E05A800789347 /* CellContentNode.swift */,
-				D46C18F3216D07D40033312E /* ObservableType+extensions.swift */,
-				D4E68F60216D0DE300789347 /* UIKit+helpers.swift */,
-				D46C18F5216D07F20033312E /* UIView+extensions.swift */,
-				BA27E561216E354B0077DB15 /* UIScrollView+extensions.swift */,
-			);
-			path = Helpers;
-			sourceTree = "<group>";
-		};
 		F8014D0D9204D04AC63F0A5A24B7D632 /* Model */ = {
 			isa = PBXGroup;
 			children = (
 				D07FFA17D9AE8A9555A56A40D706252C /* ConsultationPageSection.swift */,
 				BCFBE2251E720056AC847FA603F5C0B8 /* ConsultationRow.swift */,
-				D4E68F64216E044100789347 /* MedicalSection.swift */,
+				BB2BCC32160D6A5098E3FA2C40D1C18E /* MedicalSection.swift */,
 				B18DCA121A2E903656C7988756DAAA19 /* MedicalTerm.swift */,
 			);
 			path = Model;
@@ -201,7 +223,17 @@
 				083B9ECAD5D0D7DCA4557E4710F4514A /* Pods */,
 				6EE663483F6F27A1439FFBBB5A41C01F /* Products */,
 				43C5449144A5A8A5BAE72738BB2087B6 /* SuperCanvasView */,
+				FFF61F32216E6D17002294ED /* Recovered References */,
 			);
+			sourceTree = "<group>";
+		};
+		FFF61F32216E6D17002294ED /* Recovered References */ = {
+			isa = PBXGroup;
+			children = (
+				BA27E561216E354B0077DB15 /* UIScrollView+extensions.swift */,
+				BABBB4D3216D1BB7002D8B83 /* Arrray+extension.swift */,
+			);
+			name = "Recovered References";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -297,6 +329,7 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-SuperCanvasView/Pods-SuperCanvasView-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/DeepDiff/DeepDiff.framework",
 				"${BUILT_PRODUCTS_DIR}/Differentiator/Differentiator.framework",
 				"${BUILT_PRODUCTS_DIR}/PINCache/PINCache.framework",
 				"${BUILT_PRODUCTS_DIR}/PINOperation/PINOperation.framework",
@@ -316,6 +349,7 @@
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/DeepDiff.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Differentiator.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PINCache.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/PINOperation.framework",
@@ -345,28 +379,32 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CA3FE5527984B2BD22482B501E49A68F /* ASDisplayNode+extensions.swift in Sources */,
+				7DFEBD0C216E3F9B000DB559 /* Hashable.swift in Sources */,
 				67A469CC49FC75876E22E53FB71C38E2 /* ASHomeViewController.swift in Sources */,
+				4070FCC78B80474FA576AE86694BFADA /* ASLayoutSpec+extensions.swift in Sources */,
 				FCFC864FA86EF209C44F27A91E7B9F8E /* ASMedicalTermCellNode.swift in Sources */,
-				BA27E562216E354B0077DB15 /* UIScrollView+extensions.swift in Sources */,
 				099F6EC139402C90879C0FDF8F9F49D5 /* AppDelegate.swift in Sources */,
-				D46C18F4216D07D40033312E /* ObservableType+extensions.swift in Sources */,
+				FFF61F4B216E6FC9002294ED /* UIFont+extensions.swift in Sources */,
+				FFF61F3F216E6E6A002294ED /* UIScrollView+extensions.swift in Sources */,
 				05704475B95E7D35BD53184473FB68A2 /* CanvasView.swift in Sources */,
-				D4E68F67216E05A800789347 /* CellContentNode.swift in Sources */,
 				5204D069BD91314633190C1DABAE9729 /* ConsultationPageSection.swift in Sources */,
-				D4E68F61216D0DE300789347 /* UIKit+helpers.swift in Sources */,
 				D0D7C673A60B921651A67B85F97C738F /* ConsultationRow.swift in Sources */,
 				C48226222CDAF9B542076645F718778F /* HomeViewModel.swift in Sources */,
 				2BD63062F615C0E019CD4908C62C946C /* Line.swift in Sources */,
+				FFF61F4D216E6FDD002294ED /* CellContentNode.swift in Sources */,
+				7AAEE50E80509DD8C8395D2899586F0D /* MedicalSection.swift in Sources */,
 				279B0FCABA4AE2445649A643B3E77015 /* MedicalTerm.swift in Sources */,
-				D46C18F6216D07F20033312E /* UIView+extensions.swift in Sources */,
-				D4E68F69216E0A1E00789347 /* UIFont+extensions.swift in Sources */,
 				31C1A4B743788AEC65E535A88C994DB9 /* PDFPage.swift in Sources */,
 				AE639C27C5E66689A39C85C0D1A047CE /* UIBezierPath+extensions.swift in Sources */,
-				D4E68F63216D0DFA00789347 /* ASDisplayNode+extensions.swift in Sources */,
+				FFF61F41216E6E6A002294ED /* Hashable.swift in Sources */,
+				0C8AC36C3E0531D53C3A574EB28808FE /* UIEdgeInsets+extensions.swift in Sources */,
 				94E192DA7D5D0DCE2CC82238C1DF7DAF /* UIScrollView+Capture.swift in Sources */,
+				FFF61F47216E6FB2002294ED /* UIKit+helpers.swift in Sources */,
+				FFF61F49216E6FB8002294ED /* ObservableType+extensions.swift in Sources */,
 				4338832969589F7AC8D575E76DA7FFE6 /* UIView+Capture.swift in Sources */,
-				BABBB4D4216D1BB7002D8B83 /* Arrray+extension.swift in Sources */,
-				D4E68F65216E044100789347 /* MedicalSection.swift in Sources */,
+				FFF61F44216E6E6A002294ED /* Array+extension.swift in Sources */,
+				1DF82FCB877D003BD4FA0B04C19BCDC2 /* UIView+extensions.swift in Sources */,
 				AB90864BE77259AF0654B27216AB6CB6 /* WKWebView+Capture.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

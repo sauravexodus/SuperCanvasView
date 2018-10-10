@@ -32,7 +32,7 @@ extension UIFont {
 extension UIFont {
     // Mirrored from values provided here: https://developer.apple.com/design/human-interface-guidelines/ios/visual-design/typography/
     
-    private class func preferredCompactPrintFont(forTextStyle style: UIFont.TextStyle) -> UIFont {
+    private class func preferredCompactPrintFont(forTextStyle style: UIFontTextStyle) -> UIFont {
         switch style {
         case .largeTitle:
             return UIFont.systemFont(ofSize: 32, weight: .regular)
@@ -61,7 +61,7 @@ extension UIFont {
         }
     }
     
-    private class func preferredRegularPrintFont(forTextStyle style: UIFont.TextStyle) -> UIFont {
+    private class func preferredRegularPrintFont(forTextStyle style: UIFontTextStyle) -> UIFont {
         switch style {
         case .largeTitle:
             return UIFont.systemFont(ofSize: 34, weight: .regular)
@@ -90,7 +90,7 @@ extension UIFont {
         }
     }
     
-    private class func preferredComfortablePrintFont(forTextStyle style: UIFont.TextStyle) -> UIFont {
+    private class func preferredComfortablePrintFont(forTextStyle style: UIFontTextStyle) -> UIFont {
         switch style {
         case .largeTitle:
             return UIFont.systemFont(ofSize: 38, weight: .regular)
@@ -119,7 +119,7 @@ extension UIFont {
         }
     }
     
-    class func preferredPrintFont(forTextStyle style: UIFont.TextStyle) -> UIFont {
+    class func preferredPrintFont(forTextStyle style: UIFontTextStyle) -> UIFont {
         switch PrintFontSetting.current {
         case .compact:
             return preferredCompactPrintFont(forTextStyle: style)

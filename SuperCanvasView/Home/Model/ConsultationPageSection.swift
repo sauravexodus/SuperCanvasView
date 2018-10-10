@@ -11,9 +11,15 @@ import RxDataSources
 
 struct ConsultationPageSection {
     var items: [Item]
-    var pageHeight: Float
+    var pageHeight: CGFloat
+    var id = UUID().uuidString
     
-    var usedHeight: Float {
+    init(items: [Item], pageHeight: CGFloat) {
+        self.items = items
+        self.pageHeight = pageHeight
+    }
+    
+    var usedHeight: CGFloat {
         return items.filter { item in !item.isPadder }.reduce(0, { result, item in result + item.height })
     }
     
@@ -22,10 +28,7 @@ struct ConsultationPageSection {
     }
     
     var nextPage: ConsultationPageSection? {
-        guard pageHeight - usedHeight <= 70, let lastItem = items.last else {
-            return nil
-        }
-        
+        guard pageHeight - usedHeight <= 70, let lastItem = items.last else { return nil }
         return ConsultationPageSection(items: [ConsultationRow(height: pageHeight, lines: [], medicalTerm: lastItem.medicalTerm.sectionOfSelf.correspondingEmptyTerm)], pageHeight: pageHeight)
     }
     
@@ -38,16 +41,29 @@ struct ConsultationPageSection {
         return ConsultationRow(height: heightToBePadded, lines: [], medicalTerm: NoMedicalTerm(name: nil))
     }
     
-    func canInsertRow(with height: Float) -> Bool {
+    func canInsertRow(with height: CGFloat) -> Bool {
         return height <= pageHeight - usedHeight
     }
 }
 
-extension ConsultationPageSection: SectionModelType {
+extension ConsultationPageSection: AnimatableSectionModelType {
     typealias Item = ConsultationRow
+    typealias Identity = String
+    
+    var identity: String {
+        return id
+    }
     
     init(original: ConsultationPageSection, items: [Item]) {
         self = original
         self.items = items
+    }
+}
+
+extension ConsultationRow: IdentifiableType {
+    typealias Identity = String
+    
+    var identity: String {
+        return id
     }
 }

@@ -7,11 +7,12 @@
 //
 
 import Foundation
+import UIKit
 
 struct ConsultationRow {
     let id = UUID().uuidString
-    let height: Float
-    let lines: [Line]
+    var height: CGFloat
+    var lines: [Line]
     let medicalTerm: MedicalTermType
     var needsHeader: Bool
     var header: String? {
@@ -22,7 +23,7 @@ struct ConsultationRow {
     var isPadder: Bool {
         return medicalTerm.name == nil && lines.isEmpty
     }
-    init(height: Float, lines: [Line], medicalTerm: MedicalTermType, needsHeader: Bool = false) {
+    init(height: CGFloat, lines: [Line], medicalTerm: MedicalTermType, needsHeader: Bool = false) {
         self.height = height
         self.lines = lines
         self.medicalTerm = medicalTerm
@@ -30,8 +31,12 @@ struct ConsultationRow {
     }
 }
 
-extension ConsultationRow: Equatable { }
-
-func ==(lhs: ConsultationRow, rhs: ConsultationRow) -> Bool {
-    return lhs.id == rhs.id
+extension ConsultationRow: Hashable {
+    static func == (lhs: ConsultationRow, rhs: ConsultationRow) -> Bool {
+        return lhs.id == rhs.id
+    }
+    
+    var hashValue: Int {
+        return id.hashValue
+    }
 }

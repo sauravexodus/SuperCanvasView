@@ -11,6 +11,28 @@ import AsyncDisplayKit
 import SnapKit
 import RxSwift
 
+enum PageSize {
+    case A4
+    
+    var size: CGSize {
+        switch self {
+        case .A4: return CGSize(width: width, height: height)
+        }
+    }
+    
+    var height: CGFloat {
+        switch self {
+        case .A4: return 842.0
+        }
+    }
+    
+    var width: CGFloat {
+        switch self {
+        case .A4: return 595.0
+        }
+    }
+}
+
 final class ASMedicalTermCellNode: ASCellNode {
     
     let titleTextNode = ASTextNode().then {
@@ -24,6 +46,16 @@ final class ASMedicalTermCellNode: ASCellNode {
     let headerTextNode = ASTextNode().then {
         $0.maximumNumberOfLines = 0
         $0.backgroundColor = .darkGray
+    }
+    
+    let editButtonNode = ASButtonNode().then {
+        $0.setTitle("EDIT", with: UIFont.systemFont(ofSize: 12, weight: .semibold), with: .black, for: .normal)
+        $0.contentEdgeInsets = UIEdgeInsets(top: 8, left: 12, bottom: 8, right: 12)
+    }
+    
+    let deleteButtonNode = ASButtonNode().then {
+        $0.setTitle("DELETE", with: UIFont.systemFont(ofSize: 12, weight: .semibold), with: .black, for: .normal)
+        $0.contentEdgeInsets = UIEdgeInsets(top: 8, left: 12, bottom: 8, right: 12)
     }
     
     var height: CGFloat
@@ -45,11 +77,18 @@ final class ASMedicalTermCellNode: ASCellNode {
     // MARK: Instance methods
     
     override func didLoad() {
+        setupStyles()
+        setupBindings()
+        setupCanvasExpanding()
+    }
+    
+    private func setupCanvasExpanding() {
         guard let canvasView = canvasNode.view as? CanvasView, let tableNode = owningNode as? ASAwareTableNode else { return }
+        
         let tapObservable = Observable.merge(rx.tapGesture(configuration: { gesture, _ in
             gesture.allowedTouchTypes = [NSNumber(value: UITouchType.direct.rawValue)]
-        }))
-            .mapTo(())
+        })).mapTo(())
+        
         Observable.merge(tapObservable, canvasView.rx.pencilTouchDidNearBottom)
             .subscribe(onNext: { [weak self] _ in
                 guard let strongSelf = self else { return }
@@ -60,23 +99,45 @@ final class ASMedicalTermCellNode: ASCellNode {
                 }
             })
             .disposed(by: disposeBag)
-
+        
         Observable.merge(tapObservable, canvasView.rx.pencilDidStopMoving)
-            .debug("Pencil Did Stop Moving")
             .bind(to: tableNode.endUpdateSubject)
             .disposed(by: disposeBag)
         
         tableNode.endUpdateSubject.debounce(1, scheduler: MainScheduler.instance)
-            .debug("End Updates")
             .subscribe(onNext: { [weak self] _ in
                 guard let strongSelf = self else { return }
                 UIView.setAnimationsEnabled(true)
-                strongSelf.style.preferredSize.height = max(strongSelf.titleTextNode.frame.height, canvasView.highestY + 2, 50)
+                strongSelf.style.preferredSize.height = max(strongSelf.titleTextNode.frame.height, canvasView.highestY + 2, 50, strongSelf.editButtonNode.frame.height + 32)
                 strongSelf.transitionLayout(withAnimation: false, shouldMeasureAsync: true) {
                     canvasView.setNeedsDisplay()
                 }
             })
             .disposed(by: disposeBag)
+    }
+    
+    private func setupBindings() {
+        editButtonNode.rx.tap
+            .subscribe(onNext: { _ in
+                print("Edit Tapped")
+            })
+            .disposed(by: disposeBag)
+        
+        deleteButtonNode.rx.tap
+            .subscribe(onNext: { _ in
+                print("Delete Tapped")
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    private func setupStyles() {
+        editButtonNode.layer.borderColor = UIColor.black.cgColor
+        editButtonNode.layer.borderWidth = 2
+        editButtonNode.layer.cornerRadius = 3
+        
+        deleteButtonNode.layer.borderColor = UIColor.black.cgColor
+        deleteButtonNode.layer.borderWidth = 2
+        deleteButtonNode.layer.cornerRadius = 3
     }
 
     func configure(with text: String?, and lines: [Line]) {
@@ -86,12 +147,15 @@ final class ASMedicalTermCellNode: ASCellNode {
     // MARK: Lifecycle methods
     
     override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
-        let insets = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
-        let relativeSpec = ASRelativeLayoutSpec(horizontalPosition: .start, verticalPosition: .start, sizingOption: [], child: titleTextNode)
-        return ASOverlayLayoutSpec(
-            child: ASInsetLayoutSpec(insets: insets, child: relativeSpec),
-            overlay: canvasNode
-        )
+        return titleTextNode
+            .insets(.all(16))
+            .relative(
+                horizontalPosition: .start,
+                verticalPosition: .start,
+                sizingOption: []
+            )
+            .overlayed(by: canvasNode)
+            .overlayed(by: [editButtonNode, deleteButtonNode].stacked(in: .horizontal, spacing: 16, justifyContent: .end, alignItems: .start).insets(.all(16)))
     }
     
     override func animateLayoutTransition(_ context: ASContextTransitioning) {}

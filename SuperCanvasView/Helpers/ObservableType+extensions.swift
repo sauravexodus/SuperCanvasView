@@ -92,7 +92,7 @@ extension ObservableType {
                             buffer.remove(at: 0)
                         }
                     } else {
-                        observer.onNext([element])
+                        observer.onNext(buffer)
                     }
                     
                 case .completed:

@@ -191,15 +191,17 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
             .mapTo(.deleteAll)
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
-        
+
         containerNode.tableNode.endContractSubject
-            .pausableBufferedCombined(Observable.concat(
+            .debug("reached here 2")
+            .pausableBufferedCombined(
                 containerNode.tableNode.endContractSubject
                     .debounce(1, scheduler: MainScheduler.instance)
-                    .mapTo(false),
-                Observable.just(true)))
+                    .flatMap { _ in Observable.concat(.just(false), .just(true)) }
+                    .startWith(true),
+                limit: 100)
             .map { .updateHeights($0) }
-            .debug("REACHED HERE")
+            .debug("Reached here")
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
     }

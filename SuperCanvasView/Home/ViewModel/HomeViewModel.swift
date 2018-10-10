@@ -135,17 +135,7 @@ extension HomeViewModel {
         // insert new medical term into consultation rows
         consultationRows.insert(consultationRow, at: indexToInsert)
         // create pages after inserting row
-        let pages = consultationRows.reduce([], { result, row -> [ConsultationPageSection] in
-            var result = result
-            guard !result.isEmpty else { return [ConsultationPageSection(items: [row], pageHeight: currentState.pageHeight)] }
-            let fullResult = result
-            var lastPage = result.removeLast()
-            guard lastPage.canInsertRow(with: row.height) else { return fullResult + [ConsultationPageSection(items: [row], pageHeight: currentState.pageHeight)] }
-            lastPage.items += [row]
-            return result + [lastPage]
-        })
-        // pad the pages and return them
-        return padPages(pages)
+        return createPages(for: consultationRows)
     }
     
     private func createPages(for consultationRows: [ConsultationRow]) -> [ConsultationPageSection] {

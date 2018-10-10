@@ -26,6 +26,7 @@ final class ASDisplayNodeWithBackgroundColor: ASDisplayNode {
 
 final class ASAwareTableNode: ASTableNode {
     let endUpdateSubject = PublishSubject<Void>()
+    let endContractSubject = PublishSubject<HomeViewModel.IndexPathWithHeight>()
 }
 
 final class ContainerDisplayNode: ASDisplayNode {
@@ -115,7 +116,7 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
         
         let configureCell: RxASTableReloadDataSource<ConsultationPageSection>.ConfigureCellBlock = { (ds, tableNode, index, item) in
             return { () -> ASCellNode in
-                let cellNode = ASMedicalTermCellNode(height: item.height.cgFloat)
+                let cellNode = ASMedicalTermCellNode(height: item.height, maximumHeight: item.maximumHeight)
                 cellNode.configure(with: item.medicalTerm.name, and: [])
                 cellNode.selectionStyle = .none
                 return cellNode
@@ -178,6 +179,17 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
         containerNode.deleteAllRowsButtonNode.rx
             .tap
             .mapTo(.deleteAll)
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        containerNode.tableNode.endContractSubject
+            .pausableBufferedCombined(Observable.concat(
+                containerNode.tableNode.endContractSubject
+                    .debounce(1, scheduler: MainScheduler.instance)
+                    .mapTo(false),
+                Observable.just(true)))
+            .map { .updateHeights($0) }
+            .debug("REACHED HERE")
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
     }

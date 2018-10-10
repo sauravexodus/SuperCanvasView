@@ -26,13 +26,15 @@ final class ASMedicalTermCellNode: ASCellNode {
     }
     
     var height: CGFloat
+    let maximumHeight: CGFloat
     var headerText: String?
     let disposeBag = DisposeBag()
     
     // MARK: Init methods
     
-    init(height: CGFloat, headerText: String? = nil) {
+    init(height: CGFloat, maximumHeight: CGFloat, headerText: String? = nil) {
         self.height = height
+        self.maximumHeight = maximumHeight
         self.headerText = headerText
         super.init()
         backgroundColor = .white
@@ -58,7 +60,7 @@ final class ASMedicalTermCellNode: ASCellNode {
             )
             .subscribe(onNext: { [unowned self] _ in
                 UIView.setAnimationsEnabled(false)
-                self.style.preferredSize.height = canvasView.highestY + 200
+                self.style.preferredSize.height = min(canvasView.highestY + 200, self.maximumHeight)
                 self.transitionLayout(withAnimation: false, shouldMeasureAsync: false) {
                     canvasView.setNeedsDisplay()
                 }
@@ -73,9 +75,11 @@ final class ASMedicalTermCellNode: ASCellNode {
             .subscribe(onNext: { [weak self] _ in
                 guard let strongSelf = self else { return }
                 UIView.setAnimationsEnabled(true)
-                strongSelf.style.preferredSize.height = max(strongSelf.titleTextNode.frame.height, canvasView.highestY + 2, 50)
+                let newHeight = min(strongSelf.style.preferredSize.height, max(strongSelf.titleTextNode.frame.height, canvasView.highestY + 2, 50))
+                strongSelf.style.preferredSize.height = newHeight
                 strongSelf.transitionLayout(withAnimation: false, shouldMeasureAsync: true) {
                     canvasView.setNeedsDisplay()
+                    if let indexPath = strongSelf.indexPath { tableNode.endContractSubject.onNext(HomeViewModel.IndexPathWithHeight(indexPath: indexPath, height: newHeight)) }
                 }
             })
             .disposed(by: disposeBag)

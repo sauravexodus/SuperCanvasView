@@ -7,10 +7,12 @@
 //
 
 import Foundation
+import UIKit
 
 struct ConsultationRow {
     let id = UUID().uuidString
-    let height: Float
+    var height: CGFloat
+    let maximumHeight: CGFloat
     let medicalTerm: MedicalTerm
     var needsHeader: Bool
     var header: String? {
@@ -18,9 +20,10 @@ struct ConsultationRow {
         return medicalTerm.medicalSection.displayTitle
     }
     
-    init(height: Float, medicalTerm: MedicalTerm, needsHeader: Bool = false) {
+    init(height: CGFloat, medicalTerm: MedicalTerm, maximumHeight: CGFloat, needsHeader: Bool = false) {
         self.height = height
         self.medicalTerm = medicalTerm
+        self.maximumHeight = maximumHeight
         self.needsHeader = needsHeader
     }
 }

@@ -13,11 +13,13 @@ import RxSwift
 
 final class HomeViewModel: Reactor {
     typealias IndexPathWithScrollPosition = (indexPath: IndexPath, scrollPosition: UITableViewScrollPosition)
+    typealias IndexPathWithHeight = (indexPath: IndexPath, height: CGFloat)
 
     enum Action {
         case initialLoad
         case select(MedicalTerm.MedicalSection)
         case add(MedicalTerm)
+        case updateHeights([IndexPathWithHeight])
         case deleteAll
     }
     
@@ -28,7 +30,7 @@ final class HomeViewModel: Reactor {
     
     struct State {
         var pages: [ConsultationPageSection] = []
-        let pageHeight: Float = 300
+        let pageHeight: CGFloat = 300
         var focusedIndexPath: IndexPathWithScrollPosition?
     }
     
@@ -41,6 +43,7 @@ final class HomeViewModel: Reactor {
         case .initialLoad: return mutateInitialLoad()
         case let .select(medicalSection): return mutateSelectMedicalSection(medicalSection)
         case let .add(medicalTerm): return mutateAppendMedicalTerm(medicalTerm)
+        case let .updateHeights(newHeights): return mutateUpdateHeights(newHeights)
         case .deleteAll: return mutateInitialLoad()
         }
     }
@@ -61,7 +64,7 @@ final class HomeViewModel: Reactor {
 
 extension HomeViewModel {
     private func mutateInitialLoad() -> Observable<Mutation> {
-        return .just(.setPages([ConsultationPageSection(items: [ConsultationRow(height: currentState.pageHeight, medicalTerm: MedicalTerm(name: nil, lines: [], medicalSection: .symptoms), needsHeader: true)], pageHeight: currentState.pageHeight)]))
+        return .just(.setPages([ConsultationPageSection(items: [ConsultationRow(height: currentState.pageHeight, medicalTerm: MedicalTerm(name: nil, lines: [], medicalSection: .symptoms), maximumHeight: currentState.pageHeight, needsHeader: true)], pageHeight: currentState.pageHeight)]))
     }
     
     private func mutateSelectMedicalSection(_ medicalSection: MedicalTerm.MedicalSection) -> Observable<Mutation> {
@@ -83,7 +86,7 @@ extension HomeViewModel {
     
     private func mutateAppendMedicalTerm(_ medicalTerm: MedicalTerm) -> Observable<Mutation> {
         let consultationRows = currentState.pages.reduce([], { result, page in return result + page.items.filter { row in !row.medicalTerm.isPadder } })
-        let consultationRow = ConsultationRow(height: 50, medicalTerm: medicalTerm)
+        let consultationRow = ConsultationRow(height: 50, medicalTerm: medicalTerm, maximumHeight: currentState.pageHeight)
         let pages = createPages(for: consultationRows, appending: consultationRow)
         let indexPath = pages.enumerated()
             .reduce([], { result, page in
@@ -97,6 +100,15 @@ extension HomeViewModel {
             }
         guard let foundPath = indexPath else { return .empty() }
         return .concat(.just(.setPages(pages)), .just(.setFocusedIndexPath(foundPath)))
+    }
+    
+    private func mutateUpdateHeights(_ heights: [IndexPathWithHeight]) -> Observable<Mutation> {
+        var pages = currentState.pages
+        heights.forEach { indexPath, height in
+            pages[indexPath.section].items[indexPath.row].height = height
+        }
+        let consultationRows = pages.reduce([], { result, page in return result + page.items.filter { row in !row.medicalTerm.isPadder } })
+        return .just(.setPages(createPages(for: consultationRows)))
     }
 }
 
@@ -117,6 +129,20 @@ extension HomeViewModel {
         // insert new medical term into consultation rows
         consultationRows.insert(consultationRow, at: indexToInsert)
         // create pages after inserting row
+        let pages = consultationRows.reduce([], { result, row -> [ConsultationPageSection] in
+            var result = result
+            guard !result.isEmpty else { return [ConsultationPageSection(items: [row], pageHeight: currentState.pageHeight)] }
+            let fullResult = result
+            var lastPage = result.removeLast()
+            guard lastPage.canInsertRow(with: row.height) else { return fullResult + [ConsultationPageSection(items: [row], pageHeight: currentState.pageHeight)] }
+            lastPage.items += [row]
+            return result + [lastPage]
+        })
+        // pad the pages and return them
+        return padPages(pages)
+    }
+    
+    private func createPages(for consultationRows: [ConsultationRow]) -> [ConsultationPageSection] {
         let pages = consultationRows.reduce([], { result, row -> [ConsultationPageSection] in
             var result = result
             guard !result.isEmpty else { return [ConsultationPageSection(items: [row], pageHeight: currentState.pageHeight)] }

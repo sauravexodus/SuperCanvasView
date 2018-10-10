@@ -164,9 +164,8 @@ final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode wher
 
 extension ASMedicalTermCellNode {
     func expand() {
-        guard let canvasView = canvasNode.view as? CanvasView else {
-            return
-        }
+        guard let canvasView = canvasNode.view as? CanvasView else { return }
+        guard style.preferredSize.height <= maximumHeight else { return }
         style.preferredSize.height = min(item?.lines.highestY ?? 0 + 200, maximumHeight)
         transitionLayout(withAnimation: false, shouldMeasureAsync: false) {
             canvasView.setNeedsDisplay()
@@ -175,7 +174,8 @@ extension ASMedicalTermCellNode {
     
     func contract() {
         guard let canvasView = canvasNode.view as? CanvasView else { return }
-        let newHeight = min(max(titleTextNode.frame.height, item?.lines.highestY ?? 0 + 2, 50, deleteButtonNode.frame.height + 32, contentNode.frame.height), maximumHeight)
+        guard let `item` = item, !item.isPadder else { return }
+        let newHeight = min(max(titleTextNode.frame.height, item.lines.highestY ?? 0 + 2, 62.5, deleteButtonNode.frame.height + 32, contentNode.frame.height), maximumHeight)
         style.preferredSize.height = newHeight
         transitionLayout(withAnimation: false, shouldMeasureAsync: true) {
             canvasView.setNeedsDisplay()

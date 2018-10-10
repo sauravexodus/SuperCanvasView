@@ -25,9 +25,21 @@ final class ASDisplayNodeWithBackgroundColor: ASDisplayNode {
     }
 }
 
-final class ASAwareTableNode: ASTableNode {
+final class ASAwareTableNode: ASTableNode, UITableViewDelegate {
     let endUpdateSubject = PublishSubject<Void>()
     let endContractSubject = PublishSubject<HomeViewModel.IndexPathWithHeight>()
+    let disposeBag = DisposeBag()
+    
+    override init(style: UITableViewStyle) {
+        super.init(style: style)
+        
+//        view.asyncDelegate = self
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        print("Scrolled")
+    }
+
 }
 
 final class ContainerDisplayNode: ASDisplayNode {

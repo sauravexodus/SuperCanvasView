@@ -26,16 +26,16 @@ struct ConsultationPageSection {
             return nil
         }
         
-        return ConsultationPageSection(items: [ConsultationRow(height: pageHeight, medicalTerm: lastItem.medicalTerm.sectionOfSelf.correspondingEmptyTerm)], pageHeight: pageHeight)
+        return ConsultationPageSection(items: [ConsultationRow(height: pageHeight, lines: [], medicalTerm: lastItem.medicalTerm.sectionOfSelf.correspondingEmptyTerm)], pageHeight: pageHeight)
     }
     
     var paddingRow: ConsultationRow? {
         guard pageHeight - usedHeight != 0 else { return nil }
         let heightToBePadded = pageHeight - usedHeight
         if let medicalSection = items.last?.medicalTerm.sectionOfSelf {
-            return ConsultationRow(height: heightToBePadded, medicalTerm: medicalSection.correspondingEmptyTerm)
+            return ConsultationRow(height: heightToBePadded, lines: [], medicalTerm: medicalSection.correspondingEmptyTerm)
         }
-        return ConsultationRow(height: heightToBePadded, medicalTerm: NoMedicalTerm(name: nil))
+        return ConsultationRow(height: heightToBePadded, lines: [], medicalTerm: NoMedicalTerm(name: nil))
     }
     
     func canInsertRow(with height: Float) -> Bool {

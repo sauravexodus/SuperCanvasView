@@ -22,7 +22,7 @@ struct ConsultationRow {
     var isPadder: Bool {
         return medicalTerm.name == nil && lines.isEmpty
     }
-    init(height: Float, lines: [Line] = [], medicalTerm: MedicalTermType, needsHeader: Bool = false) {
+    init(height: Float, lines: [Line], medicalTerm: MedicalTermType, needsHeader: Bool = false) {
         self.height = height
         self.lines = lines
         self.medicalTerm = medicalTerm

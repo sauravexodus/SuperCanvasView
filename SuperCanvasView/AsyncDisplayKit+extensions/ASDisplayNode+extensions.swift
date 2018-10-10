@@ -8,6 +8,18 @@
 
 import Foundation
 import AsyncDisplayKit
+import RxSwift
+import RxGesture
+
+extension Reactive where Base: ASDisplayNode {
+    var tap: Observable<UITapGestureRecognizer> {
+        return base.view.rx.tapGesture().when(.recognized)
+    }
+    
+    func tapGesture(configuration: TapConfiguration?) -> Observable<UITapGestureRecognizer> {
+        return base.view.rx.tapGesture(configuration: configuration).when(.recognized)
+    }
+}
 
 extension Array where Element: ASDisplayNode {
     func stacked(in direction: ASStackLayoutDirection, spacing: CGFloat, justifyContent: ASStackLayoutJustifyContent, alignItems: ASStackLayoutAlignItems) -> ASStackLayoutSpec {

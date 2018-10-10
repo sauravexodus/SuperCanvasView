@@ -39,4 +39,11 @@ extension Array where Element: ASLayoutSpec {
     func stacked(in direction: ASStackLayoutDirection, spacing: CGFloat, justifyContent: ASStackLayoutJustifyContent, alignItems: ASStackLayoutAlignItems) -> ASStackLayoutSpec {
         return ASStackLayoutSpec(direction: direction, spacing: spacing, justifyContent: justifyContent, alignItems: alignItems, children: self)
     }
+    
+    func stacked(_ direction: ASStackLayoutDirection) -> ASStackLayoutSpec {
+        let stackLayoutSpec = ASStackLayoutSpec()
+        stackLayoutSpec.direction = direction
+        stackLayoutSpec.children = self
+        return stackLayoutSpec
+    }
 }

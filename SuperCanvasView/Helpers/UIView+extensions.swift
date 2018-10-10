@@ -2,15 +2,21 @@
 //  UIView+extensions.swift
 //  SuperCanvasView
 //
-//  Created by Sourav Chandra on 10/10/18.
+//  Created by Vatsal Manot on 10/9/18.
 //  Copyright © 2018 Sourav Chandra. All rights reserved.
 //
 
+import AsyncDisplayKit
 import Foundation
 import UIKit
-import AsyncDisplayKit
 
 extension UIView {
+    var asNode: ASDisplayNode {
+        return ASDisplayNode.init(viewBlock: { () -> UIView in
+            return self
+        }, didLoad: nil)
+    }
+
     var frameInDisplay: CGRect {
         var frame = self.frame
         
@@ -43,11 +49,5 @@ extension UIView {
         }
         
         return frame
-    }
-    
-    var asNode: ASDisplayNode {
-        return ASDisplayNode.init(viewBlock: { () -> UIView in
-            return self
-        }, didLoad: nil)
     }
 }

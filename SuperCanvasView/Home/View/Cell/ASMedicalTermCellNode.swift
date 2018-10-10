@@ -11,32 +11,13 @@ import AsyncDisplayKit
 import SnapKit
 import RxSwift
 
-enum PageSize {
-    case A4
-    
-    var size: CGSize {
-        switch self {
-        case .A4: return CGSize(width: width, height: height)
-        }
-    }
-    
-    var height: CGFloat {
-        switch self {
-        case .A4: return 842.0
-        }
-    }
-    
-    var width: CGFloat {
-        switch self {
-        case .A4: return 595.0
-        }
-    }
-}
-
-final class ASMedicalTermCellNode: ASCellNode {
-    
+final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode where ContentNode.RepresentationTarget: MedicalTermType {
     let titleTextNode = ASTextNode().then {
         $0.maximumNumberOfLines = 0
+    }
+    
+    let contentNode = ContentNode().then { _ in
+        
     }
     
     let canvasNode = ASDisplayNode {
@@ -57,19 +38,16 @@ final class ASMedicalTermCellNode: ASCellNode {
         $0.setTitle("DELETE", with: UIFont.systemFont(ofSize: 12, weight: .semibold), with: .black, for: .normal)
         $0.contentEdgeInsets = UIEdgeInsets(top: 8, left: 12, bottom: 8, right: 12)
     }
-    
-    var height: CGFloat
+
     var headerText: String?
     let disposeBag = DisposeBag()
     
     // MARK: Init methods
     
-    init(height: CGFloat, headerText: String? = nil) {
-        self.height = height
-        self.headerText = headerText
+    override init() {
         super.init()
+        selectionStyle = .none
         backgroundColor = .white
-        style.preferredSize.height = height
         automaticallyManagesSubnodes = true
     }
     
@@ -82,20 +60,21 @@ final class ASMedicalTermCellNode: ASCellNode {
     }
     
     private func setupCanvasExpanding() {
-        guard let canvasView = canvasNode.view as? CanvasView, let tableNode = owningNode as? ASAwareTableNode else { return }
+        guard let canvasView = canvasNode.view as? CanvasView,
+            let tableNode = owningNode as? ASAwareTableNode else { return }
         
-        let tapObservable = Observable.merge(rx.tapGesture(configuration: { gesture, _ in
+        let tapObservable = rx.tapGesture { gesture, _ in
             gesture.allowedTouchTypes = [NSNumber(value: UITouchType.direct.rawValue)]
-        })).mapTo(())
+            }
+            .mapTo(())
         
-        Observable.merge(tapObservable, canvasView.rx.pencilTouchDidNearBottom)
-            .subscribe(onNext: { [weak self] _ in
-                guard let strongSelf = self else { return }
+        Observable.merge(
+            tapObservable,
+            canvasView.rx.pencilTouchDidNearBottom
+            )
+            .subscribe(onNext: { [unowned self] _ in
                 UIView.setAnimationsEnabled(false)
-                strongSelf.style.preferredSize.height = canvasView.highestY + 200
-                strongSelf.transitionLayout(withAnimation: false, shouldMeasureAsync: false) {
-                    canvasView.setNeedsDisplay()
-                }
+                self.expand()
             })
             .disposed(by: disposeBag)
         
@@ -104,13 +83,9 @@ final class ASMedicalTermCellNode: ASCellNode {
             .disposed(by: disposeBag)
         
         tableNode.endUpdateSubject.debounce(1, scheduler: MainScheduler.instance)
-            .subscribe(onNext: { [weak self] _ in
-                guard let strongSelf = self else { return }
+            .subscribe(onNext: { [unowned self] _ in
                 UIView.setAnimationsEnabled(true)
-                strongSelf.style.preferredSize.height = max(strongSelf.titleTextNode.frame.height, canvasView.highestY + 2, 50, strongSelf.editButtonNode.frame.height + 32)
-                strongSelf.transitionLayout(withAnimation: false, shouldMeasureAsync: true) {
-                    canvasView.setNeedsDisplay()
-                }
+                self.contract()
             })
             .disposed(by: disposeBag)
     }
@@ -139,23 +114,56 @@ final class ASMedicalTermCellNode: ASCellNode {
         deleteButtonNode.layer.cornerRadius = 3
     }
 
-    func configure(with text: String?, and lines: [Line]) {
-        titleTextNode.attributedText = NSAttributedString(string: text ?? "", attributes: [NSAttributedStringKey.foregroundColor: UIColor.darkGray])
+    func configure(with item: ConsultationRow) {
+        guard let term = item.medicalTerm as? ContentNode.RepresentationTarget else {
+            print("Something has gone horribly, horribly awry...")
+            return
+        }
+        
+        style.preferredSize.height = .init(item.height)
+        canvasNode.style.preferredSize.height = .init(item.height)
+        titleTextNode.attributedText = .init(string: term.name ?? "", attributes: [.foregroundColor: UIColor.darkGray])
+        
+        contentNode.configure(with: term)
     }
     
     // MARK: Lifecycle methods
     
     override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
-        return titleTextNode
-            .insets(.all(16))
-            .relative(
-                horizontalPosition: .start,
-                verticalPosition: .start,
-                sizingOption: []
-            )
+        return [
+            titleTextNode.insets(.all(16)).relative(horizontalPosition: .start, verticalPosition: .start, sizingOption: []),
+            contentNode.relative(horizontalPosition: .start, verticalPosition: .start, sizingOption: [])
+            ]
+            .stacked(.vertical)
             .overlayed(by: canvasNode)
             .overlayed(by: [editButtonNode, deleteButtonNode].stacked(in: .horizontal, spacing: 16, justifyContent: .end, alignItems: .start).insets(.all(16)))
     }
     
-    override func animateLayoutTransition(_ context: ASContextTransitioning) {}
+    override func animateLayoutTransition(_ context: ASContextTransitioning) {
+        
+    }
+}
+
+// MARK: Operations
+
+extension ASMedicalTermCellNode {
+    func expand() {
+        guard let canvasView = canvasNode.view as? CanvasView else {
+            return
+        }
+        style.preferredSize.height = canvasView.highestY + 200
+        transitionLayout(withAnimation: false, shouldMeasureAsync: false) {
+            canvasView.setNeedsDisplay()
+        }
+    }
+    
+    func contract() {
+        guard let canvasView = canvasNode.view as? CanvasView else {
+            return
+        }
+        style.preferredSize.height = max(titleTextNode.frame.height, canvasView.highestY + 2, 50, deleteButtonNode.frame.height + 32, contentNode.frame.height)
+        transitionLayout(withAnimation: false, shouldMeasureAsync: true) {
+            canvasView.setNeedsDisplay()
+        }
+    }
 }

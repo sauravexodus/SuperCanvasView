@@ -12,18 +12,21 @@ import UIKit
 struct ConsultationRow {
     let id = UUID().uuidString
     var height: CGFloat
-    let maximumHeight: CGFloat
-    let medicalTerm: MedicalTerm
+    let lines: [Line]
+    let medicalTerm: MedicalTermType
     var needsHeader: Bool
     var header: String? {
         guard needsHeader else { return nil }
-        return medicalTerm.medicalSection.displayTitle
+        return medicalTerm.sectionOfSelf.displayTitle
     }
     
-    init(height: CGFloat, medicalTerm: MedicalTerm, maximumHeight: CGFloat, needsHeader: Bool = false) {
+    var isPadder: Bool {
+        return medicalTerm.name == nil && lines.isEmpty
+    }
+    init(height: CGFloat, lines: [Line], medicalTerm: MedicalTermType, needsHeader: Bool = false) {
         self.height = height
+        self.lines = lines
         self.medicalTerm = medicalTerm
-        self.maximumHeight = maximumHeight
         self.needsHeader = needsHeader
     }
 }

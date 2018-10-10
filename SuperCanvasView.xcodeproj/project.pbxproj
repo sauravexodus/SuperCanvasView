@@ -27,6 +27,8 @@
 		D46C18F6216D07F20033312E /* UIView+extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D46C18F5216D07F20033312E /* UIView+extensions.swift */; };
 		D4E68F61216D0DE300789347 /* UIKit+helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4E68F60216D0DE300789347 /* UIKit+helpers.swift */; };
 		D4E68F63216D0DFA00789347 /* ASDisplayNode+extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4E68F62216D0DFA00789347 /* ASDisplayNode+extensions.swift */; };
+		D4E68F65216E044100789347 /* MedicalSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4E68F64216E044100789347 /* MedicalSection.swift */; };
+		D4E68F67216E05A800789347 /* CellContentNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4E68F66216E05A800789347 /* CellContentNode.swift */; };
 		FCFC864FA86EF209C44F27A91E7B9F8E /* ASMedicalTermCellNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3F9AF9D78978A62A892FF45D0E28AEE /* ASMedicalTermCellNode.swift */; };
 /* End PBXBuildFile section */
 
@@ -55,6 +57,8 @@
 		D46C18F5216D07F20033312E /* UIView+extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+extensions.swift"; sourceTree = "<group>"; };
 		D4E68F60216D0DE300789347 /* UIKit+helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIKit+helpers.swift"; sourceTree = "<group>"; };
 		D4E68F62216D0DFA00789347 /* ASDisplayNode+extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ASDisplayNode+extensions.swift"; sourceTree = "<group>"; };
+		D4E68F64216E044100789347 /* MedicalSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicalSection.swift; sourceTree = "<group>"; };
+		D4E68F66216E05A800789347 /* CellContentNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CellContentNode.swift; sourceTree = "<group>"; };
 		DC29120EC3DE5785E8660B63F0FD3915 /* ASHomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASHomeViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -162,6 +166,7 @@
 			isa = PBXGroup;
 			children = (
 				D4E68F62216D0DFA00789347 /* ASDisplayNode+extensions.swift */,
+				D4E68F66216E05A800789347 /* CellContentNode.swift */,
 				D46C18F3216D07D40033312E /* ObservableType+extensions.swift */,
 				D4E68F60216D0DE300789347 /* UIKit+helpers.swift */,
 				D46C18F5216D07F20033312E /* UIView+extensions.swift */,
@@ -174,6 +179,7 @@
 			children = (
 				D07FFA17D9AE8A9555A56A40D706252C /* ConsultationPageSection.swift */,
 				BCFBE2251E720056AC847FA603F5C0B8 /* ConsultationRow.swift */,
+				D4E68F64216E044100789347 /* MedicalSection.swift */,
 				B18DCA121A2E903656C7988756DAAA19 /* MedicalTerm.swift */,
 			);
 			path = Model;
@@ -335,6 +341,7 @@
 				099F6EC139402C90879C0FDF8F9F49D5 /* AppDelegate.swift in Sources */,
 				D46C18F4216D07D40033312E /* ObservableType+extensions.swift in Sources */,
 				05704475B95E7D35BD53184473FB68A2 /* CanvasView.swift in Sources */,
+				D4E68F67216E05A800789347 /* CellContentNode.swift in Sources */,
 				5204D069BD91314633190C1DABAE9729 /* ConsultationPageSection.swift in Sources */,
 				D4E68F61216D0DE300789347 /* UIKit+helpers.swift in Sources */,
 				D0D7C673A60B921651A67B85F97C738F /* ConsultationRow.swift in Sources */,
@@ -347,6 +354,7 @@
 				D4E68F63216D0DFA00789347 /* ASDisplayNode+extensions.swift in Sources */,
 				94E192DA7D5D0DCE2CC82238C1DF7DAF /* UIScrollView+Capture.swift in Sources */,
 				4338832969589F7AC8D575E76DA7FFE6 /* UIView+Capture.swift in Sources */,
+				D4E68F65216E044100789347 /* MedicalSection.swift in Sources */,
 				AB90864BE77259AF0654B27216AB6CB6 /* WKWebView+Capture.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

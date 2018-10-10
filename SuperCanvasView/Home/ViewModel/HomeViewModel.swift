@@ -17,8 +17,8 @@ final class HomeViewModel: Reactor {
 
     enum Action {
         case initialLoad
-        case select(MedicalTerm.MedicalSection)
-        case add(MedicalTerm)
+        case select(MedicalSection)
+        case add(MedicalTermType)
         case updateHeights([IndexPathWithHeight])
         case deleteAll
     }
@@ -64,16 +64,18 @@ final class HomeViewModel: Reactor {
 
 extension HomeViewModel {
     private func mutateInitialLoad() -> Observable<Mutation> {
-        return .just(.setPages([ConsultationPageSection(items: [ConsultationRow(height: currentState.pageHeight, medicalTerm: MedicalTerm(name: nil, lines: [], medicalSection: .symptoms), maximumHeight: currentState.pageHeight, needsHeader: true)], pageHeight: currentState.pageHeight)]))
+        return .just(.setPages([ConsultationPageSection(items: [ConsultationRow(height: currentState.pageHeight, lines: [Line](), medicalTerm: Symptom(name: nil), needsHeader: true)], pageHeight: currentState.pageHeight)]))
     }
     
-    private func mutateSelectMedicalSection(_ medicalSection: MedicalTerm.MedicalSection) -> Observable<Mutation> {
+    private func mutateSelectMedicalSection(_ medicalSection: MedicalSection) -> Observable<Mutation> {
         let indexPath = currentState.pages.enumerated()
             .reduce([], { result, page in
-                return result + page.element.items.enumerated().map { offset, item in return (sectionIndex: page.offset, itemIndex: offset, item: item) }
+                return result + page.element.items.enumerated().map { offset, item in
+                    return (sectionIndex: page.offset, itemIndex: offset, item: item)
+                }
             })
-            .first {
-                sectionIndex, itemIndex, item in item.medicalTerm.medicalSection == medicalSection
+            .first { sectionIndex, itemIndex, item in
+                item.medicalTerm.sectionOfSelf == medicalSection
             }
             .map { sectionIndex, itemIndex, _ in
                 IndexPathWithScrollPosition(
@@ -84,13 +86,15 @@ extension HomeViewModel {
         return .just(.setFocusedIndexPath(foundPath))
     }
     
-    private func mutateAppendMedicalTerm(_ medicalTerm: MedicalTerm) -> Observable<Mutation> {
-        let consultationRows = currentState.pages.reduce([], { result, page in return result + page.items.filter { row in !row.medicalTerm.isPadder } })
-        let consultationRow = ConsultationRow(height: 50, medicalTerm: medicalTerm, maximumHeight: currentState.pageHeight)
+    private func mutateAppendMedicalTerm(_ medicalTerm: MedicalTermType) -> Observable<Mutation> {
+        let consultationRows = currentState.pages.reduce([], { result, page in return result + page.items.filter { row in !row.isPadder } })
+        let consultationRow = ConsultationRow(height: 50, lines: [], medicalTerm: medicalTerm)
         let pages = createPages(for: consultationRows, appending: consultationRow)
         let indexPath = pages.enumerated()
             .reduce([], { result, page in
-                return result + page.element.items.enumerated().map { offset, item in return (sectionIndex: page.offset, itemIndex: offset, item: item) }
+                return result + page.element.items.enumerated().map { offset, item in
+                    return (sectionIndex: page.offset, itemIndex: offset, item: item)
+                }
             })
             .first { sectionIndex, itemIndex, item in
                 item == consultationRow
@@ -104,10 +108,10 @@ extension HomeViewModel {
     
     private func mutateUpdateHeights(_ heights: [IndexPathWithHeight]) -> Observable<Mutation> {
         var pages = currentState.pages
-        heights.forEach { indexPath, height in
-            pages[indexPath.section].items[indexPath.row].height = height
+        heights.forEach { result in
+            pages[result.indexPath.section].items[result.indexPath.row].height = result.height
         }
-        let consultationRows = pages.reduce([], { result, page in return result + page.items.filter { row in !row.medicalTerm.isPadder } })
+        let consultationRows = pages.reduce([], { result, page in return result + page.items.filter { row in !row.isPadder } })
         return .just(.setPages(createPages(for: consultationRows)))
     }
 }
@@ -120,12 +124,14 @@ extension HomeViewModel {
         var consultationRow = consultationRow
         // find index to insert the new row in
         let indexToInsert = consultationRows.reduce(consultationRows.count, { result, row in
-            guard consultationRow.medicalTerm.medicalSection == row.medicalTerm.medicalSection else { return result }
+            guard consultationRow.medicalTerm.sectionOfSelf == row.medicalTerm.sectionOfSelf else {
+                return result
+            }
             if let index = consultationRows.index(of: row) { return index + 1 }
             return result
         })
         // set needs header if it is the first item of it's kind
-        consultationRow.needsHeader = indexToInsert == 0 || !(consultationRows[indexToInsert - 1].medicalTerm.medicalSection == consultationRow.medicalTerm.medicalSection)
+        consultationRow.needsHeader = indexToInsert == 0 || !(consultationRows[indexToInsert - 1].medicalTerm.sectionOfSelf == consultationRow.medicalTerm.sectionOfSelf)
         // insert new medical term into consultation rows
         consultationRows.insert(consultationRow, at: indexToInsert)
         // create pages after inserting row

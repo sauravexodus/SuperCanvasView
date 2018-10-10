@@ -12,29 +12,27 @@ import RxDataSources
 struct ConsultationPageSection {
     var items: [Item]
     var pageHeight: CGFloat
+    
     var usedHeight: CGFloat {
-        return items.filter { item in !item.medicalTerm.isPadder }.reduce(0, { result, item in result + item.height })
+        return items.filter { item in !item.isPadder }.reduce(0, { result, item in result + item.height })
     }
+    
     var needsNextPage: Bool {
         return pageHeight - usedHeight <= 70
     }
+    
     var nextPage: ConsultationPageSection? {
         guard pageHeight - usedHeight <= 70, let lastItem = items.last else { return nil }
-        switch lastItem.medicalTerm.medicalSection {
-        case .symptoms: return ConsultationPageSection(items: [ConsultationRow(height: pageHeight, medicalTerm: MedicalTerm(name: nil, lines: [], medicalSection: .symptoms), maximumHeight: pageHeight)], pageHeight: pageHeight)
-        case .diagnoses: return ConsultationPageSection(items: [ConsultationRow(height: pageHeight, medicalTerm: MedicalTerm(name: nil, lines: [], medicalSection: .diagnoses), maximumHeight: pageHeight)], pageHeight: pageHeight)
-        }
+        return ConsultationPageSection(items: [ConsultationRow(height: pageHeight, lines: [], medicalTerm: lastItem.medicalTerm.sectionOfSelf.correspondingEmptyTerm)], pageHeight: pageHeight)
     }
+    
     var paddingRow: ConsultationRow? {
         guard pageHeight - usedHeight != 0 else { return nil }
         let heightToBePadded = pageHeight - usedHeight
-        if let medicalSection = items.last?.medicalTerm.medicalSection {
-            switch medicalSection {
-            case .symptoms: return ConsultationRow(height: heightToBePadded, medicalTerm: MedicalTerm(name: nil, lines: [], medicalSection: .symptoms), maximumHeight: pageHeight)
-            case .diagnoses: return ConsultationRow(height: heightToBePadded, medicalTerm: MedicalTerm(name: nil, lines: [], medicalSection: .diagnoses), maximumHeight: pageHeight)
-            }
+        if let medicalSection = items.last?.medicalTerm.sectionOfSelf {
+            return ConsultationRow(height: heightToBePadded, lines: [], medicalTerm: medicalSection.correspondingEmptyTerm)
         }
-        return ConsultationRow(height: heightToBePadded, medicalTerm: MedicalTerm(name: nil, lines: [], medicalSection: .symptoms), maximumHeight: pageHeight)
+        return ConsultationRow(height: heightToBePadded, lines: [], medicalTerm: NoMedicalTerm(name: nil))
     }
     
     func canInsertRow(with height: CGFloat) -> Bool {

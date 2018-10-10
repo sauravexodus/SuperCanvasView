@@ -115,11 +115,21 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
         defer { self.reactor = viewModel }
         
         let configureCell: RxASTableReloadDataSource<ConsultationPageSection>.ConfigureCellBlock = { (ds, tableNode, index, item) in
-            return { () -> ASCellNode in
-                let cellNode = ASMedicalTermCellNode(height: item.height, maximumHeight: item.maximumHeight)
-                cellNode.configure(with: item.medicalTerm.name, and: [])
-                cellNode.selectionStyle = .none
-                return cellNode
+            return {
+                switch item.medicalTerm.sectionOfSelf {
+                case .diagnoses:
+                    let node = ASMedicalTermCellNode<EmptyCellNode<Diagnosis>>()
+                    node.configure(with: item)
+                    return node
+                case .symptoms:
+                    let node = ASMedicalTermCellNode<EmptyCellNode<Symptom>>()
+                    node.configure(with: item)
+                    return node
+                default:
+                    let node = ASMedicalTermCellNode<EmptyCellNode<NoMedicalTerm>>()
+                    node.configure(with: item)
+                    return node
+                }
             }
         }
         
@@ -157,7 +167,7 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
         containerNode.addSymptomButtonNode.rx
             .tap
             .map { _ in
-                return .add(MedicalTerm(name: "Symptom", lines: [], medicalSection: .symptoms))
+                return .add(Symptom(name: "Symptom"))
             }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
@@ -171,7 +181,7 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
         containerNode.addDiagnosisButtonNode.rx
             .tap
             .map { _ in
-                return .add(MedicalTerm(name: "Diagnosis", lines: [], medicalSection: .diagnoses))
+                return .add(Diagnosis(name: "Diagnosis"))
             }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)

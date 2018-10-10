@@ -25,8 +25,8 @@ struct ConsultationRow {
     }
 }
 
-extension ConsultationRow: Equatable { }
-
-func ==(lhs: ConsultationRow, rhs: ConsultationRow) -> Bool {
-    return lhs.id == rhs.id
+extension ConsultationRow: Equatable {
+    static func == (lhs: ConsultationRow, rhs: ConsultationRow) -> Bool {
+        return lhs.id == rhs.id
+    }
 }

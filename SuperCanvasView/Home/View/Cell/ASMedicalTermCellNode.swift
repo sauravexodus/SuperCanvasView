@@ -71,7 +71,6 @@ final class ASMedicalTermCellNode: ASCellNode {
         backgroundColor = .white
         style.preferredSize.height = height
         automaticallyManagesSubnodes = true
-        canvasNode.style.preferredSize.height = height
     }
     
     // MARK: Instance methods

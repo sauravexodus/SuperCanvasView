@@ -29,14 +29,6 @@ extension CGSize {
     }
 }
 
-extension UIView {
-    var asNode: ASDisplayNode {
-        return ASDisplayNode.init(viewBlock: { () -> UIView in
-            return self
-        }, didLoad: nil)
-    }
-}
-
 extension Reactive where Base: ASDisplayNode {
     var tap: Observable<UITapGestureRecognizer> {
         return base.view.rx.tapGesture().when(.recognized)
@@ -141,7 +133,6 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
     let dataSource: RxASTableReloadDataSource<ConsultationPageSection>
     let containerNode = ContainerDisplayNode()
     
-    
     init(viewModel: HomeViewModel) {
         defer { self.reactor = viewModel }
         
@@ -188,7 +179,7 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
         containerNode.addSymptomButtonNode.rx
             .tap
             .map { _ in
-                return .add(ConsultationRow(height: 50, medicalTerm: MedicalTerm(name: "Symptom", lines: [], medicalSection: .symptoms)))
+                return .add(ConsultationRow(height: 80, medicalTerm: MedicalTerm(name: "Symptom", lines: [], medicalSection: .symptoms)))
             }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
@@ -202,7 +193,7 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
         containerNode.addDiagnosisButtonNode.rx
             .tap
             .map { _ in
-                return .add(ConsultationRow(height: 50, medicalTerm: MedicalTerm(name: "Diagnosis", lines: [], medicalSection: .diagnoses)))
+                return .add(ConsultationRow(height: 80, medicalTerm: MedicalTerm(name: "Diagnosis", lines: [], medicalSection: .diagnoses)))
             }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)

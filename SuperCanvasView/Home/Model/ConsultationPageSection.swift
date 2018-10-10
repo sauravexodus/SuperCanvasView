@@ -21,8 +21,14 @@ struct ConsultationPageSection {
     var nextPage: ConsultationPageSection? {
         guard pageHeight - usedHeight <= 70, let lastItem = items.last else { return nil }
         switch lastItem.medicalTerm.medicalSection {
-        case .symptoms: return ConsultationPageSection(items: [ConsultationRow(height: pageHeight, medicalTerm: MedicalTerm(name: nil, lines: [], medicalSection: .symptoms))], pageHeight: pageHeight)
-        case .diagnoses: return ConsultationPageSection(items: [ConsultationRow(height: pageHeight, medicalTerm: MedicalTerm(name: nil, lines: [], medicalSection: .diagnoses))], pageHeight: pageHeight)
+        case .symptoms: return ConsultationPageSection(
+            items: [ConsultationRow(height: pageHeight, medicalTerm: MedicalTerm(name: nil, lines: [], medicalSection: .symptoms))],
+            pageHeight: pageHeight
+            )
+        case .diagnoses: return ConsultationPageSection(
+            items: [ConsultationRow(height: pageHeight, medicalTerm: MedicalTerm(name: nil, lines: [], medicalSection: .diagnoses))],
+            pageHeight: pageHeight
+            )
         }
     }
     var paddingRow: ConsultationRow? {
@@ -43,6 +49,7 @@ struct ConsultationPageSection {
 }
 
 extension ConsultationPageSection: SectionModelType {
+    
     typealias Item = ConsultationRow
     
     init(original: ConsultationPageSection, items: [Item]) {

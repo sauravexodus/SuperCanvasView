@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import AsyncDisplayKit
 
 extension UIView {
     var frameInDisplay: CGRect {
@@ -42,5 +43,11 @@ extension UIView {
         }
         
         return frame
+    }
+    
+    var asNode: ASDisplayNode {
+        return ASDisplayNode.init(viewBlock: { () -> UIView in
+            return self
+        }, didLoad: nil)
     }
 }

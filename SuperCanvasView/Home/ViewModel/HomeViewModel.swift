@@ -16,7 +16,7 @@ final class HomeViewModel: Reactor {
 
     enum Action {
         case initialLoad
-        case select(MedicalTerm.MedicalSection)
+        case select(MedicalSection)
         case add(ConsultationRow)
         case deleteAll
         case print([UIImage])
@@ -63,17 +63,19 @@ final class HomeViewModel: Reactor {
 
 extension HomeViewModel {
     private func mutateInitialLoad() -> Observable<Mutation> {
-        return .just(.setPages([ConsultationPageSection(items: [ConsultationRow(height: currentState.pageHeight, medicalTerm: MedicalTerm(name: nil, lines: [], medicalSection: .symptoms), needsHeader: true)], pageHeight: currentState.pageHeight)]))
+        return .just(.setPages([ConsultationPageSection(items: [ConsultationRow(height: currentState.pageHeight, lines: [], medicalTerm: Symptom(name: nil), needsHeader: true)], pageHeight: currentState.pageHeight)]))
     }
     
-    private func mutateSelectMedicalSection(_ medicalSection: MedicalTerm.MedicalSection) -> Observable<Mutation> {
+    private func mutateSelectMedicalSection(_ medicalSection: MedicalSection) -> Observable<Mutation> {
         
         let indexPath = currentState.pages.enumerated()
             .reduce([], { result, page in
-                return result + page.element.items.enumerated().map { offset, item in return (sectionIndex: page.offset, itemIndex: offset, item: item) }
+                return result + page.element.items.enumerated().map { offset, item in
+                    return (sectionIndex: page.offset, itemIndex: offset, item: item)
+                }
             })
-            .first {
-                sectionIndex, itemIndex, item in item.medicalTerm.medicalSection == medicalSection
+            .first { sectionIndex, itemIndex, item in
+                item.medicalTerm.sectionOfSelf == medicalSection
             }
             .map { sectionIndex, itemIndex, _ in
                 IndexPathWithScrollPosition(
@@ -81,18 +83,23 @@ extension HomeViewModel {
                     scrollPosition: .top)
             }
         
-        guard let foundPath = indexPath else { return .empty() }
+        guard let foundPath = indexPath else {
+            return .empty()
+        }
+        
         return .just(.setFocusedIndexPath(foundPath))
     }
     
     private func mutateAppendConsultationRow(_ consultationRow: ConsultationRow) -> Observable<Mutation> {
         
-        let consultationRows = currentState.pages.reduce([], { result, page in return result + page.items.filter { row in !row.medicalTerm.isPadder } })
+        let consultationRows = currentState.pages.reduce([], { result, page in return result + page.items.filter { row in !row.isPadder } })
         let pages = createPages(for: consultationRows, appending: consultationRow)
         
         let indexPath = pages.enumerated()
             .reduce([], { result, page in
-                return result + page.element.items.enumerated().map { offset, item in return (sectionIndex: page.offset, itemIndex: offset, item: item) }
+                return result + page.element.items.enumerated().map { offset, item in
+                    return (sectionIndex: page.offset, itemIndex: offset, item: item)
+                }
             })
             .first { sectionIndex, itemIndex, item in
                 item == consultationRow
@@ -101,7 +108,10 @@ extension HomeViewModel {
                 IndexPathWithScrollPosition(indexPath: IndexPath(row: itemIndex, section: sectionIndex), scrollPosition: .none)
             }
         
-        guard let foundPath = indexPath else { return .empty() }
+        guard let foundPath = indexPath else {
+            return .empty()
+        }
+        
         return .concat(.just(.setPages(pages)), .just(.setFocusedIndexPath(foundPath)))
     }
     
@@ -126,10 +136,14 @@ extension HomeViewModel {
         var consultationRows = consultationRows
         var consultationRow = consultationRow
         // set needs header if it is the first item of it's kind
-        consultationRow.needsHeader = !consultationRows.contains(where: { row in row.medicalTerm.medicalSection == consultationRow.medicalTerm.medicalSection })
+        consultationRow.needsHeader = !consultationRows.contains { row in
+            row.medicalTerm.sectionOfSelf == consultationRow.medicalTerm.sectionOfSelf
+        }
         // find index to insert the new row in
         let indexToInsert = consultationRows.reduce(consultationRows.count, { result, row in
-            guard consultationRow.medicalTerm.medicalSection == row.medicalTerm.medicalSection else { return result }
+            guard consultationRow.medicalTerm.sectionOfSelf == row.medicalTerm.sectionOfSelf else {
+                return result
+            }
             if let index = consultationRows.index(of: row) { return index + 1 }
             return result
         })

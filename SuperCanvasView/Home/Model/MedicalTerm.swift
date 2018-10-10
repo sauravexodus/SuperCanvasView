@@ -8,33 +8,65 @@
 
 import Foundation
 
-struct MedicalTerm {
-    var name: String?
-    var lines: [Line]
-    var medicalSection: MedicalSection
-    var isPadder: Bool {
-        return name == nil && lines.isEmpty
-    }
+protocol MedicalTermType {
+    static var section: MedicalSection { get }
+    var name: String? { get }
+    var hashValue: Int { get }
     
-    enum MedicalSection {
-        case symptoms
-        case diagnoses
-        
-        var title: String {
-            switch self {
-            case .symptoms: return "Chief Complaints"
-            case .diagnoses: return "Diagnosis"
-            }
-        }
-        
-        var displayTitle: String {
-            return title
-        }
+    init() // initialize as term with no content
+}
+
+extension MedicalTermType {
+    var sectionOfSelf: MedicalSection {
+        return type(of: self).section
     }
 }
 
-extension MedicalTerm: Equatable { }
+func == (lhs: MedicalTermType, rhs: MedicalTermType) -> Bool {
+    guard type(of: lhs).section == type(of: rhs).section else {
+        return false
+    }
+    return lhs.hashValue == rhs.hashValue
+}
 
-func ==(lhs: MedicalTerm, rhs: MedicalTerm) -> Bool {
-    return lhs.name == rhs.name && lhs.lines == rhs.lines && lhs.medicalSection == rhs.medicalSection
+// MARK: Concrete Types
+
+struct Symptom: MedicalTermType, Hashable {
+    static let section: MedicalSection = .symptoms
+    var name: String?
+}
+
+struct Examination: MedicalTermType, Hashable {
+    static let section: MedicalSection = .examinations
+    var name: String?
+}
+
+struct Diagnosis: MedicalTermType, Hashable {
+    static let section: MedicalSection = .diagnoses
+    var name: String?
+}
+
+struct Prescription: MedicalTermType, Hashable {
+    static let section: MedicalSection = .prescriptions
+    var name: String?
+}
+
+struct Test: MedicalTermType, Hashable {
+    static let section: MedicalSection = .tests
+    var name: String?
+}
+
+struct Procedure: MedicalTermType, Hashable {
+    static let section: MedicalSection = .procedures
+    var name: String?
+}
+
+struct Instruction: MedicalTermType, Hashable {
+    static let section: MedicalSection = .instructions
+    var name: String?
+}
+
+struct NoMedicalTerm: MedicalTermType, Hashable {
+    static let section: MedicalSection = .none
+    var name: String?
 }

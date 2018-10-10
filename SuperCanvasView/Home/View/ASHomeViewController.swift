@@ -147,11 +147,21 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
         defer { self.reactor = viewModel }
         
         let configureCell: RxASTableReloadDataSource<ConsultationPageSection>.ConfigureCellBlock = { (ds, tableNode, index, item) in
-            return { () -> ASCellNode in
-                let cellNode = ASMedicalTermCellNode(height: item.height.cgFloat)
-                cellNode.configure(with: "\(item.medicalTerm.name ?? "Empty") (\(index.section), \(index.row))", and: [])
-                cellNode.selectionStyle = .none
-                return cellNode
+            return {
+                switch item.medicalTerm.sectionOfSelf {
+                case .diagnoses:
+                    let node = ASMedicalTermCellNode<EmptyCellNode<Diagnosis>>()
+                    node.configure(with: item)
+                    return node
+                case .symptoms:
+                    let node = ASMedicalTermCellNode<EmptyCellNode<Symptom>>()
+                    node.configure(with: item)
+                    return node
+                default:
+                    let node = ASMedicalTermCellNode<EmptyCellNode<NoMedicalTerm>>()
+                    node.configure(with: item)
+                    return node
+                }
             }
         }
         
@@ -189,7 +199,7 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
         containerNode.addSymptomButtonNode.rx
             .tap
             .map { _ in
-                return .add(ConsultationRow(height: 50, medicalTerm: MedicalTerm(name: "Symptom", lines: [], medicalSection: .symptoms)))
+                return .add(ConsultationRow(height: 50, lines: [], medicalTerm: Symptom(name: "Some Symptom")))
             }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
@@ -203,7 +213,7 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
         containerNode.addDiagnosisButtonNode.rx
             .tap
             .map { _ in
-                return .add(ConsultationRow(height: 50, medicalTerm: MedicalTerm(name: "Diagnosis", lines: [], medicalSection: .diagnoses)))
+                return .add(ConsultationRow(height: 50, lines: [], medicalTerm: Diagnosis(name: "Some Diagnosis")))
             }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)

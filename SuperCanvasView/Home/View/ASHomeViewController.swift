@@ -117,9 +117,20 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
         
         let configureCell: RxASTableReloadDataSource<ConsultationPageSection>.ConfigureCellBlock = { (ds, tableNode, index, item) in
             return {
-                let node = ASMedicalTermCellNode<EmptyCellNode<NoMedicalTerm>>()
-                node.configure(with: item)
-                return node
+                switch item.medicalTerm.sectionOfSelf {
+                case .diagnoses:
+                    let node = ASMedicalTermCellNode<EmptyCellNode<Diagnosis>>()
+                    node.configure(with: item)
+                    return node
+                case .symptoms:
+                    let node = ASMedicalTermCellNode<EmptyCellNode<Symptom>>()
+                    node.configure(with: item)
+                    return node
+                default:
+                    let node = ASMedicalTermCellNode<EmptyCellNode<NoMedicalTerm>>()
+                    node.configure(with: item)
+                    return node
+                }
             }
         }
         

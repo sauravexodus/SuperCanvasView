@@ -82,7 +82,7 @@ final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode wher
         
         style.preferredSize.height = .init(item.height)
         canvasNode.style.preferredSize.height = .init(item.height)
-        titleTextNode.attributedText = .init(string: item.medicalTerm.name ?? "", attributes: [.foregroundColor: UIColor.darkGray])
+        titleTextNode.attributedText = .init(string: term.name ?? "", attributes: [.foregroundColor: UIColor.darkGray])
         
         contentNode.configure(with: term)
     }

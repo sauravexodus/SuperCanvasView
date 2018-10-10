@@ -16,6 +16,7 @@ import RxGesture
 import RxASDataSources
 import RxViewController
 import Then
+import DeepDiff
 
 final class ASDisplayNodeWithBackgroundColor: ASDisplayNode {
     
@@ -195,6 +196,19 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
     
     private func bindState(reactor: HomeViewModel) {
         reactor.state.map { $0.pages }
+            .distinctUntilChanged { old, new in
+                let oldHashes = old.map { $0.items.map { $0.id } }.reduce([], { item, acc -> [String] in
+                    var mutable = item
+                    mutable.append(contentsOf: acc)
+                    return mutable
+                })
+                let newHashes = new.map { $0.items.map { $0.id } }.reduce([], { item, acc -> [String] in
+                    var mutable = item
+                    mutable.append(contentsOf: acc)
+                    return mutable
+                })
+                return diff(old: oldHashes, new: newHashes).isEmpty
+            }
             .bind(to: containerNode.tableNode.rx.items(dataSource: dataSource))
             .disposed(by: disposeBag)
         
@@ -212,6 +226,26 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
 extension ASHomeViewController: ASTableDelegate {
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 16
+    }
+    
+    func tableNode(_ tableNode: ASTableNode, willDisplayRowWith node: ASCellNode) {
+        guard let `reactor` = reactor else { return }
+        if let medicalTermCellNode = node as? ASMedicalTermCellNode<EmptyCellNode<Diagnosis>> {
+            medicalTermCellNode.linesChanged.debounce(0.3, scheduler: MainScheduler.instance)
+                .map { .updateLines(indexPath: $0.indexPath, lines: $0.lines) }
+                .bind(to: reactor.action)
+                .disposed(by: medicalTermCellNode.disposeBag)
+        } else if let medicalTermCellNode = node as? ASMedicalTermCellNode<EmptyCellNode<Symptom>> {
+            medicalTermCellNode.linesChanged.debounce(0.3, scheduler: MainScheduler.instance)
+                .map { .updateLines(indexPath: $0.indexPath, lines: $0.lines) }
+                .bind(to: reactor.action)
+                .disposed(by: medicalTermCellNode.disposeBag)
+        } else if let medicalTermCellNode = node as? ASMedicalTermCellNode<EmptyCellNode<NoMedicalTerm>> {
+            medicalTermCellNode.linesChanged.debounce(0.3, scheduler: MainScheduler.instance)
+                .map { .updateLines(indexPath: $0.indexPath, lines: $0.lines) }
+                .bind(to: reactor.action)
+                .disposed(by: medicalTermCellNode.disposeBag)
+        }
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {

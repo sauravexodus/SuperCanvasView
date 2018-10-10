@@ -16,6 +16,7 @@ final class HomeViewModel: Reactor {
 
     enum Action {
         case initialLoad
+        case updateLines(indexPath: IndexPath, lines: [Line])
         case select(MedicalSection)
         case add(ConsultationRow)
         case deleteAll
@@ -34,14 +35,13 @@ final class HomeViewModel: Reactor {
     
     let initialState = State()
     
-    init() { }
-    
     func mutate(action: HomeViewModel.Action) -> Observable<HomeViewModel.Mutation> {
         switch action {
         case .initialLoad: return mutateInitialLoad()
         case let .select(medicalSection): return mutateSelectMedicalSection(medicalSection)
         case let .add(consultationRow): return mutateAppendConsultationRow(consultationRow)
         case .deleteAll: return mutateInitialLoad()
+        case let .updateLines(indexPath, lines): return mutateUpdatingLines(at: indexPath, lines: lines)
         }
     }
     
@@ -62,6 +62,14 @@ final class HomeViewModel: Reactor {
 extension HomeViewModel {
     private func mutateInitialLoad() -> Observable<Mutation> {
         return .just(.setPages([ConsultationPageSection(items: [ConsultationRow(height: currentState.pageHeight, lines: [], medicalTerm: Symptom(name: nil), needsHeader: true)], pageHeight: currentState.pageHeight)]))
+    }
+    
+    private func mutateUpdatingLines(at indexPath: IndexPath, lines: [Line]) -> Observable<Mutation> {
+        var item = currentState.pages[indexPath.section].items[indexPath.row]
+        item.lines = lines
+        var newPages = currentState.pages
+        newPages[indexPath.section].items[indexPath.row] = item
+        return .just(.setPages(newPages))
     }
     
     private func mutateSelectMedicalSection(_ medicalSection: MedicalSection) -> Observable<Mutation> {
@@ -160,3 +168,15 @@ extension HomeViewModel {
         return pagesCopy
     }
 }
+
+// MARK: Debugging
+
+#if DEBUG
+
+extension HomeViewModel {
+    func transform(state: Observable<HomeViewModel.State>) -> Observable<HomeViewModel.State> {
+        return state.debug("HomeViewModel", trimOutput: true)
+    }
+}
+
+#endif

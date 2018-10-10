@@ -11,7 +11,7 @@ import Foundation
 struct ConsultationRow {
     let id = UUID().uuidString
     let height: Float
-    let lines: [Line]
+    var lines: [Line]
     let medicalTerm: MedicalTermType
     var needsHeader: Bool
     var header: String? {
@@ -30,8 +30,12 @@ struct ConsultationRow {
     }
 }
 
-extension ConsultationRow: Equatable {
+extension ConsultationRow: Hashable {
     static func == (lhs: ConsultationRow, rhs: ConsultationRow) -> Bool {
         return lhs.id == rhs.id
+    }
+    
+    var hashValue: Int {
+        return id.hashValue
     }
 }

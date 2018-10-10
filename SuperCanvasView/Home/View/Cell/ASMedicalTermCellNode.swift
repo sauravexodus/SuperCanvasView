@@ -41,6 +41,7 @@ final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode wher
 
     var headerText: String?
     let disposeBag = DisposeBag()
+    var item: ConsultationRow?
     
     // MARK: Init methods
     
@@ -57,6 +58,19 @@ final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode wher
         setupStyles()
         setupBindings()
         setupCanvasExpanding()
+        setupCanvas()
+    }
+    
+    private func setupCanvas() {
+        guard let `item` = item, let canvasView = canvasNode.view as? CanvasView else { return }
+        canvasView.lines = item.lines
+        canvasView.setNeedsDisplay()
+        
+        canvasView.rx.lines.subscribe(onNext: { [weak self] lines in
+            guard let strongSelf = self else { return }
+            strongSelf.item?.lines = lines
+        })
+        .disposed(by: disposeBag)
     }
     
     private func setupCanvasExpanding() {
@@ -120,11 +134,11 @@ final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode wher
             return
         }
         
-        style.preferredSize.height = .init(item.height)
-        canvasNode.style.preferredSize.height = .init(item.height)
+        style.preferredSize.height = CGFloat(max(CGFloat(item.height), item.lines.highestY ?? 0))
         titleTextNode.attributedText = .init(string: term.name ?? "", attributes: [.foregroundColor: UIColor.darkGray])
         
         contentNode.configure(with: term)
+        self.item = item
     }
     
     // MARK: Lifecycle methods
@@ -161,9 +175,19 @@ extension ASMedicalTermCellNode {
         guard let canvasView = canvasNode.view as? CanvasView else {
             return
         }
-        style.preferredSize.height = max(titleTextNode.frame.height, canvasView.highestY + 2, 50, deleteButtonNode.frame.height + 32, contentNode.frame.height)
+        style.preferredSize.height = max(titleTextNode.frame.height, item?.lines.highestY ?? 0 + 2, 50, deleteButtonNode.frame.height + 32, contentNode.frame.height)
         transitionLayout(withAnimation: false, shouldMeasureAsync: true) {
             canvasView.setNeedsDisplay()
+        }
+    }
+}
+
+extension ASMedicalTermCellNode {
+    var linesChanged: Observable<(lines: [Line], indexPath: IndexPath)> {
+        guard let canvasView = canvasNode.view as? CanvasView else { return .empty() }
+        return canvasView.rx.lines.map { [unowned self] lines in
+            guard let indexPath = self.indexPath else { throw NSError(domain: "CanvasView", code: 0, userInfo: [NSLocalizedDescriptionKey: "Could not find indexPath"]) }
+            return (lines: lines, indexPath: indexPath)
         }
     }
 }

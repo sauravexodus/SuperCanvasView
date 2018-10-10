@@ -27,6 +27,11 @@ extension UIFont {
         
         return result
     }
+}
+
+extension UIFont {
+    // Mirrored from values provided here: https://developer.apple.com/design/human-interface-guidelines/ios/visual-design/typography/
+    
     private class func preferredCompactPrintFont(forTextStyle style: UIFont.TextStyle) -> UIFont {
         switch style {
         case .largeTitle:
@@ -114,7 +119,7 @@ extension UIFont {
         }
     }
     
-    private class func preferredPrintFont(forTextStyle style: UIFont.TextStyle) -> UIFont {
+    class func preferredPrintFont(forTextStyle style: UIFont.TextStyle) -> UIFont {
         switch PrintFontSetting.current {
         case .compact:
             return preferredCompactPrintFont(forTextStyle: style)

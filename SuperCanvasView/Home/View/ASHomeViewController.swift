@@ -18,12 +18,10 @@ import RxViewController
 import Then
 
 final class ASDisplayNodeWithBackgroundColor: ASDisplayNode {
-    
     init(color: UIColor) {
         super.init()
         backgroundColor = color
     }
-    
 }
 
 final class ASAwareTableNode: ASTableNode {
@@ -192,6 +190,16 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
             .mapTo(.deleteAll)
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
+        
+        containerNode.printButtonNode.rx
+            .tap
+            .flatMap { [weak self] _ -> Observable<[UIImage]> in
+                guard let strongSelf = self  else { return .empty() }
+                return strongSelf.generatePages()
+            }
+            .map { .print($0) }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
     }
     
     private func bindState(reactor: HomeViewModel) {
@@ -207,6 +215,42 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
                 strongSelf.containerNode.tableNode.scrollToRow(at: result.indexPath, at: result.scrollPosition, animated: true)
             })
             .disposed(by: disposeBag)
+    }
+    
+    private func generatePages() -> Observable<[UIImage]> {
+        return Observable<Int>.interval(0.2, scheduler: MainScheduler.instance)
+            .take(containerNode.tableNode.numberOfSections)
+            .concatMap { [weak self] section -> Observable<UIImage?> in
+                guard let strongSelf = self else { return .just(nil) }
+                return strongSelf.captureSinglePage(section)
+            }
+            .unwrap()
+            .reduce([], accumulator: { images, page in
+                var `images` = images
+                images.append(page)
+                return images
+            })
+            .do(onDispose: { [weak self] in
+                self?.containerNode.tableNode.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
+            })
+    }
+    
+    private func captureSinglePage(_ section: Int) -> Observable<UIImage?> {
+        return Observable.from(Array(0...containerNode.tableNode.numberOfRows(inSection: section) - 1))
+            .concatMap { [weak self] row -> Observable<UIImage?> in
+                guard let strongSelf = self else { return .just(nil) }
+                let indexPath = IndexPath(row: row, section: section)
+                strongSelf.containerNode.tableNode.scrollToRow(at: indexPath, at: .top, animated: true)
+                let cell = strongSelf.containerNode.tableNode.cellForRow(at: indexPath)
+                return cell?.contentView.rx.swCapture() ?? .just(nil)
+            }
+            .unwrap()
+            .reduce([], accumulator: { images, image in
+                var `images` = images
+                images.append(image)
+                return images
+            })
+            .map { $0.mergeToSingleImage() }
     }
 }
 

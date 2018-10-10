@@ -19,6 +19,7 @@ final class HomeViewModel: Reactor {
         case select(MedicalSection)
         case add(ConsultationRow)
         case deleteAll
+        case print([UIImage])
     }
     
     enum Mutation {
@@ -42,6 +43,7 @@ final class HomeViewModel: Reactor {
         case let .select(medicalSection): return mutateSelectMedicalSection(medicalSection)
         case let .add(consultationRow): return mutateAppendConsultationRow(consultationRow)
         case .deleteAll: return mutateInitialLoad()
+        case let .print(images): return mutatePrint(images: images)
         }
     }
     
@@ -111,6 +113,19 @@ extension HomeViewModel {
         }
         
         return .concat(.just(.setPages(pages)), .just(.setFocusedIndexPath(foundPath)))
+    }
+    
+    private func mutatePrint(images: [UIImage]) -> Observable<Mutation> {
+        let pi = UIPrintInfo(dictionary: nil)
+        pi.outputType = .general
+        pi.jobName = "JOB"
+        pi.orientation = .portrait
+        pi.duplex = .longEdge
+        let pic = UIPrintInteractionController.shared
+        pic.printInfo = pi
+        pic.printingItems = images
+        pic.present(animated: true)
+        return .empty()
     }
 }
 

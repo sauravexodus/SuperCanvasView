@@ -9,6 +9,7 @@
 import AsyncDisplayKit
 import Foundation
 import UIKit
+import RxSwift
 
 extension UIView {
     var asNode: ASDisplayNode {
@@ -49,5 +50,21 @@ extension UIView {
         }
         
         return frame
+    }
+}
+
+extension Reactive where Base: UIView {
+    func swCapture() -> Observable<UIImage?> {
+        return Observable.create { [weak base] observer in
+            guard let strongBase = base else {
+                observer.onError(NSError.init(domain: "swCapture", code: 0, userInfo: [NSLocalizedDescriptionKey: "Failed to get base"]))
+                return Disposables.create()
+            }
+            strongBase.swCapture({ (image) in
+                observer.onNext(image)
+                observer.onCompleted()
+            })
+            return Disposables.create()
+        }
     }
 }

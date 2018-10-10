@@ -29,6 +29,7 @@
 		D4E68F63216D0DFA00789347 /* ASDisplayNode+extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4E68F62216D0DFA00789347 /* ASDisplayNode+extensions.swift */; };
 		D4E68F65216E044100789347 /* MedicalSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4E68F64216E044100789347 /* MedicalSection.swift */; };
 		D4E68F67216E05A800789347 /* CellContentNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4E68F66216E05A800789347 /* CellContentNode.swift */; };
+		D4E68F69216E0A1E00789347 /* UIFont+extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4E68F68216E0A1D00789347 /* UIFont+extensions.swift */; };
 		FCFC864FA86EF209C44F27A91E7B9F8E /* ASMedicalTermCellNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3F9AF9D78978A62A892FF45D0E28AEE /* ASMedicalTermCellNode.swift */; };
 /* End PBXBuildFile section */
 
@@ -59,6 +60,7 @@
 		D4E68F62216D0DFA00789347 /* ASDisplayNode+extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ASDisplayNode+extensions.swift"; sourceTree = "<group>"; };
 		D4E68F64216E044100789347 /* MedicalSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicalSection.swift; sourceTree = "<group>"; };
 		D4E68F66216E05A800789347 /* CellContentNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CellContentNode.swift; sourceTree = "<group>"; };
+		D4E68F68216E0A1D00789347 /* UIFont+extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIFont+extensions.swift"; sourceTree = "<group>"; };
 		DC29120EC3DE5785E8660B63F0FD3915 /* ASHomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASHomeViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -165,6 +167,7 @@
 		D46C18F2216D07B80033312E /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
+				D4E68F68216E0A1D00789347 /* UIFont+extensions.swift */,
 				D4E68F62216D0DFA00789347 /* ASDisplayNode+extensions.swift */,
 				D4E68F66216E05A800789347 /* CellContentNode.swift */,
 				D46C18F3216D07D40033312E /* ObservableType+extensions.swift */,
@@ -349,6 +352,7 @@
 				2BD63062F615C0E019CD4908C62C946C /* Line.swift in Sources */,
 				279B0FCABA4AE2445649A643B3E77015 /* MedicalTerm.swift in Sources */,
 				D46C18F6216D07F20033312E /* UIView+extensions.swift in Sources */,
+				D4E68F69216E0A1E00789347 /* UIFont+extensions.swift in Sources */,
 				31C1A4B743788AEC65E535A88C994DB9 /* PDFPage.swift in Sources */,
 				AE639C27C5E66689A39C85C0D1A047CE /* UIBezierPath+extensions.swift in Sources */,
 				D4E68F63216D0DFA00789347 /* ASDisplayNode+extensions.swift in Sources */,

@@ -165,7 +165,7 @@ final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode wher
 extension ASMedicalTermCellNode {
     func expand() {
         guard let canvasView = canvasNode.view as? CanvasView else { return }
-        guard style.preferredSize.height <= maximumHeight else { return }
+        guard style.preferredSize.height < maximumHeight else { return }
         style.preferredSize.height = min(item?.lines.highestY ?? 0 + 200, maximumHeight)
         transitionLayout(withAnimation: false, shouldMeasureAsync: false) {
             canvasView.setNeedsDisplay()

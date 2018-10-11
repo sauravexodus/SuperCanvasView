@@ -40,14 +40,7 @@ extension ConsultationRow {
         return height + (needsHeader ? 20 : 0)
     }
     
-    var intrinsicContentHeight: CGFloat {
-        let string = NSAttributedString(string: medicalTerm.name ?? "", attributes: [.font: UIFont.preferredPrintFont(forTextStyle: .body)])
-        let stringHeight = string.height(withConstrainedWidth: PDFPageSize.A4.width)
-        
-        return stringHeight + (appropriateInset * 2)
-    }
-    
-    var appropriateInset: CGFloat {
+    var contentInset: CGFloat {
         switch PrintFontSetting.current {
         case .compact:
             return 8
@@ -56,6 +49,13 @@ extension ConsultationRow {
         case .comfortable:
             return 24
         }
+    }
+    
+    var intrinsicContentHeight: CGFloat {
+        let string = NSAttributedString(string: medicalTerm.name ?? "", attributes: [.font: UIFont.preferredPrintFont(forTextStyle: .body)])
+        let stringHeight = string.height(withConstrainedWidth: PDFPageSize.A4.width)
+        
+        return stringHeight + (contentInset * 2)
     }
 }
 
@@ -66,21 +66,5 @@ extension ConsultationRow: Hashable {
     
     var hashValue: Int {
         return id.hashValue
-    }
-}
-
-extension NSAttributedString {
-    func height(withConstrainedWidth width: CGFloat) -> CGFloat {
-        let constraintRect = CGSize(width: width, height: .greatestFiniteMagnitude)
-        let boundingBox = boundingRect(with: constraintRect, options: .usesLineFragmentOrigin, context: nil)
-        
-        return ceil(boundingBox.height)
-    }
-    
-    func width(withConstrainedHeight height: CGFloat) -> CGFloat {
-        let constraintRect = CGSize(width: .greatestFiniteMagnitude, height: height)
-        let boundingBox = boundingRect(with: constraintRect, options: .usesLineFragmentOrigin, context: nil)
-        
-        return ceil(boundingBox.width)
     }
 }

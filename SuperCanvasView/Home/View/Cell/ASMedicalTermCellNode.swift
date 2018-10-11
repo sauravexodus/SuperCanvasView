@@ -164,7 +164,7 @@ final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode wher
         return [
             headerTextNode.relative(horizontalPosition: .start, verticalPosition: .start, sizingOption: []),
             spacer,
-            titleTextNode.insets(.all(item.appropriateInset)).relative(horizontalPosition: .start, verticalPosition: .start, sizingOption: []),
+            titleTextNode.insets(.all(item.contentInset)).relative(horizontalPosition: .start, verticalPosition: .start, sizingOption: []),
             contentNode.relative(horizontalPosition: .start, verticalPosition: .start, sizingOption: [])
             ]
             .stacked(.vertical)

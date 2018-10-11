@@ -143,7 +143,7 @@ final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode wher
         
         style.preferredSize.height = min(CGFloat(max(CGFloat(item.heightWithHeader), item.lines.highestY ?? 0)), maximumHeight)
         canvasNode.style.preferredSize.height = .init(item.heightWithHeader)
-        titleTextNode.attributedText = .init(string: term.name ?? "", attributes: [.foregroundColor: UIColor.darkGray])
+        titleTextNode.attributedText = .init(string: term.name ?? "", attributes: [.foregroundColor: UIColor.darkGray, .font: UIFont.preferredPrintFont(forTextStyle: .body)])
         
         contentNode.configure(with: term)
         self.item = item
@@ -153,8 +153,8 @@ final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode wher
     
     override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
         let spacer = ASLayoutSpec()
-        spacer.style.flexGrow = 1
-
+        spacer.style.height = .init(unit: .points, value: 5)
+        
         return [
             headerTextNode.relative(horizontalPosition: .start, verticalPosition: .start, sizingOption: []),
             spacer,

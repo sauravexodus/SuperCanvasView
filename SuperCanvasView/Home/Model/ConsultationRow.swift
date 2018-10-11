@@ -13,7 +13,7 @@ struct ConsultationRow {
     let id = UUID().uuidString
     var height: CGFloat
     var lines: [Line]
-    let medicalTerm: MedicalTermType
+    var medicalTerm: MedicalTermType
     var needsHeader: Bool
     var header: String? {
         guard needsHeader else { return nil }
@@ -23,17 +23,28 @@ struct ConsultationRow {
     var isPadder: Bool {
         return medicalTerm.name == nil && lines.isEmpty
     }
-    init(height: CGFloat, lines: [Line], medicalTerm: MedicalTermType, needsHeader: Bool = false) {
-        self.height = height
+    init(height: CGFloat?, lines: [Line], medicalTerm: MedicalTermType, needsHeader: Bool = false) {
+        self.height = height ?? 0
         self.lines = lines
         self.medicalTerm = medicalTerm
         self.needsHeader = needsHeader
+        
+        if height == nil {
+           self.height = intrinsicContentHeight
+        }
     }
 }
 
 extension ConsultationRow {
     var heightWithHeader: CGFloat {
-        return needsHeader ? (height + 20) : height
+        return height + (needsHeader ? 20 : 0)
+    }
+    
+    var intrinsicContentHeight: CGFloat {
+        let string = NSAttributedString(string: medicalTerm.name ?? "", attributes: [.font: UIFont.preferredPrintFont(forTextStyle: .body)])
+        let stringHeight = string.height(withConstrainedWidth: PDFPageSize.A4.width)
+        
+        return stringHeight
     }
 }
 
@@ -44,5 +55,21 @@ extension ConsultationRow: Hashable {
     
     var hashValue: Int {
         return id.hashValue
+    }
+}
+
+extension NSAttributedString {
+    func height(withConstrainedWidth width: CGFloat) -> CGFloat {
+        let constraintRect = CGSize(width: width, height: .greatestFiniteMagnitude)
+        let boundingBox = boundingRect(with: constraintRect, options: .usesLineFragmentOrigin, context: nil)
+        
+        return ceil(boundingBox.height)
+    }
+    
+    func width(withConstrainedHeight height: CGFloat) -> CGFloat {
+        let constraintRect = CGSize(width: .greatestFiniteMagnitude, height: height)
+        let boundingBox = boundingRect(with: constraintRect, options: .usesLineFragmentOrigin, context: nil)
+        
+        return ceil(boundingBox.width)
     }
 }

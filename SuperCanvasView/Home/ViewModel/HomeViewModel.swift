@@ -92,7 +92,11 @@ extension HomeViewModel {
         guard let lastRow = currentSectionItems.last else { return .empty() }
         var mutations: [Observable<Mutation>] = []
         
-        if (lastRow.item.isPadder && lastRow.item.height < 50) || !lastRow.item.isPadder {
+        var dummyRow = ConsultationRow(height: nil, lines: [], medicalTerm: medicalSection.correspondingEmptyTerm)
+        dummyRow.medicalTerm.name = "A"
+        let threshold = dummyRow.intrinsicContentHeight
+        
+        if (lastRow.item.isPadder && lastRow.item.height < threshold) || !lastRow.item.isPadder {
             var medicalTerm = lastRow.item.medicalTerm
             medicalTerm.name = nil
             mutations.append(mutateAppendMedicalTerm(medicalTerm))
@@ -114,7 +118,7 @@ extension HomeViewModel {
     
     private func mutateAppendMedicalTerm(_ medicalTerm: MedicalTermType) -> Observable<Mutation> {
         let consultationRows = currentState.pages.reduce([], { result, page in return result + page.items.filter { row in !row.isPadder } })
-        let consultationRow = ConsultationRow(height: 50, lines: [], medicalTerm: medicalTerm)
+        let consultationRow = ConsultationRow(height: nil, lines: [], medicalTerm: medicalTerm)
         let pages = createPages(for: consultationRows, appending: consultationRow)
         let indexPath = pages.enumerated()
             .reduce([], { result, page in

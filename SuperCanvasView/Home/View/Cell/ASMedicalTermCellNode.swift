@@ -40,7 +40,7 @@ final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode wher
     }
 
     var header: String?
-    let maximumHeight: CGFloat = 300
+    let maximumHeight: CGFloat = 842
     let disposeBag = DisposeBag()
     var item: ConsultationRow?
     
@@ -96,8 +96,9 @@ final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode wher
         Observable.merge(tapObservable, canvasView.rx.pencilDidStopMoving)
             .bind(to: tableNode.endUpdateSubject)
             .disposed(by: disposeBag)
-        
-        tableNode.endUpdateSubject.debounce(1, scheduler: MainScheduler.instance)
+
+        tableNode.endUpdateSubject
+            .debounce(1.5, scheduler: MainScheduler.instance)
             .subscribe(onNext: { [unowned self] _ in
                 UIView.setAnimationsEnabled(true)
                 self.contract()
@@ -147,18 +148,23 @@ final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode wher
         
         contentNode.configure(with: term)
         self.item = item
+        invalidateCalculatedLayout()
     }
     
     // MARK: Lifecycle methods
     
     override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
+        guard let item = item else {
+            print("Something has gone horribly, horribly awry...")
+            return .init()
+        }
         let spacer = ASLayoutSpec()
         spacer.style.height = .init(unit: .points, value: 5)
         
         return [
             headerTextNode.relative(horizontalPosition: .start, verticalPosition: .start, sizingOption: []),
             spacer,
-            titleTextNode.insets(.all(16)).relative(horizontalPosition: .start, verticalPosition: .start, sizingOption: []),
+            titleTextNode.insets(.all(item.appropriateInset)).relative(horizontalPosition: .start, verticalPosition: .start, sizingOption: []),
             contentNode.relative(horizontalPosition: .start, verticalPosition: .start, sizingOption: [])
             ]
             .stacked(.vertical)
@@ -166,19 +172,16 @@ final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode wher
             .overlayed(by: [editButtonNode, deleteButtonNode].stacked(in: .horizontal, spacing: 16, justifyContent: .end, alignItems: .start).insets(.all(16)))
     }
     
-    override func animateLayoutTransition(_ context: ASContextTransitioning) {
-        
-    }
+    override func animateLayoutTransition(_ context: ASContextTransitioning) {}
 }
 
 // MARK: Operations
 
 extension ASMedicalTermCellNode {
     func expand() {
-        guard let canvasView = canvasNode.view as? CanvasView else {
-            return
-        }
-        style.preferredSize.height = min(item?.lines.highestY ?? 0 + 200, maximumHeight)
+        guard let canvasView = canvasNode.view as? CanvasView else { return }
+        guard style.preferredSize.height < maximumHeight else { return }
+        style.preferredSize.height = min(max((item?.lines.highestY ?? 0) + 200, style.preferredSize.height), maximumHeight)
         transitionLayout(withAnimation: false, shouldMeasureAsync: false) {
             canvasView.setNeedsDisplay()
         }
@@ -186,7 +189,8 @@ extension ASMedicalTermCellNode {
     
     func contract() {
         guard let canvasView = canvasNode.view as? CanvasView else { return }
-        let newHeight = min(max(titleTextNode.frame.height, item?.lines.highestY ?? 0 + 2, 50, deleteButtonNode.frame.height + 32, contentNode.frame.height), maximumHeight)
+        guard let `item` = item, !item.isPadder else { return }
+        let newHeight = min(max(titleTextNode.frame.height, (item.lines.highestY ?? 0) + 4, item.intrinsicContentHeight, deleteButtonNode.frame.height + 32, contentNode.frame.height), maximumHeight)
         style.preferredSize.height = newHeight
         transitionLayout(withAnimation: false, shouldMeasureAsync: true) {
             canvasView.setNeedsDisplay()

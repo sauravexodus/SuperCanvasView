@@ -25,9 +25,18 @@ final class ASDisplayNodeWithBackgroundColor: ASDisplayNode {
     }
 }
 
-final class ASAwareTableNode: ASTableNode {
+final class ASAwareTableNode: ASTableNode, ASTableDelegate, UIScrollViewDelegate {
     let endUpdateSubject = PublishSubject<Void>()
     let endContractSubject = PublishSubject<HomeViewModel.IndexPathWithHeight>()
+    let disposeBag = DisposeBag()
+    
+    override init(style: UITableViewStyle) {
+        super.init(style: style)
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        endUpdateSubject.onNext(())
+    }
 }
 
 final class ContainerDisplayNode: ASDisplayNode {
@@ -64,7 +73,7 @@ final class ContainerDisplayNode: ASDisplayNode {
     let tableNode = ASAwareTableNode(style: .plain).then {
         $0.view.panGestureRecognizer.allowedTouchTypes = [NSNumber(value: UITouchType.direct.rawValue)]
         $0.view.tableFooterView = UIView()
-        $0.view.backgroundColor = .yellow
+        $0.view.backgroundColor = .white
         $0.style.flexGrow = 1
     }
     
@@ -108,7 +117,7 @@ final class ContainerDisplayNode: ASDisplayNode {
 
 final class ASHomeViewController: ASViewController<ContainerDisplayNode>, ReactorKit.View {
     var disposeBag: DisposeBag = DisposeBag()
-    let dataSource: RxASTableReloadDataSource<ConsultationPageSection>
+    let dataSource: RxASTableAnimatedDataSource<ConsultationPageSection>
     let containerNode = ContainerDisplayNode()
     
     init(viewModel: HomeViewModel) {
@@ -133,7 +142,7 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
             }
         }
         
-        dataSource = RxASTableReloadDataSource(configureCellBlock: configureCell)
+        dataSource = RxASTableAnimatedDataSource(configureCellBlock: configureCell)
 
         super.init(node: containerNode)
         containerNode.frame = self.view.bounds
@@ -195,12 +204,11 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
         containerNode.tableNode.endContractSubject
             .pausableBufferedCombined(
                 containerNode.tableNode.endContractSubject
-                    .debounce(1, scheduler: MainScheduler.instance)
+                    .debounce(3, scheduler: MainScheduler.instance)
                     .flatMap { _ in Observable.concat(.just(true), .just(false)) }
                     .startWith(false),
                 limit: 100)
             .map { .updateHeights($0) }
-
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
@@ -303,6 +311,11 @@ extension ASHomeViewController: ASTableDelegate {
                 .bind(to: reactor.action)
                 .disposed(by: medicalTermCellNode.disposeBag)
         }
+    }
+    
+    /// Since ASAwareTableNode's delegate is HomeViewController. We have to do this so that ASAwareTableNode is aware of the scrolling.
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        containerNode.tableNode.scrollViewDidScroll(scrollView)
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {

@@ -44,7 +44,18 @@ extension ConsultationRow {
         let string = NSAttributedString(string: medicalTerm.name ?? "", attributes: [.font: UIFont.preferredPrintFont(forTextStyle: .body)])
         let stringHeight = string.height(withConstrainedWidth: PDFPageSize.A4.width)
         
-        return stringHeight
+        return stringHeight + (appropriateInset * 2)
+    }
+    
+    var appropriateInset: CGFloat {
+        switch PrintFontSetting.current {
+        case .compact:
+            return 8
+        case .regular:
+            return 16
+        case .comfortable:
+            return 24
+        }
     }
 }
 

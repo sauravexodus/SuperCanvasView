@@ -25,19 +25,17 @@ final class ASDisplayNodeWithBackgroundColor: ASDisplayNode {
     }
 }
 
-final class ASAwareTableNode: ASTableNode, UITableViewDelegate {
+final class ASAwareTableNode: ASTableNode, ASTableDelegate, UIScrollViewDelegate {
     let endUpdateSubject = PublishSubject<Void>()
     let endContractSubject = PublishSubject<HomeViewModel.IndexPathWithHeight>()
     let disposeBag = DisposeBag()
     
     override init(style: UITableViewStyle) {
         super.init(style: style)
-        
-//        view.asyncDelegate = self
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        print("Scrolled")
+        endUpdateSubject.onNext(())
     }
 
 }
@@ -315,6 +313,10 @@ extension ASHomeViewController: ASTableDelegate {
                 .bind(to: reactor.action)
                 .disposed(by: medicalTermCellNode.disposeBag)
         }
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        containerNode.tableNode.scrollViewDidScroll(scrollView)
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {

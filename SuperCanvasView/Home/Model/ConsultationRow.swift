@@ -33,7 +33,7 @@ struct ConsultationRow {
 
 extension ConsultationRow {
     var heightWithHeader: CGFloat {
-        return needsHeader ? (height + 20) : height
+        return needsHeader ? (height + 32) : height
     }
 }
 

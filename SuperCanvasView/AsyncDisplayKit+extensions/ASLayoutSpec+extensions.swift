@@ -33,6 +33,10 @@ extension ASLayoutSpec {
     func relative(horizontalPosition: ASRelativeLayoutSpecPosition, verticalPosition: ASRelativeLayoutSpecPosition, sizingOption: ASRelativeLayoutSpecSizingOption) -> ASRelativeLayoutSpec {
         return ASRelativeLayoutSpec(horizontalPosition: horizontalPosition, verticalPosition: verticalPosition, sizingOption: sizingOption, child: self)
     }
+    
+    func background(with node: ASDisplayNode) -> ASBackgroundLayoutSpec {
+        return ASBackgroundLayoutSpec(child: self, background: node)
+    }
 }
 
 extension Array where Element: ASLayoutSpec {

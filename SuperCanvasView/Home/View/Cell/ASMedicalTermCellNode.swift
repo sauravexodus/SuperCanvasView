@@ -26,7 +26,6 @@ final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode wher
 
     let headerTextNode = ASTextNode().then {
         $0.maximumNumberOfLines = 0
-        $0.backgroundColor = .darkGray
     }
     
     let editButtonNode = ASButtonNode().then {
@@ -137,15 +136,10 @@ final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode wher
         }
         if let header = item.header, item.needsHeader {
             headerTextNode.attributedText = .init(string: header, attributes: [.foregroundColor: UIColor.white])
-            headerTextNode.style.preferredLayoutSize.width = .init(unit: .fraction, value: 1)
-        } else {
-            headerTextNode.style.preferredSize.height = 0
         }
-        
         style.preferredSize.height = min(CGFloat(max(CGFloat(item.heightWithHeader), item.lines.highestY ?? 0)), maximumHeight)
-        canvasNode.style.preferredSize.height = .init(item.heightWithHeader)
         titleTextNode.attributedText = .init(string: term.name ?? "", attributes: [.foregroundColor: UIColor.darkGray])
-        
+
         contentNode.configure(with: term)
         self.item = item
     }
@@ -153,18 +147,27 @@ final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode wher
     // MARK: Lifecycle methods
     
     override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
-        let spacer = ASLayoutSpec()
-        spacer.style.flexGrow = 1
-
-        return [
-            headerTextNode.relative(horizontalPosition: .start, verticalPosition: .start, sizingOption: []),
-            spacer,
-            titleTextNode.insets(.all(16)).relative(horizontalPosition: .start, verticalPosition: .start, sizingOption: []),
-            contentNode.relative(horizontalPosition: .start, verticalPosition: .start, sizingOption: [])
-            ]
-            .stacked(.vertical)
+        var stack: [ASLayoutSpec] = []
+        if let `item` = item, item.needsHeader {
+            let backgroundNode = ASDisplayNode().then { $0.backgroundColor = .darkGray }
+            stack.append(
+                [ASDisplayNode(), headerTextNode, ASDisplayNode()]
+                .stacked(.vertical)
+                .then { $0.spacing = 8 }
+                .insets(.left(8))
+                .background(with: backgroundNode)
+            )
+        }
+        
+        stack.append(
+            titleTextNode.insets(.all(16))
+            .overlayed(by: contentNode)
             .overlayed(by: canvasNode)
-            .overlayed(by: [editButtonNode, deleteButtonNode].stacked(in: .horizontal, spacing: 16, justifyContent: .end, alignItems: .start).insets(.all(16)))
+            .overlayed(by: [editButtonNode, deleteButtonNode].stacked(in: .horizontal, spacing: 16, justifyContent: .end, alignItems: .start).insets(UIEdgeInsets.all(16)))
+            .then { $0.style.flexGrow = 1  }
+        )
+        
+        return stack.stacked(.vertical)
     }
     
     override func animateLayoutTransition(_ context: ASContextTransitioning) {}

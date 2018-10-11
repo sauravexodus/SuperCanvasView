@@ -12,11 +12,12 @@ import RxDataSources
 struct ConsultationPageSection {
     var items: [Item]
     var pageHeight: CGFloat
-    var id = UUID().uuidString
+    var pageIndex: Int
     
-    init(items: [Item], pageHeight: CGFloat) {
+    init(items: [Item], pageHeight: CGFloat, pageIndex: Int) {
         self.items = items
         self.pageHeight = pageHeight
+        self.pageIndex = pageIndex
     }
     
     var usedHeight: CGFloat {
@@ -29,7 +30,7 @@ struct ConsultationPageSection {
     
     var nextPage: ConsultationPageSection? {
         guard pageHeight - usedHeight <= 70, let lastItem = items.last else { return nil }
-        return ConsultationPageSection(items: [ConsultationRow(height: pageHeight, lines: [], medicalTerm: lastItem.medicalTerm.sectionOfSelf.correspondingEmptyTerm)], pageHeight: pageHeight)
+        return ConsultationPageSection(items: [ConsultationRow(height: pageHeight, lines: [], medicalTerm: lastItem.medicalTerm.sectionOfSelf.correspondingEmptyTerm)], pageHeight: pageHeight, pageIndex: pageIndex + 1)
     }
     
     var paddingRow: ConsultationRow? {
@@ -48,10 +49,10 @@ struct ConsultationPageSection {
 
 extension ConsultationPageSection: AnimatableSectionModelType {
     typealias Item = ConsultationRow
-    typealias Identity = String
+    typealias Identity = Int
     
-    var identity: String {
-        return id
+    var identity: Int {
+        return pageIndex
     }
     
     init(original: ConsultationPageSection, items: [Item]) {

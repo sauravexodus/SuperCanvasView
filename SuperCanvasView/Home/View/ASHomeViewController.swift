@@ -117,7 +117,7 @@ final class ContainerDisplayNode: ASDisplayNode {
 
 final class ASHomeViewController: ASViewController<ContainerDisplayNode>, ReactorKit.View {
     var disposeBag: DisposeBag = DisposeBag()
-    let dataSource: RxASTableReloadDataSource<ConsultationPageSection>
+    let dataSource: RxASTableAnimatedDataSource<ConsultationPageSection>
     let containerNode = ContainerDisplayNode()
     
     init(viewModel: HomeViewModel) {
@@ -142,7 +142,7 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
             }
         }
         
-        dataSource = RxASTableReloadDataSource(configureCellBlock: configureCell)
+        dataSource = RxASTableAnimatedDataSource(configureCellBlock: configureCell)
 
         super.init(node: containerNode)
         containerNode.frame = self.view.bounds

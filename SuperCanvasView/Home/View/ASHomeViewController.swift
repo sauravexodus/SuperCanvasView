@@ -25,7 +25,7 @@ final class ASDisplayNodeWithBackgroundColor: ASDisplayNode {
     }
 }
 
-final class ASAwareTableNode: ASTableNode, UITableViewDelegate {
+final class ASAwareTableNode: ASTableNode, ASTableDelegate, UIScrollViewDelegate {
     let endUpdateSubject = PublishSubject<Void>()
     let endContractSubject = PublishSubject<HomeViewModel.IndexPathWithHeight>()
     let disposeBag = DisposeBag()
@@ -35,7 +35,7 @@ final class ASAwareTableNode: ASTableNode, UITableViewDelegate {
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        print("Scrolled")
+        endUpdateSubject.onNext(())
     }
 }
 
@@ -312,6 +312,11 @@ extension ASHomeViewController: ASTableDelegate {
                 .bind(to: reactor.action)
                 .disposed(by: medicalTermCellNode.disposeBag)
         }
+    }
+    
+    /// Since ASAwareTableNode's delegate is HomeViewController. We have to do this so that ASAwareTableNode is aware of the scrolling.
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        containerNode.tableNode.scrollViewDidScroll(scrollView)
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {

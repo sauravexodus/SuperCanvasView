@@ -156,9 +156,7 @@ final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode wher
             .overlayed(by: [editButtonNode, deleteButtonNode].stacked(in: .horizontal, spacing: 16, justifyContent: .end, alignItems: .start).insets(.all(16)))
     }
     
-    override func animateLayoutTransition(_ context: ASContextTransitioning) {
-        
-    }
+    override func animateLayoutTransition(_ context: ASContextTransitioning) {}
 }
 
 // MARK: Operations

@@ -35,7 +35,7 @@ final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode wher
     }
 
     var header: String?
-    let maximumHeight: CGFloat = 300
+    let maximumHeight: CGFloat = 900
     let disposeBag = DisposeBag()
     var item: ConsultationRow?
     

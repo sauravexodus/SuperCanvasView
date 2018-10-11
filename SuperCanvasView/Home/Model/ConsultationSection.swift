@@ -17,6 +17,14 @@ struct ConsultationSection {
         self.medicalSection = medicalSection
         self.items = items
     }
+    
+    mutating func insert(_ consultationRow: ConsultationRow, with minimumHeight: CGFloat) {
+        let padderRow = ConsultationRow(height: minimumHeight, lines: [], medicalTerm: consultationRow.medicalTerm.sectionOfSelf.correspondingEmptyTerm)
+        if let lastItem = items.last, lastItem.isPadder {
+            items.removeLast()
+        }
+        items += [consultationRow, padderRow]
+    }
 }
 
 extension ConsultationSection: AnimatableSectionModelType {

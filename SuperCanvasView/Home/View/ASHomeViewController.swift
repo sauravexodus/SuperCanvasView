@@ -238,7 +238,11 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
             })
             .disposed(by: disposeBag)
     }
-    
+}
+
+// MARK: Print
+
+extension ASHomeViewController {
     private func generatePages() -> Observable<[UIImage]> {
         return Observable<Int>.interval(0.2, scheduler: MainScheduler.instance)
             .take(containerNode.tableNode.numberOfSections)
@@ -274,11 +278,26 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
             })
             .map { $0.mergeToSingleImage() }
     }
+    
+    private func generateHeaderViewForSection(at index: Int) -> UIView {
+        let view = UIView(frame: CGRect.zero)
+        let label = UILabel(frame: CGRect(x: 0, y: 0, width: containerNode.frame.size.width, height: 16))
+        label.backgroundColor = .darkGray
+        label.textColor = .white
+        label.font = UIFont.preferredPrintFont(forTextStyle: .footnote)
+        label.text = dataSource[index].medicalSection.displayTitle
+        view.addSubview(label)
+        return view
+    }
 }
 
 extension ASHomeViewController: ASTableDelegate {
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 16
+    }
+
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        return generateHeaderViewForSection(at: section)
     }
     
     func tableNode(_ tableNode: ASTableNode, willDisplayRowWith node: ASCellNode) {
@@ -304,11 +323,5 @@ extension ASHomeViewController: ASTableDelegate {
     /// Since ASAwareTableNode's delegate is HomeViewController. We have to do this so that ASAwareTableNode is aware of the scrolling.
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         containerNode.tableNode.scrollViewDidScroll(scrollView)
-    }
-    
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let view = UIView()
-        view.backgroundColor = .gray
-        return view
     }
 }

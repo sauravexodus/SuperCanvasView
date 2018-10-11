@@ -31,7 +31,8 @@ final class HomeViewModel: Reactor {
     
     struct State {
         var sections: [ConsultationSection] = []
-        let pageHeight: CGFloat = 300
+        let pageHeight: CGFloat = 900
+        let minimumHeight: CGFloat = 100
         var focusedIndexPath: IndexPathWithScrollPosition?
     }
     
@@ -69,7 +70,20 @@ extension HomeViewModel {
     }
     
     private func mutateSelectMedicalSection(_ medicalSection: MedicalSection) -> Observable<Mutation> {
-        return .empty()
+        var sections = currentState.sections
+        guard !sections.isEmpty, sections[0].items.count > 0, !sections[0].items[0].isPadder else {
+            let consultationRow = ConsultationRow(height: currentState.pageHeight, lines: [], medicalTerm: medicalSection.correspondingEmptyTerm)
+            return .just(.setSections([ConsultationSection(medicalSection: medicalSection, items: [consultationRow])]))
+        }
+        guard let sectionIndex = sections.firstIndex(where: { section in section.medicalSection == medicalSection }) else {
+            let sectionIndex = sections.firstIndex(where: { section in section.medicalSection.printPosition > medicalSection.printPosition }) ?? sections.endIndex
+            let consultationRow = ConsultationRow(height: currentState.minimumHeight, lines: [], medicalTerm: medicalSection.correspondingEmptyTerm)
+            sections.insert(ConsultationSection(medicalSection: medicalSection, items: [consultationRow]), at: sectionIndex)
+            let focusedIndexPath = IndexPathWithScrollPosition(indexPath: IndexPath(row: 0, section: sectionIndex), scrollPosition: .top)
+            return .concat(.just(.setSections(sections)), .just(.setFocusedIndexPath(focusedIndexPath)))
+        }
+        let focusedIndexPath = IndexPathWithScrollPosition(indexPath: IndexPath(row: 0, section: sectionIndex), scrollPosition: .top)
+        return .just(.setFocusedIndexPath(focusedIndexPath))
     }
     
     private func mutateAppendMedicalTerm(_ medicalTerm: MedicalTermType) -> Observable<Mutation> {
@@ -81,7 +95,7 @@ extension HomeViewModel {
             sections.insert(ConsultationSection(medicalSection: medicalTerm.sectionOfSelf, items: [consultationRow]), at: sectionIndex)
             return .just(.setSections(sections))
         }
-        sections[sectionIndex].items.append(consultationRow)
+        sections[sectionIndex].insert(consultationRow, with: currentState.minimumHeight)
         let rowIndex = sections[sectionIndex].items.count - 1
         let focusedIndexPath = IndexPathWithScrollPosition(indexPath: IndexPath(row: rowIndex, section: sectionIndex), scrollPosition: .none)
         return .concat(.just(.setSections(sections)), .just(.setFocusedIndexPath(focusedIndexPath)))

@@ -315,6 +315,7 @@ extension ASHomeViewController: ASTableDelegate {
         }
     }
     
+    /// Since ASAwareTableNode's delegate is HomeViewController. We have to do this so that ASAwareTableNode is aware of the scrolling.
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         containerNode.tableNode.scrollViewDidScroll(scrollView)
     }

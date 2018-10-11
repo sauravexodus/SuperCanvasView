@@ -31,6 +31,12 @@ struct ConsultationRow {
     }
 }
 
+extension ConsultationRow {
+    var heightWithHeader: CGFloat {
+        return needsHeader ? (height + 20) : height
+    }
+}
+
 extension ConsultationRow: Hashable {
     static func == (lhs: ConsultationRow, rhs: ConsultationRow) -> Bool {
         return lhs.id == rhs.id

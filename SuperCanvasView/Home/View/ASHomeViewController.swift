@@ -26,15 +26,7 @@ final class ASDisplayNodeWithBackgroundColor: ASDisplayNode {
 }
 
 final class ASAwareTableNode: ASTableNode, ASTableDelegate, UIScrollViewDelegate {
-    enum InteractionType: String {
-        case scribble
-        case tap
-        case scroll
-        case initial
-    }
-    
-    let endUpdateSubject = PublishSubject<(indexPath: IndexPath?, interactionType: InteractionType)>()
-    let endContractSubject = PublishSubject<HomeViewModel.IndexPathWithHeight?>()
+    let endUpdateSubject = PublishSubject<Void>()
     let disposeBag = DisposeBag()
     
     override init(style: UITableViewStyle) {
@@ -42,7 +34,7 @@ final class ASAwareTableNode: ASTableNode, ASTableDelegate, UIScrollViewDelegate
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        endUpdateSubject.onNext((indexPath: nil, interactionType: .scroll))
+        endUpdateSubject.onNext(())
     }
 }
 
@@ -124,13 +116,13 @@ final class ContainerDisplayNode: ASDisplayNode {
 
 final class ASHomeViewController: ASViewController<ContainerDisplayNode>, ReactorKit.View {
     var disposeBag: DisposeBag = DisposeBag()
-    let dataSource: RxASTableAnimatedDataSource<ConsultationPageSection>
+    let dataSource: RxASTableAnimatedDataSource<ConsultationSection>
     let containerNode = ContainerDisplayNode()
     
     init(viewModel: HomeViewModel) {
         defer { self.reactor = viewModel }
         
-        let configureCell: RxASTableAnimatedDataSource<ConsultationPageSection>.ConfigureCellBlock = { (ds, tableNode, index, item) in
+        let configureCell: RxASTableAnimatedDataSource<ConsultationSection>.ConfigureCellBlock = { (ds, tableNode, index, item) in
             return {
                 switch item.medicalTerm.sectionOfSelf {
                 case .diagnoses:
@@ -207,17 +199,6 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
             .mapTo(.deleteAll)
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
-
-        containerNode.tableNode.endContractSubject
-            .pausableBufferedCombined(
-                containerNode.tableNode.endContractSubject
-                    .debounce(3, scheduler: MainScheduler.instance)
-                    .flatMap { _ in Observable.concat(.just(true), .just(false)) }
-                    .startWith(false),
-                limit: 100)
-            .map { .updateHeights($0) }
-            .bind(to: reactor.action)
-            .disposed(by: disposeBag)
         
         containerNode.printButtonNode.rx
             .tap
@@ -231,7 +212,7 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
     }
     
     private func bindState(reactor: HomeViewModel) {
-        reactor.state.map { $0.pages }
+        reactor.state.map { $0.sections }
             .distinctUntilChanged { old, new in
                 let oldHashes = old.map { $0.items.map { $0.id } }.reduce([], { item, acc -> [String] in
                     var mutable = item

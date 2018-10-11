@@ -18,6 +18,10 @@ enum MedicalSection: Int, Hashable {
     case instructions
     case none
     
+    var printPosition: Int {
+        return MedicalSection.allSections().firstIndex(of: self) ?? 0
+    }
+    
     var title: String {
         switch self {
         case .symptoms: return "Chief Complaints"
@@ -33,6 +37,10 @@ enum MedicalSection: Int, Hashable {
     
     var displayTitle: String {
         return title
+    }
+    
+    static func allSections() -> [MedicalSection] {
+        return [.symptoms, .diagnoses]
     }
 }
 

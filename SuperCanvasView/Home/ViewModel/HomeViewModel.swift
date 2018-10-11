@@ -20,18 +20,17 @@ final class HomeViewModel: Reactor {
         case updateLines(indexPath: IndexPath, lines: [Line])
         case select(MedicalSection)
         case add(MedicalTermType)
-        case updateHeights([IndexPathWithHeight?])
         case deleteAll
         case print([UIImage])
     }
     
     enum Mutation {
-        case setPages([ConsultationPageSection])
+        case setSections([ConsultationSection])
         case setFocusedIndexPath(IndexPathWithScrollPosition)
     }
     
     struct State {
-        var pages: [ConsultationPageSection] = []
+        var sections: [ConsultationSection] = []
         let pageHeight: CGFloat = 300
         var focusedIndexPath: IndexPathWithScrollPosition?
     }
@@ -43,7 +42,6 @@ final class HomeViewModel: Reactor {
         case .initialLoad: return mutateInitialLoad()
         case let .select(medicalSection): return mutateSelectMedicalSection(medicalSection)
         case let .add(medicalTerm): return mutateAppendMedicalTerm(medicalTerm)
-        case let .updateHeights(newHeights): return mutateUpdateHeights(newHeights)
         case .deleteAll: return mutateInitialLoad()
         case let .updateLines(indexPath, lines): return mutateUpdatingLines(at: indexPath, lines: lines)
         case let .print(images): return mutatePrint(images: images)
@@ -53,8 +51,8 @@ final class HomeViewModel: Reactor {
     func reduce(state: HomeViewModel.State, mutation: HomeViewModel.Mutation) -> HomeViewModel.State {
         var state = state
         switch mutation {
-        case let .setPages(pages):
-            state.pages = pages
+        case let .setSections(sections):
+            state.sections = sections
         case let .setFocusedIndexPath(indexPath):
             state.focusedIndexPath = indexPath
         }
@@ -66,79 +64,34 @@ final class HomeViewModel: Reactor {
 
 extension HomeViewModel {
     private func mutateInitialLoad() -> Observable<Mutation> {
-        return .just(.setPages([ConsultationPageSection(items: [ConsultationRow(height: currentState.pageHeight, lines: [Line](), medicalTerm: Symptom(name: nil), needsHeader: true)], pageHeight: currentState.pageHeight, pageIndex: 0)]))
+        let medicalSection = MedicalSection.allSections()[0]
+        return .just(.setSections([ConsultationSection(medicalSection: medicalSection, items: [ConsultationRow(height: currentState.pageHeight, lines: [Line](), medicalTerm: medicalSection.correspondingEmptyTerm)])]))
     }
     
     private func mutateSelectMedicalSection(_ medicalSection: MedicalSection) -> Observable<Mutation> {
-        let currentSectionItems = currentState.pages.enumerated()
-            .reduce([], { result, page in
-                return result + page.element.items.enumerated().map { offset, item in
-                    return (sectionIndex: page.offset, itemIndex: offset, item: item)
-                }
-            })
-            .filter {
-                sectionIndex, itemIndex, item in item.medicalTerm.sectionOfSelf == medicalSection
-            }
-
-        guard let firstRow = currentSectionItems.first else { return .empty() }
-        guard let lastRow = currentSectionItems.last else { return .empty() }
-        var mutations: [Observable<Mutation>] = []
-        
-        if (lastRow.item.isPadder && lastRow.item.height < 62.5) || !lastRow.item.isPadder {
-            var medicalTerm = lastRow.item.medicalTerm
-            medicalTerm.name = nil
-            mutations.append(mutateAppendMedicalTerm(medicalTerm))
-        } else {
-            let consultationRows = currentState.pages.reduce([], { result, page in return result + page.items.filter { row in !row.isPadder } })
-            let pages = createPages(for: consultationRows)
-
-            mutations.append(.just(.setPages(pages)))
-        }
-        
-        let indexPath = IndexPathWithScrollPosition(
-            indexPath: IndexPath(row: firstRow.itemIndex, section: firstRow.sectionIndex),
-            scrollPosition: .top
-        )
-        
-        mutations.append(.just(.setFocusedIndexPath(indexPath)))
-        return Observable.concat(mutations)
+        return .empty()
     }
     
     private func mutateAppendMedicalTerm(_ medicalTerm: MedicalTermType) -> Observable<Mutation> {
-        let consultationRows = currentState.pages.reduce([], { result, page in return result + page.items.filter { row in !row.isPadder } })
+        var sections = currentState.sections
         let consultationRow = ConsultationRow(height: 62.5, lines: [], medicalTerm: medicalTerm)
-        let pages = createPages(for: consultationRows, appending: consultationRow)
-        let indexPath = pages.enumerated()
-            .reduce([], { result, page in
-                return result + page.element.items.enumerated().map { offset, item in
-                    return (sectionIndex: page.offset, itemIndex: offset, item: item)
-                }
-            })
-            .first { sectionIndex, itemIndex, item in
-                item == consultationRow
-            }
-            .map { sectionIndex, itemIndex, item in
-                IndexPathWithScrollPosition(indexPath: IndexPath(row: itemIndex, section: sectionIndex), scrollPosition: .none)
-            }
-        guard let foundPath = indexPath else { return .empty() }
-        return .concat(.just(.setPages(pages)), .just(.setFocusedIndexPath(foundPath)))
-    }
-    
-    private func mutateUpdateHeights(_ heights: [IndexPathWithHeight?]) -> Observable<Mutation> {
-        var pages = currentState.pages
-        heights.filter { $0 != nil }.forEach { result in
-            guard let height = result?.height, let indexPath = result?.indexPath, pages.count > indexPath.section, pages[indexPath.section].items.count > indexPath.row else { return }
-            pages[indexPath.section].items[indexPath.row].height = height
+        guard !sections.isEmpty else { return .just(.setSections([ConsultationSection(medicalSection: medicalTerm.sectionOfSelf, items: [consultationRow])])) }
+        guard let sectionIndex = sections.firstIndex(where: { section in section.medicalSection == medicalTerm.sectionOfSelf }) else {
+            let sectionIndex = sections.firstIndex(where: { section in section.medicalSection.printPosition > medicalTerm.sectionOfSelf.printPosition }) ?? sections.endIndex
+            sections.insert(ConsultationSection(medicalSection: medicalTerm.sectionOfSelf, items: [consultationRow]), at: sectionIndex)
+            return .just(.setSections(sections))
         }
-        let consultationRows = pages.reduce([], { result, page in return result + page.items.filter { row in !row.isPadder } })
-        return .just(.setPages(createPages(for: consultationRows)))
+        sections[sectionIndex].items.append(consultationRow)
+        let rowIndex = sections[sectionIndex].items.count - 1
+        let focusedIndexPath = IndexPathWithScrollPosition(indexPath: IndexPath(row: rowIndex, section: sectionIndex), scrollPosition: .none)
+        return .concat(.just(.setSections(sections)), .just(.setFocusedIndexPath(focusedIndexPath)))
     }
-    
+
     private func mutateUpdatingLines(at indexPath: IndexPath, lines: [Line]) -> Observable<Mutation> {
-        var pages = currentState.pages
-        guard pages.count > indexPath.section, pages[indexPath.section].items.count > indexPath.row else { return .empty() }
-        pages[indexPath.section].items[indexPath.row].lines = lines
-        return .just(.setPages(pages))
+        var sections = currentState.sections
+        guard sections.count > indexPath.section, sections[indexPath.section].items.count > indexPath.row else { return .empty() }
+        sections[indexPath.section].items[indexPath.row].lines = lines
+        return .just(.setSections(sections))
     }
     
     private func mutatePrint(images: [UIImage]) -> Observable<Mutation> {
@@ -152,54 +105,6 @@ extension HomeViewModel {
         pic.printingItems = images
         pic.present(animated: true)
         return .empty()
-    }
-}
-
-// MARK: Helpers
-
-extension HomeViewModel {
-    private func createPages(for consultationRows: [ConsultationRow], appending consultationRow: ConsultationRow) -> [ConsultationPageSection] {
-        var consultationRows = consultationRows
-        var consultationRow = consultationRow
-        // find index to insert the new row in
-        let indexToInsert = consultationRows.reduce(consultationRows.count, { result, row in
-            guard consultationRow.medicalTerm.sectionOfSelf == row.medicalTerm.sectionOfSelf else { return result }
-            if let index = consultationRows.index(of: row) { return index + 1 }
-            return result
-        })
-        // set needs header if it is the first item of it's kind
-        consultationRow.needsHeader = indexToInsert == 0 || !(consultationRows[indexToInsert - 1].medicalTerm.sectionOfSelf == consultationRow.medicalTerm.sectionOfSelf)
-        // insert new medical term into consultation rows
-        consultationRows.insert(consultationRow, at: indexToInsert)
-        // create pages after inserting row
-        return createPages(for: consultationRows)
-    }
-    
-    private func createPages(for consultationRows: [ConsultationRow]) -> [ConsultationPageSection] {
-        let pages = consultationRows.reduce([], { result, row -> [ConsultationPageSection] in
-            var result = result
-            guard !result.isEmpty else { return [ConsultationPageSection(items: [row], pageHeight: currentState.pageHeight, pageIndex: 0)] }
-            let fullResult = result
-            var lastPage = result.removeLast()
-            guard lastPage.canInsertRow(with: row.height) else { return fullResult + [ConsultationPageSection(items: [row], pageHeight: currentState.pageHeight, pageIndex: lastPage.pageIndex + 1)] }
-            lastPage.items += [row]
-            return result + [lastPage]
-        })
-        // pad the pages and return them
-        return padPages(pages)
-    }
-    
-    private func padPages(_ pages: [ConsultationPageSection]) -> [ConsultationPageSection] {
-        var pagesCopy = pages
-        for (index, page) in pages.enumerated() {
-            var newItems: [ConsultationRow] = []
-            if let paddingRow = page.paddingRow { newItems = [paddingRow] }
-            pagesCopy[index] = ConsultationPageSection(items: page.items + newItems, pageHeight: currentState.pageHeight, pageIndex: index)
-        }
-        if let lastPage = pages.last, let nextPage = lastPage.nextPage {
-            pagesCopy.append(nextPage)
-        }
-        return pagesCopy
     }
 }
 

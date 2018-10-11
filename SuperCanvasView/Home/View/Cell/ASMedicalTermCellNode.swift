@@ -23,10 +23,6 @@ final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode wher
     let canvasNode = ASDisplayNode {
         CanvasView().then { $0.backgroundColor = .clear }
     }
-
-    let headerTextNode = ASTextNode().then {
-        $0.maximumNumberOfLines = 0
-    }
     
     let editButtonNode = ASButtonNode().then {
         $0.setTitle("EDIT", with: UIFont.systemFont(ofSize: 12, weight: .semibold), with: .black, for: .normal)
@@ -92,22 +88,15 @@ final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode wher
             })
             .disposed(by: disposeBag)
         
-        Observable.merge(tapObservable.mapTo((indexPath: indexPath, interactionType: .tap)),
-                         canvasView.rx.pencilDidStopMoving.mapTo((indexPath: indexPath, interactionType: .scribble)))
+        Observable.merge(tapObservable, canvasView.rx.pencilDidStopMoving)
             .bind(to: tableNode.endUpdateSubject)
             .disposed(by: disposeBag)
 
         tableNode.endUpdateSubject
-            .pausableBufferedCombined(
-                tableNode.endUpdateSubject
-                    .debounce(1.5, scheduler: MainScheduler.instance)
-                    .flatMap { _ in Observable.concat(.just(true), .just(false)) }
-                    .startWith(false),
-                limit: nil)
-            .debug("reached here")
+            .debounce(1.5, scheduler: MainScheduler.instance)
             .subscribe(onNext: { [unowned self] type in
                 UIView.setAnimationsEnabled(true)
-                self.contract(type: type)
+                self.contract()
             })
             .disposed(by: disposeBag)
     }
@@ -141,10 +130,7 @@ final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode wher
             print("Something has gone horribly, horribly awry...")
             return
         }
-        if let header = item.header, item.needsHeader {
-            headerTextNode.attributedText = .init(string: header, attributes: [.foregroundColor: UIColor.white])
-        }
-        style.preferredSize.height = min(CGFloat(max(CGFloat(item.heightWithHeader), item.lines.highestY ?? 0)), maximumHeight)
+        style.preferredSize.height = min(CGFloat(max(CGFloat(item.height), item.lines.highestY ?? 0)), maximumHeight)
         titleTextNode.attributedText = .init(string: term.name ?? "", attributes: [.foregroundColor: UIColor.darkGray])
 
         contentNode.configure(with: term)
@@ -155,17 +141,6 @@ final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode wher
     
     override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
         var stack: [ASLayoutSpec] = []
-        if let `item` = item, item.needsHeader {
-            let backgroundNode = ASDisplayNode().then { $0.backgroundColor = .darkGray }
-            stack.append(
-                [ASDisplayNode(), headerTextNode, ASDisplayNode()]
-                .stacked(.vertical)
-                .then { $0.spacing = 8 }
-                .insets(.left(8))
-                .background(with: backgroundNode)
-            )
-        }
-        
         stack.append(
             titleTextNode.insets(.all(16))
             .overlayed(by: contentNode)
@@ -173,7 +148,6 @@ final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode wher
             .overlayed(by: [editButtonNode, deleteButtonNode].stacked(in: .horizontal, spacing: 16, justifyContent: .end, alignItems: .start).insets(UIEdgeInsets.all(16)))
             .then { $0.style.flexGrow = 1  }
         )
-        
         return stack.stacked(.vertical)
     }
     
@@ -192,21 +166,13 @@ extension ASMedicalTermCellNode {
         }
     }
     
-    func contract(type: [(indexPath: IndexPath?, interactionType: ASAwareTableNode.InteractionType)]) {
+    func contract() {
         guard let canvasView = canvasNode.view as? CanvasView else { return }
         guard let `item` = item, !item.isPadder else { return }
-        guard let tableNode = owningNode as? ASAwareTableNode else { return }
-        let offset = tableNode.contentOffset
-        let newHeight = min(max((item.lines.highestY ?? 0) + 4, item.needsHeader ? item.heightWithHeader : item.height), maximumHeight)
+        let newHeight = min(max((item.lines.highestY ?? 0) + 4, item.height), maximumHeight)
         style.preferredSize.height = newHeight
-        print("buffer: \(type)")
         transitionLayout(withAnimation: false, shouldMeasureAsync: true) {
             canvasView.setNeedsDisplay()
-            if type.contains(where: { (result) -> Bool in result.indexPath == self.indexPath && result.interactionType == .scribble }), let indexPath = self.indexPath, let tableNode = self.owningNode as? ASAwareTableNode {
-                print("indexPath: \(indexPath)")
-                tableNode.endContractSubject.onNext(HomeViewModel.IndexPathWithHeight(indexPath: indexPath, height: newHeight))
-            }
-            tableNode.setContentOffset(CGPoint(x: 0, y: min(offset.y, tableNode.view.contentSize.height)), animated: false)
         }
     }
 }

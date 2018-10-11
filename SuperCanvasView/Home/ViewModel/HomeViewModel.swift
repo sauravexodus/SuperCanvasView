@@ -32,7 +32,7 @@ final class HomeViewModel: Reactor {
     
     struct State {
         var pages: [ConsultationPageSection] = []
-        let pageHeight: CGFloat = 300
+        let pageHeight: CGFloat = 842
         var focusedIndexPath: IndexPathWithScrollPosition?
     }
     
@@ -66,7 +66,7 @@ final class HomeViewModel: Reactor {
 
 extension HomeViewModel {
     private func mutateInitialLoad() -> Observable<Mutation> {
-        return .just(.setPages([ConsultationPageSection(items: [ConsultationRow(height: currentState.pageHeight, lines: [Line](), medicalTerm: Symptom(name: nil), needsHeader: true)], pageHeight: currentState.pageHeight)]))
+        return .just(.setPages([ConsultationPageSection(items: [ConsultationRow(height: currentState.pageHeight, lines: [Line](), medicalTerm: Symptom(name: nil), needsHeader: true)], pageHeight: currentState.pageHeight, pageIndex: 0)]))
     }
     
     private func mutateUpdatingLines(at indexPath: IndexPath, lines: [Line]) -> Observable<Mutation> {
@@ -92,7 +92,7 @@ extension HomeViewModel {
         guard let lastRow = currentSectionItems.last else { return .empty() }
         var mutations: [Observable<Mutation>] = []
         
-        if (lastRow.item.isPadder && lastRow.item.height < 50) || !lastRow.item.isPadder {
+        if (lastRow.item.isPadder && lastRow.item.height < 62.5) || !lastRow.item.isPadder {
             var medicalTerm = lastRow.item.medicalTerm
             medicalTerm.name = nil
             mutations.append(mutateAppendMedicalTerm(medicalTerm))
@@ -114,7 +114,7 @@ extension HomeViewModel {
     
     private func mutateAppendMedicalTerm(_ medicalTerm: MedicalTermType) -> Observable<Mutation> {
         let consultationRows = currentState.pages.reduce([], { result, page in return result + page.items.filter { row in !row.isPadder } })
-        let consultationRow = ConsultationRow(height: 50, lines: [], medicalTerm: medicalTerm)
+        let consultationRow = ConsultationRow(height: 62.5, lines: [], medicalTerm: medicalTerm)
         let pages = createPages(for: consultationRows, appending: consultationRow)
         let indexPath = pages.enumerated()
             .reduce([], { result, page in
@@ -134,6 +134,7 @@ extension HomeViewModel {
     
     private func mutateUpdateHeights(_ heights: [IndexPathWithHeight]) -> Observable<Mutation> {
         var pages = currentState.pages
+        guard !pages.isEmpty else { return .empty() }
         heights.forEach { result in
             pages[result.indexPath.section].items[result.indexPath.row].height = result.height
         }
@@ -178,10 +179,10 @@ extension HomeViewModel {
     private func createPages(for consultationRows: [ConsultationRow]) -> [ConsultationPageSection] {
         let pages = consultationRows.reduce([], { result, row -> [ConsultationPageSection] in
             var result = result
-            guard !result.isEmpty else { return [ConsultationPageSection(items: [row], pageHeight: currentState.pageHeight)] }
+            guard !result.isEmpty else { return [ConsultationPageSection(items: [row], pageHeight: currentState.pageHeight, pageIndex: 0)] }
             let fullResult = result
             var lastPage = result.removeLast()
-            guard lastPage.canInsertRow(with: row.height) else { return fullResult + [ConsultationPageSection(items: [row], pageHeight: currentState.pageHeight)] }
+            guard lastPage.canInsertRow(with: row.height) else { return fullResult + [ConsultationPageSection(items: [row], pageHeight: currentState.pageHeight, pageIndex: lastPage.pageIndex + 1)] }
             lastPage.items += [row]
             return result + [lastPage]
         })
@@ -194,7 +195,7 @@ extension HomeViewModel {
         for (index, page) in pages.enumerated() {
             var newItems: [ConsultationRow] = []
             if let paddingRow = page.paddingRow { newItems = [paddingRow] }
-            pagesCopy[index] = ConsultationPageSection(items: page.items + newItems, pageHeight: currentState.pageHeight)
+            pagesCopy[index] = ConsultationPageSection(items: page.items + newItems, pageHeight: currentState.pageHeight, pageIndex: index)
         }
         if let lastPage = pages.last, let nextPage = lastPage.nextPage {
             pagesCopy.append(nextPage)

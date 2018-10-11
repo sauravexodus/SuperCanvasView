@@ -27,7 +27,7 @@ final class ASDisplayNodeWithBackgroundColor: ASDisplayNode {
 
 final class ASAwareTableNode: ASTableNode, ASTableDelegate, UIScrollViewDelegate {
     let endUpdateSubject = PublishSubject<Void>()
-    let endContractSubject = PublishSubject<HomeViewModel.IndexPathWithHeight>()
+    let endContractSubject = PublishSubject<HomeViewModel.IndexPathWithHeight?>()
     let disposeBag = DisposeBag()
     
     override init(style: UITableViewStyle) {
@@ -204,7 +204,7 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
         containerNode.tableNode.endContractSubject
             .pausableBufferedCombined(
                 containerNode.tableNode.endContractSubject
-                    .debounce(3, scheduler: MainScheduler.instance)
+                    .debounce(2, scheduler: MainScheduler.instance)
                     .flatMap { _ in Observable.concat(.just(true), .just(false)) }
                     .startWith(false),
                 limit: 100)

@@ -134,6 +134,7 @@ extension HomeViewModel {
     
     private func mutateUpdateHeights(_ heights: [IndexPathWithHeight]) -> Observable<Mutation> {
         var pages = currentState.pages
+        guard !pages.isEmpty else { return .empty() }
         heights.forEach { result in
             pages[result.indexPath.section].items[result.indexPath.row].height = result.height
         }

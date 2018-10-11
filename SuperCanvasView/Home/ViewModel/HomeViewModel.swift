@@ -20,7 +20,7 @@ final class HomeViewModel: Reactor {
         case updateLines(indexPath: IndexPath, lines: [Line])
         case select(MedicalSection)
         case add(MedicalTermType)
-        case updateHeights([IndexPathWithHeight])
+        case updateHeights([IndexPathWithHeight?])
         case deleteAll
         case print([UIImage])
     }
@@ -32,7 +32,7 @@ final class HomeViewModel: Reactor {
     
     struct State {
         var pages: [ConsultationPageSection] = []
-        let pageHeight: CGFloat = 842
+        let pageHeight: CGFloat = 300
         var focusedIndexPath: IndexPathWithScrollPosition?
     }
     
@@ -67,14 +67,6 @@ final class HomeViewModel: Reactor {
 extension HomeViewModel {
     private func mutateInitialLoad() -> Observable<Mutation> {
         return .just(.setPages([ConsultationPageSection(items: [ConsultationRow(height: currentState.pageHeight, lines: [Line](), medicalTerm: Symptom(name: nil), needsHeader: true)], pageHeight: currentState.pageHeight, pageIndex: 0)]))
-    }
-    
-    private func mutateUpdatingLines(at indexPath: IndexPath, lines: [Line]) -> Observable<Mutation> {
-        var item = currentState.pages[indexPath.section].items[indexPath.row]
-        item.lines = lines
-        var newPages = currentState.pages
-        newPages[indexPath.section].items[indexPath.row] = item
-        return .just(.setPages(newPages))
     }
     
     private func mutateSelectMedicalSection(_ medicalSection: MedicalSection) -> Observable<Mutation> {
@@ -132,14 +124,21 @@ extension HomeViewModel {
         return .concat(.just(.setPages(pages)), .just(.setFocusedIndexPath(foundPath)))
     }
     
-    private func mutateUpdateHeights(_ heights: [IndexPathWithHeight]) -> Observable<Mutation> {
+    private func mutateUpdateHeights(_ heights: [IndexPathWithHeight?]) -> Observable<Mutation> {
         var pages = currentState.pages
-        guard !pages.isEmpty else { return .empty() }
-        heights.forEach { result in
-            pages[result.indexPath.section].items[result.indexPath.row].height = result.height
+        heights.filter { $0 != nil }.forEach { result in
+            guard let height = result?.height, let indexPath = result?.indexPath, pages.count > indexPath.section, pages[indexPath.section].items.count > indexPath.row else { return }
+            pages[indexPath.section].items[indexPath.row].height = height
         }
         let consultationRows = pages.reduce([], { result, page in return result + page.items.filter { row in !row.isPadder } })
         return .just(.setPages(createPages(for: consultationRows)))
+    }
+    
+    private func mutateUpdatingLines(at indexPath: IndexPath, lines: [Line]) -> Observable<Mutation> {
+        var pages = currentState.pages
+        guard pages.count > indexPath.section, pages[indexPath.section].items.count > indexPath.row else { return .empty() }
+        pages[indexPath.section].items[indexPath.row].lines = lines
+        return .just(.setPages(pages))
     }
     
     private func mutatePrint(images: [UIImage]) -> Observable<Mutation> {
@@ -207,11 +206,9 @@ extension HomeViewModel {
 // MARK: Debugging
 
 #if DEBUG
-
 extension HomeViewModel {
     func transform(state: Observable<HomeViewModel.State>) -> Observable<HomeViewModel.State> {
         return state.debug("HomeViewModel", trimOutput: true)
     }
 }
-
 #endif

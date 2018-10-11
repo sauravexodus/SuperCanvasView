@@ -26,7 +26,14 @@ final class ASDisplayNodeWithBackgroundColor: ASDisplayNode {
 }
 
 final class ASAwareTableNode: ASTableNode, ASTableDelegate, UIScrollViewDelegate {
-    let endUpdateSubject = PublishSubject<Void>()
+    enum InteractionType: String {
+        case scribble
+        case tap
+        case scroll
+        case initial
+    }
+    
+    let endUpdateSubject = PublishSubject<(indexPath: IndexPath?, interactionType: InteractionType)>()
     let endContractSubject = PublishSubject<HomeViewModel.IndexPathWithHeight?>()
     let disposeBag = DisposeBag()
     
@@ -35,7 +42,7 @@ final class ASAwareTableNode: ASTableNode, ASTableDelegate, UIScrollViewDelegate
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        endUpdateSubject.onNext(())
+        endUpdateSubject.onNext((indexPath: nil, interactionType: .scroll))
     }
 }
 
@@ -204,7 +211,7 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
         containerNode.tableNode.endContractSubject
             .pausableBufferedCombined(
                 containerNode.tableNode.endContractSubject
-                    .debounce(2, scheduler: MainScheduler.instance)
+                    .debounce(3, scheduler: MainScheduler.instance)
                     .flatMap { _ in Observable.concat(.just(true), .just(false)) }
                     .startWith(false),
                 limit: 100)

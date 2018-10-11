@@ -92,20 +92,22 @@ final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode wher
             })
             .disposed(by: disposeBag)
         
-        Observable.merge(tapObservable, canvasView.rx.pencilDidStopMoving)
+        Observable.merge(tapObservable.mapTo((indexPath: indexPath, interactionType: .tap)),
+                         canvasView.rx.pencilDidStopMoving.mapTo((indexPath: indexPath, interactionType: .scribble)))
             .bind(to: tableNode.endUpdateSubject)
-            .disposed(by: disposeBag)
-        
-        Observable.merge(tapObservable, canvasView.rx.pencilDidStopMoving)
-            .mapTo(nil)
-            .bind(to: tableNode.endContractSubject)
             .disposed(by: disposeBag)
 
         tableNode.endUpdateSubject
-            .debounce(1.5, scheduler: MainScheduler.instance)
-            .subscribe(onNext: { [unowned self] _ in
+            .pausableBufferedCombined(
+                tableNode.endUpdateSubject
+                    .debounce(1.5, scheduler: MainScheduler.instance)
+                    .flatMap { _ in Observable.concat(.just(true), .just(false)) }
+                    .startWith(false),
+                limit: nil)
+            .debug("reached here")
+            .subscribe(onNext: { [unowned self] type in
                 UIView.setAnimationsEnabled(true)
-                self.contract()
+                self.contract(type: type)
             })
             .disposed(by: disposeBag)
     }
@@ -190,16 +192,21 @@ extension ASMedicalTermCellNode {
         }
     }
     
-    func contract() {
+    func contract(type: [(indexPath: IndexPath?, interactionType: ASAwareTableNode.InteractionType)]) {
         guard let canvasView = canvasNode.view as? CanvasView else { return }
         guard let `item` = item, !item.isPadder else { return }
-        let newHeight = min(max(titleTextNode.frame.height, (item.lines.highestY ?? 0) + 4, 62.5, deleteButtonNode.frame.height + 32, contentNode.frame.height), maximumHeight)
+        guard let tableNode = owningNode as? ASAwareTableNode else { return }
+        let offset = tableNode.contentOffset
+        let newHeight = min(max((item.lines.highestY ?? 0) + 4, item.needsHeader ? item.heightWithHeader : item.height), maximumHeight)
         style.preferredSize.height = newHeight
+        print("buffer: \(type)")
         transitionLayout(withAnimation: false, shouldMeasureAsync: true) {
             canvasView.setNeedsDisplay()
-            if let indexPath = self.indexPath, let tableNode = self.owningNode as? ASAwareTableNode {
-//                tableNode.endContractSubject.onNext(HomeViewModel.IndexPathWithHeight(indexPath: indexPath, height: newHeight))
+            if type.contains(where: { (result) -> Bool in result.indexPath == self.indexPath && result.interactionType == .scribble }), let indexPath = self.indexPath, let tableNode = self.owningNode as? ASAwareTableNode {
+                print("indexPath: \(indexPath)")
+                tableNode.endContractSubject.onNext(HomeViewModel.IndexPathWithHeight(indexPath: indexPath, height: newHeight))
             }
+            tableNode.setContentOffset(CGPoint(x: 0, y: min(offset.y, tableNode.view.contentSize.height)), animated: false)
         }
     }
 }

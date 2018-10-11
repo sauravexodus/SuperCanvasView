@@ -37,7 +37,6 @@ final class ASAwareTableNode: ASTableNode, ASTableDelegate, UIScrollViewDelegate
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         endUpdateSubject.onNext(())
     }
-
 }
 
 final class ContainerDisplayNode: ASDisplayNode {
@@ -74,7 +73,7 @@ final class ContainerDisplayNode: ASDisplayNode {
     let tableNode = ASAwareTableNode(style: .plain).then {
         $0.view.panGestureRecognizer.allowedTouchTypes = [NSNumber(value: UITouchType.direct.rawValue)]
         $0.view.tableFooterView = UIView()
-        $0.view.backgroundColor = .yellow
+        $0.view.backgroundColor = .white
         $0.style.flexGrow = 1
     }
     
@@ -205,12 +204,12 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
         containerNode.tableNode.endContractSubject
             .pausableBufferedCombined(
                 containerNode.tableNode.endContractSubject
-                    .debounce(1, scheduler: MainScheduler.instance)
+                    .debounce(3, scheduler: MainScheduler.instance)
                     .flatMap { _ in Observable.concat(.just(true), .just(false)) }
                     .startWith(false),
                 limit: 100)
             .map { .updateHeights($0) }
-
+            .debug("REACHED HERE")
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         

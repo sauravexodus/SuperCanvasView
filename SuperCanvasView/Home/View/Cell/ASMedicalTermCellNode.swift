@@ -96,8 +96,9 @@ final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode wher
         Observable.merge(tapObservable, canvasView.rx.pencilDidStopMoving)
             .bind(to: tableNode.endUpdateSubject)
             .disposed(by: disposeBag)
-        
-        tableNode.endUpdateSubject.debounce(1, scheduler: MainScheduler.instance)
+
+        tableNode.endUpdateSubject
+            .debounce(1.5, scheduler: MainScheduler.instance)
             .subscribe(onNext: { [unowned self] _ in
                 UIView.setAnimationsEnabled(true)
                 self.contract()
@@ -155,9 +156,7 @@ final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode wher
             .overlayed(by: [editButtonNode, deleteButtonNode].stacked(in: .horizontal, spacing: 16, justifyContent: .end, alignItems: .start).insets(.all(16)))
     }
     
-    override func animateLayoutTransition(_ context: ASContextTransitioning) {
-        
-    }
+    override func animateLayoutTransition(_ context: ASContextTransitioning) {}
 }
 
 // MARK: Operations
@@ -166,7 +165,7 @@ extension ASMedicalTermCellNode {
     func expand() {
         guard let canvasView = canvasNode.view as? CanvasView else { return }
         guard style.preferredSize.height < maximumHeight else { return }
-        style.preferredSize.height = min(item?.lines.highestY ?? 0 + 200, maximumHeight)
+        style.preferredSize.height = min(max((item?.lines.highestY ?? 0) + 200, style.preferredSize.height), maximumHeight)
         transitionLayout(withAnimation: false, shouldMeasureAsync: false) {
             canvasView.setNeedsDisplay()
         }
@@ -175,7 +174,7 @@ extension ASMedicalTermCellNode {
     func contract() {
         guard let canvasView = canvasNode.view as? CanvasView else { return }
         guard let `item` = item, !item.isPadder else { return }
-        let newHeight = min(max(titleTextNode.frame.height, item.lines.highestY ?? 0 + 2, 62.5, deleteButtonNode.frame.height + 32, contentNode.frame.height), maximumHeight)
+        let newHeight = min(max(titleTextNode.frame.height, (item.lines.highestY ?? 0) + 4, 62.5, deleteButtonNode.frame.height + 32, contentNode.frame.height), maximumHeight)
         style.preferredSize.height = newHeight
         transitionLayout(withAnimation: false, shouldMeasureAsync: true) {
             canvasView.setNeedsDisplay()

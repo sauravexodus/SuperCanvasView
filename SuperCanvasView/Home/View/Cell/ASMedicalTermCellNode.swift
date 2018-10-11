@@ -135,9 +135,15 @@ final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode wher
             print("Something has gone horribly, horribly awry...")
             return
         }
-        header = item.header
-        style.preferredSize.height = min(CGFloat(max(CGFloat(item.height), item.lines.highestY ?? 0)), maximumHeight)
-        canvasNode.style.preferredSize.height = .init(item.height)
+        if let header = item.header, item.needsHeader {
+            headerTextNode.attributedText = .init(string: header, attributes: [.foregroundColor: UIColor.white])
+            headerTextNode.style.preferredLayoutSize.width = .init(unit: .fraction, value: 1)
+        } else {
+            headerTextNode.style.preferredSize.height = 0
+        }
+        
+        style.preferredSize.height = min(CGFloat(max(CGFloat(item.heightWithHeader), item.lines.highestY ?? 0)), maximumHeight)
+        canvasNode.style.preferredSize.height = .init(item.heightWithHeader)
         titleTextNode.attributedText = .init(string: term.name ?? "", attributes: [.foregroundColor: UIColor.darkGray])
         
         contentNode.configure(with: term)
@@ -147,7 +153,12 @@ final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode wher
     // MARK: Lifecycle methods
     
     override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
+        let spacer = ASLayoutSpec()
+        spacer.style.flexGrow = 1
+
         return [
+            headerTextNode.relative(horizontalPosition: .start, verticalPosition: .start, sizingOption: []),
+            spacer,
             titleTextNode.insets(.all(16)).relative(horizontalPosition: .start, verticalPosition: .start, sizingOption: []),
             contentNode.relative(horizontalPosition: .start, verticalPosition: .start, sizingOption: [])
             ]

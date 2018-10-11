@@ -40,7 +40,7 @@ final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode wher
     }
 
     var header: String?
-    let maximumHeight: CGFloat = 842
+    let maximumHeight: CGFloat = 300
     let disposeBag = DisposeBag()
     var item: ConsultationRow?
     
@@ -95,6 +95,11 @@ final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode wher
         
         Observable.merge(tapObservable, canvasView.rx.pencilDidStopMoving)
             .bind(to: tableNode.endUpdateSubject)
+            .disposed(by: disposeBag)
+        
+        Observable.merge(tapObservable, canvasView.rx.pencilDidStopMoving)
+            .mapTo(nil)
+            .bind(to: tableNode.endContractSubject)
             .disposed(by: disposeBag)
 
         tableNode.endUpdateSubject
@@ -190,7 +195,7 @@ extension ASMedicalTermCellNode {
         transitionLayout(withAnimation: false, shouldMeasureAsync: true) {
             canvasView.setNeedsDisplay()
             if let indexPath = self.indexPath, let tableNode = self.owningNode as? ASAwareTableNode {
-                tableNode.endContractSubject.onNext(HomeViewModel.IndexPathWithHeight(indexPath: indexPath, height: newHeight))
+//                tableNode.endContractSubject.onNext(HomeViewModel.IndexPathWithHeight(indexPath: indexPath, height: newHeight))
             }
         }
     }

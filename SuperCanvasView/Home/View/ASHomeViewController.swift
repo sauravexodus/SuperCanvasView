@@ -252,10 +252,13 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
     }
     
     private func generatePages() -> Observable<[UIImage]> {
-        return Observable<Int>.interval(0.2, scheduler: MainScheduler.instance)
+        containerNode.tableNode.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
+        return Observable<Int>.interval(0.01, scheduler: MainScheduler.instance)
             .take(containerNode.tableNode.numberOfSections)
             .concatMap { [weak self] section -> Observable<UIImage?> in
-                guard let strongSelf = self else { return .just(nil) }
+                guard let strongSelf = self else {
+                    return .just(nil)
+                }
                 return strongSelf.captureSinglePage(section)
             }
             .unwrap()
@@ -265,16 +268,17 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
                 return images
             })
             .do(onDispose: { [weak self] in
-                self?.containerNode.tableNode.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
+                self?.containerNode.tableNode.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
             })
     }
     
     private func captureSinglePage(_ section: Int) -> Observable<UIImage?> {
-        return Observable.from(Array(0...containerNode.tableNode.numberOfRows(inSection: section) - 1))
+        return Observable<Int>.interval(0.01, scheduler: MainScheduler.instance)
+            .take(containerNode.tableNode.numberOfRows(inSection: section))
             .concatMap { [weak self] row -> Observable<UIImage?> in
                 guard let strongSelf = self else { return .just(nil) }
                 let indexPath = IndexPath(row: row, section: section)
-                strongSelf.containerNode.tableNode.scrollToRow(at: indexPath, at: .top, animated: true)
+                strongSelf.containerNode.tableNode.scrollToRow(at: indexPath, at: .top, animated: false)
                 let cell = strongSelf.containerNode.tableNode.cellForRow(at: indexPath)
                 return cell?.contentView.rx.swCapture() ?? .just(nil)
             }

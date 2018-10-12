@@ -23,6 +23,7 @@ final class HomeViewModel: Reactor {
         case delete(IndexPath)
         case deleteAll
         case print([UIImage])
+        case addPageBreaks
     }
     
     enum Mutation {
@@ -34,6 +35,7 @@ final class HomeViewModel: Reactor {
         var sections: [ConsultationSection] = []
         let terminalCellHeight: CGFloat = 100
         let pageHeight: CGFloat = 842
+        let headerHeight: CGFloat = 16
         var focusedIndexPath: IndexPathWithScrollPosition?
     }
     
@@ -48,6 +50,7 @@ final class HomeViewModel: Reactor {
         case let .delete(indexPath): return mutateDeleteRow(at: indexPath)
         case .deleteAll: return mutateInitialLoad()
         case let .print(images): return mutatePrint(images: images)
+        case .addPageBreaks: return mutateAddingPageBreaks()
         }
     }
     
@@ -105,6 +108,39 @@ extension HomeViewModel {
         let rowIndex = sections[sectionIndex].items.count - 1
         let focusedIndexPath = IndexPathWithScrollPosition(indexPath: IndexPath(row: rowIndex, section: sectionIndex), scrollPosition: .none)
         return .concat(.just(.setSections(sections)), .just(.setFocusedIndexPath(focusedIndexPath)))
+    }
+    
+    private func mutateAddingPageBreaks() -> Observable<Mutation> {
+        var currentHeight: CGFloat = 0
+        let currentSections = currentState.sections.map { section -> ConsultationSection in
+            var `section` = section
+            section.items = section.items.filter { !$0.isPageBreak }
+            return section
+        }
+        let newSections = currentSections.reduce([], { sections, section -> [ConsultationSection] in
+            var `section` = section
+            if currentHeight + currentState.headerHeight > currentState.pageHeight {
+                section.items.append(ConsultationRow(height: 10, lines: [], medicalTerm: section.items.first!.medicalTerm, isPageBreak: true))
+                currentHeight = currentState.headerHeight
+            } else {
+                currentHeight += currentState.headerHeight
+            }
+            let items = section.items.reduce([], { items, row -> [ConsultationRow] in
+                var `items` = items
+                if row.isTerminal || row.isPageBreak { return items + [row] }
+                if currentHeight + row.contentHeight > currentState.pageHeight {
+                    items += [ConsultationRow(height: 10, lines: [], medicalTerm: row.medicalTerm, isPageBreak: true)]
+                    currentHeight = row.contentHeight
+                } else {
+                    currentHeight += row.contentHeight
+                }
+                return items + [row]
+            })
+            section.items = items
+            return sections + [section]
+
+        })
+        return .just(.setSections(newSections))
     }
 
     private func mutateUpdatingLines(at indexPath: IndexPath, lines: [Line]) -> Observable<Mutation> {

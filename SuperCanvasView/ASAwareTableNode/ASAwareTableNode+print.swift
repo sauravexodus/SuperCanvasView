@@ -43,7 +43,8 @@ extension ASAwareTableNode {
             .concatMap { [weak self] row -> Observable<UIImage?> in
                 guard let strongSelf = self else { return .just(nil) }
                 let indexPath = IndexPath(row: row, section: section)
-                if strongSelf.animatedDataSource.sectionModels[section].items[row].isTerminal { return .just(nil) }
+                let currentConsultationRow = strongSelf.animatedDataSource.sectionModels[section].items[row]
+                if currentConsultationRow.isTerminal || currentConsultationRow.isPageBreak { return .just(nil) }
                 strongSelf.scrollToRow(at: indexPath, at: .top, animated: true)
                 let cell = strongSelf.cellForRow(at: indexPath)
                 return cell?.contentView.rx.swCapture() ?? .just(nil)

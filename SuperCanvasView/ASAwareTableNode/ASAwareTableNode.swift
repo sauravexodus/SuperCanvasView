@@ -35,14 +35,17 @@ final class ASAwareTableNode: ASTableNode {
                 case .diagnoses:
                     let node = ASMedicalTermCellNode<EmptyCellNode<Diagnosis>>()
                     node.configure(with: item)
+                    if item.isPageBreak { node.backgroundColor = .red }
                     return node
                 case .symptoms:
                     let node = ASMedicalTermCellNode<EmptyCellNode<Symptom>>()
                     node.configure(with: item)
+                    if item.isPageBreak { node.backgroundColor = .red }
                     return node
                 default:
                     let node = ASMedicalTermCellNode<EmptyCellNode<NoMedicalTerm>>()
                     node.configure(with: item)
+                    if item.isPageBreak { node.backgroundColor = .red }
                     return node
                 }
             }

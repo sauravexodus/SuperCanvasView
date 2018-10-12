@@ -18,10 +18,17 @@ struct ConsultationRow {
     var isTerminal: Bool {
         return medicalTerm.name == nil && lines.isEmpty
     }
-    init(height: CGFloat, lines: [Line], medicalTerm: MedicalTermType) {
+    
+    var contentHeight: CGFloat {
+        return min(CGFloat(max(CGFloat(height), lines.highestY ?? 0)), 842)
+    }
+    var isPageBreak: Bool
+    
+    init(height: CGFloat, lines: [Line], medicalTerm: MedicalTermType, isPageBreak: Bool = false) {
         self.height = height
         self.lines = lines
         self.medicalTerm = medicalTerm
+        self.isPageBreak = isPageBreak
     }
 }
 

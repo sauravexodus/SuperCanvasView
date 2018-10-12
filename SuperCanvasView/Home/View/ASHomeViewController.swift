@@ -200,11 +200,12 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
+        
         containerNode.printButtonNode.rx
             .tap
             .flatMap { [weak self] _ -> Observable<[UIImage]> in
                 guard let strongSelf = self  else { return .empty() }
-                return strongSelf.generatePages()
+                return strongSelf.generatePages(strongSelf.reactor?.currentState.pageHeight ?? 0)
             }
             .map { .print($0) }
             .bind(to: reactor.action)
@@ -243,7 +244,7 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
 // MARK: Print
 
 extension ASHomeViewController {
-    private func generatePages() -> Observable<[UIImage]> {
+    private func generatePages(_ pageHeight: CGFloat) -> Observable<[UIImage]> {
         containerNode.tableNode.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
         return Observable<Int>.interval(0.01, scheduler: MainScheduler.instance)
             .take(containerNode.tableNode.numberOfSections)
@@ -254,11 +255,18 @@ extension ASHomeViewController {
                 return strongSelf.captureSinglePage(section)
             }
             .unwrap()
-            .reduce([], accumulator: { images, page in
-                var `images` = images
-                images.append(page)
-                return images
+            .reduce([], accumulator: { pages, image -> [(image: UIImage, height: CGFloat)] in
+                var `pages` = pages
+                guard let lastPage = pages.last else { return [(image, image.size.height)] }
+                if lastPage.height + image.size.height > pageHeight {
+                    return pages + [(image, image.size.height)]
+                } else {
+                    guard let newImage = [lastPage.image, image].mergeToSingleImage() else { return pages }
+                    let _ = pages.popLast()
+                    return pages + [(newImage, newImage.size.height)]
+                }
             })
+            .map { $0.map { $0.image.padToPage(of: pageHeight) } }
             .do(onDispose: { [weak self] in
                 self?.containerNode.tableNode.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
             })
@@ -270,17 +278,11 @@ extension ASHomeViewController {
             .concatMap { [weak self] row -> Observable<UIImage?> in
                 guard let strongSelf = self else { return .just(nil) }
                 let indexPath = IndexPath(row: row, section: section)
+                if strongSelf.dataSource.sectionModels[section].items[row].isPadder { return .just(nil) }
                 strongSelf.containerNode.tableNode.scrollToRow(at: indexPath, at: .top, animated: false)
                 let cell = strongSelf.containerNode.tableNode.cellForRow(at: indexPath)
                 return cell?.contentView.rx.swCapture() ?? .just(nil)
             }
-            .unwrap()
-            .reduce([], accumulator: { images, image in
-                var `images` = images
-                images.append(image)
-                return images
-            })
-            .map { $0.mergeToSingleImage() }
     }
     
     private func generateHeaderViewForSection(at index: Int) -> UIView {

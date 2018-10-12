@@ -24,7 +24,7 @@ extension ASMedicalTermCellNode {
     
     func contract() {
         guard let canvasView = canvasNode.view as? CanvasView else { return }
-        guard let `item` = item, !item.isPadder else { return }
+        guard let `item` = item else { return }
         let newHeight = min(max((item.lines.highestY ?? 0) + 4, item.height), maximumHeight)
         style.preferredSize.height = newHeight
         transitionLayout(withAnimation: false, shouldMeasureAsync: true) {

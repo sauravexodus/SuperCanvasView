@@ -12,7 +12,6 @@ import SnapKit
 import RxSwift
 
 final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode where ContentNode.RepresentationTarget: MedicalTermType {
-    
     internal let titleTextNode = ASTextNode().then {
         $0.maximumNumberOfLines = 0
     }
@@ -83,6 +82,5 @@ final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode wher
         contentNode.configure(with: term)
         self.item = item
     }
-    
 }
 

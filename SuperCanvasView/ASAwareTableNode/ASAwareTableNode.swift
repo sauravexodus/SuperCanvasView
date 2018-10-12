@@ -15,11 +15,11 @@ import RxCocoa
 typealias LinesWithIndexPath = (lines: [Line], indexPath: IndexPath)
 
 final class ASAwareTableNode: ASTableNode {
-    
     // MARK: Internal properties
     
     internal let endUpdateSubject = PublishSubject<Void>()
     internal let linesUpdateSubject = PublishSubject<LinesWithIndexPath>()
+    internal let itemDeleted = PublishSubject<IndexPath>()
     
     // MARK: Public properties
     
@@ -73,7 +73,6 @@ final class ASAwareTableNode: ASTableNode {
             $0.addSubview(label)
         }
     }
-    
 }
 
 // MARK: Delegates

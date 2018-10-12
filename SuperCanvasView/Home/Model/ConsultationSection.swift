@@ -18,17 +18,24 @@ struct ConsultationSection {
         self.items = items
     }
     
+    var isEmpty: Bool {
+        return items.count == 0 || (items.count == 1 && items[0].isTerminal)
+    }
+    
     mutating func insert(_ consultationRow: ConsultationRow, with terminalCellHeight: CGFloat) {
-        let padderRow = ConsultationRow(height: terminalCellHeight, lines: [], medicalTerm: consultationRow.medicalTerm.sectionOfSelf.correspondingEmptyTerm)
-        if let lastItem = items.last, lastItem.isPadder {
+        let padderRow = ConsultationRow(height: terminalCellHeight, lines: [], medicalTerm: medicalSection.correspondingEmptyTerm)
+        if let lastItem = items.last, lastItem.isTerminal {
             items.removeLast()
         }
         items += [consultationRow, padderRow]
     }
     
     mutating func addTerminalCell(with height: CGFloat) {
-        if let lastItem = items.last, !lastItem.isPadder {
-            items.append(ConsultationRow(height: height, lines: [], medicalTerm: lastItem.medicalTerm.sectionOfSelf.correspondingEmptyTerm))
+        if items.count == 0 {
+            items.append(ConsultationRow(height: height, lines: [], medicalTerm: medicalSection.correspondingEmptyTerm))
+        }
+        if let lastItem = items.last, !lastItem.isTerminal {
+            items.append(ConsultationRow(height: height, lines: [], medicalTerm: medicalSection.correspondingEmptyTerm))
         }
     }
 }

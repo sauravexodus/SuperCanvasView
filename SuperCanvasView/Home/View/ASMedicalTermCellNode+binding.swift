@@ -12,13 +12,16 @@ import RxSwift
 // MARK: Bindings
 
 extension ASMedicalTermCellNode {
-    
     var linesChanged: Observable<(lines: [Line], indexPath: IndexPath)> {
         guard let canvasView = canvasNode.view as? CanvasView else { return .empty() }
         return canvasView.rx.lines.map { [unowned self] lines in
             guard let indexPath = self.indexPath else { throw NSError(domain: "CanvasView", code: 0, userInfo: [NSLocalizedDescriptionKey: "Could not find indexPath"]) }
             return (lines: lines, indexPath: indexPath)
         }
+    }
+    
+    var delete: Observable<IndexPath> {
+        return deleteButtonNode.rx.tap.mapTo(indexPath).unwrap()
     }
     
     internal func bind() {
@@ -80,10 +83,11 @@ extension ASMedicalTermCellNode {
     }
     
     private func bindDeleteAction() {
+        guard let tableNode = owningNode as? ASAwareTableNode else { return }
         deleteButtonNode.rx.tap
-            .subscribe(onNext: { _ in
-                print("Delete Tapped")
-            })
+            .map { [weak self] _ in self?.indexPath }
+            .unwrap()
+            .bind(to: tableNode.itemDeleted)
             .disposed(by: disposeBag)
     }
 }

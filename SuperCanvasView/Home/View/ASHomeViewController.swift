@@ -25,7 +25,6 @@ final class ASDisplayNodeWithBackgroundColor: ASDisplayNode {
     }
 }
 
-
 final class ContainerDisplayNode: ASDisplayNode {
     let addSymptomButtonNode = ASButtonNode().then {
         $0.setTitle("Add Symptom", with: .systemFont(ofSize: 13), with: .white, for: .normal)
@@ -103,7 +102,6 @@ final class ContainerDisplayNode: ASDisplayNode {
 }
 
 final class ASHomeViewController: ASViewController<ContainerDisplayNode>, ReactorKit.View {
-    
     var disposeBag: DisposeBag = DisposeBag()
     let containerNode = ContainerDisplayNode()
     
@@ -175,6 +173,13 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
             .map { .print($0) }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
+        
+        containerNode.tableNode
+            .itemDeleted
+            .map { .delete($0) }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
     }
     
     private func bindState(reactor: HomeViewModel) {

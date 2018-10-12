@@ -17,9 +17,10 @@ final class HomeViewModel: Reactor {
 
     enum Action {
         case initialLoad
-        case updateLines(indexPath: IndexPath, lines: [Line])
         case select(MedicalSection)
         case add(MedicalTermType)
+        case updateLines(indexPath: IndexPath, lines: [Line])
+        case delete(IndexPath)
         case deleteAll
         case print([UIImage])
     }
@@ -43,8 +44,9 @@ final class HomeViewModel: Reactor {
         case .initialLoad: return mutateInitialLoad()
         case let .select(medicalSection): return mutateSelectMedicalSection(medicalSection)
         case let .add(medicalTerm): return mutateAppendMedicalTerm(medicalTerm)
-        case .deleteAll: return mutateInitialLoad()
         case let .updateLines(indexPath, lines): return mutateUpdatingLines(at: indexPath, lines: lines)
+        case let .delete(indexPath): return mutateDeleteRow(at: indexPath)
+        case .deleteAll: return mutateInitialLoad()
         case let .print(images): return mutatePrint(images: images)
         }
     }
@@ -71,7 +73,10 @@ extension HomeViewModel {
     
     private func mutateSelectMedicalSection(_ medicalSection: MedicalSection) -> Observable<Mutation> {
         var sections = currentState.sections
-        guard !sections.isEmpty, sections[0].items.count > 0, !sections[0].items[0].isPadder else {
+        sections.removeAll { (section) -> Bool in
+            section.medicalSection != medicalSection && section.isEmpty
+        }
+        guard !sections.isEmpty, sections[0].items.count > 0, !sections[0].items[0].isTerminal else {
             let consultationRow = ConsultationRow(height: currentState.terminalCellHeight, lines: [], medicalTerm: medicalSection.correspondingEmptyTerm)
             return .just(.setSections([ConsultationSection(medicalSection: medicalSection, items: [consultationRow])]))
         }
@@ -83,7 +88,7 @@ extension HomeViewModel {
             return .concat(.just(.setSections(sections)), .just(.setFocusedIndexPath(focusedIndexPath)))
         }
         let focusedIndexPath = IndexPathWithScrollPosition(indexPath: IndexPath(row: 0, section: sectionIndex), scrollPosition: .top)
-        return .just(.setFocusedIndexPath(focusedIndexPath))
+        return .concat(.just(.setSections(sections)), .just(.setFocusedIndexPath(focusedIndexPath)))
     }
     
     private func mutateAppendMedicalTerm(_ medicalTerm: MedicalTermType) -> Observable<Mutation> {
@@ -92,7 +97,8 @@ extension HomeViewModel {
         guard !sections.isEmpty else { return .just(.setSections([ConsultationSection(medicalSection: medicalTerm.sectionOfSelf, items: [consultationRow])])) }
         guard let sectionIndex = sections.firstIndex(where: { section in section.medicalSection == medicalTerm.sectionOfSelf }) else {
             let sectionIndex = sections.firstIndex(where: { section in section.medicalSection.printPosition > medicalTerm.sectionOfSelf.printPosition }) ?? sections.endIndex
-            sections.insert(ConsultationSection(medicalSection: medicalTerm.sectionOfSelf, items: [consultationRow]), at: sectionIndex)
+            sections.insert(ConsultationSection(medicalSection: medicalTerm.sectionOfSelf, items: []), at: sectionIndex)
+            sections[sectionIndex].insert(consultationRow, with: currentState.terminalCellHeight)
             return .just(.setSections(sections))
         }
         sections[sectionIndex].insert(consultationRow, with: currentState.terminalCellHeight)
@@ -106,6 +112,18 @@ extension HomeViewModel {
         guard sections.count > indexPath.section, sections[indexPath.section].items.count > indexPath.row else { return .empty() }
         sections[indexPath.section].addTerminalCell(with: currentState.terminalCellHeight)
         sections[indexPath.section].items[indexPath.row].lines = lines
+        return .just(.setSections(sections))
+    }
+    
+    private func mutateDeleteRow(at indexPath: IndexPath) -> Observable<Mutation> {
+        var sections = currentState.sections
+        guard sections.count > indexPath.section, sections[indexPath.section].items.count > indexPath.row else { return .empty() }
+        sections[indexPath.section].items.remove(at: indexPath.row)
+        if sections.count > 1 && sections[indexPath.section].isEmpty {
+            sections.remove(at: indexPath.section)
+        } else {
+            sections[indexPath.section].addTerminalCell(with: currentState.terminalCellHeight)
+        }
         return .just(.setSections(sections))
     }
     

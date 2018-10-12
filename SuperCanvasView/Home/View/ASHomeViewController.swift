@@ -25,19 +25,6 @@ final class ASDisplayNodeWithBackgroundColor: ASDisplayNode {
     }
 }
 
-final class ASAwareTableNode: ASTableNode, ASTableDelegate, UIScrollViewDelegate {
-    let endUpdateSubject = PublishSubject<Void>()
-    let disposeBag = DisposeBag()
-    
-    override init(style: UITableViewStyle) {
-        super.init(style: style)
-    }
-    
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        endUpdateSubject.onNext(())
-    }
-}
-
 final class ContainerDisplayNode: ASDisplayNode {
     let addSymptomButtonNode = ASButtonNode().then {
         $0.setTitle("Add Symptom", with: .systemFont(ofSize: 13), with: .white, for: .normal)
@@ -116,37 +103,14 @@ final class ContainerDisplayNode: ASDisplayNode {
 
 final class ASHomeViewController: ASViewController<ContainerDisplayNode>, ReactorKit.View {
     var disposeBag: DisposeBag = DisposeBag()
-    let dataSource: RxASTableAnimatedDataSource<ConsultationSection>
     let containerNode = ContainerDisplayNode()
     
     init(viewModel: HomeViewModel) {
         defer { self.reactor = viewModel }
         
-        let configureCell: RxASTableAnimatedDataSource<ConsultationSection>.ConfigureCellBlock = { (ds, tableNode, index, item) in
-            return {
-                switch item.medicalTerm.sectionOfSelf {
-                case .diagnoses:
-                    let node = ASMedicalTermCellNode<EmptyCellNode<Diagnosis>>()
-                    node.configure(with: item)
-                    return node
-                case .symptoms:
-                    let node = ASMedicalTermCellNode<EmptyCellNode<Symptom>>()
-                    node.configure(with: item)
-                    return node
-                default:
-                    let node = ASMedicalTermCellNode<EmptyCellNode<NoMedicalTerm>>()
-                    node.configure(with: item)
-                    return node
-                }
-            }
-        }
-        
-        dataSource = RxASTableAnimatedDataSource(configureCellBlock: configureCell)
-
         super.init(node: containerNode)
         containerNode.frame = self.view.bounds
         containerNode.view.backgroundColor = .white
-        containerNode.tableNode.delegate = self
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -205,11 +169,18 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
             .tap
             .flatMap { [weak self] _ -> Observable<[UIImage]> in
                 guard let strongSelf = self  else { return .empty() }
-                return strongSelf.generatePages(strongSelf.reactor?.currentState.pageHeight ?? 0)
+                return strongSelf.containerNode.tableNode.generatePages(strongSelf.reactor?.currentState.pageHeight ?? 0)
             }
             .map { .print($0) }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
+        
+        containerNode.tableNode
+            .itemDeleted
+            .map { .delete($0) }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
     }
     
     private func bindState(reactor: HomeViewModel) {
@@ -227,7 +198,7 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
                 })
                 return diff(old: oldHashes, new: newHashes).isEmpty
             }
-            .bind(to: containerNode.tableNode.rx.items(dataSource: dataSource))
+            .bind(to: containerNode.tableNode.rx.items(dataSource: containerNode.tableNode.animatedDataSource))
             .disposed(by: disposeBag)
         
         reactor.state.map { $0.focusedIndexPath }
@@ -238,96 +209,5 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
                 strongSelf.containerNode.tableNode.scrollToRow(at: result.indexPath, at: result.scrollPosition, animated: true)
             })
             .disposed(by: disposeBag)
-    }
-}
-
-// MARK: Print
-
-extension ASHomeViewController {
-    private func generatePages(_ pageHeight: CGFloat) -> Observable<[UIImage]> {
-        containerNode.tableNode.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
-        return Observable<Int>.interval(0.01, scheduler: MainScheduler.instance)
-            .take(containerNode.tableNode.numberOfSections)
-            .concatMap { [weak self] section -> Observable<UIImage?> in
-                guard let strongSelf = self else {
-                    return .just(nil)
-                }
-                return strongSelf.captureSinglePage(section)
-            }
-            .unwrap()
-            .reduce([], accumulator: { pages, image -> [(image: UIImage, height: CGFloat)] in
-                var `pages` = pages
-                guard let lastPage = pages.last else { return [(image, image.size.height)] }
-                if lastPage.height + image.size.height > pageHeight {
-                    return pages + [(image, image.size.height)]
-                } else {
-                    guard let newImage = [lastPage.image, image].mergeToSingleImage() else { return pages }
-                    let _ = pages.popLast()
-                    return pages + [(newImage, newImage.size.height)]
-                }
-            })
-            .map { $0.map { $0.image.padToPage(of: pageHeight) } }
-            .do(onDispose: { [weak self] in
-                self?.containerNode.tableNode.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
-            })
-    }
-    
-    private func captureSinglePage(_ section: Int) -> Observable<UIImage?> {
-        return Observable<Int>.interval(0.01, scheduler: MainScheduler.instance)
-            .take(containerNode.tableNode.numberOfRows(inSection: section))
-            .concatMap { [weak self] row -> Observable<UIImage?> in
-                guard let strongSelf = self else { return .just(nil) }
-                let indexPath = IndexPath(row: row, section: section)
-                if strongSelf.dataSource.sectionModels[section].items[row].isPadder { return .just(nil) }
-                strongSelf.containerNode.tableNode.scrollToRow(at: indexPath, at: .top, animated: false)
-                let cell = strongSelf.containerNode.tableNode.cellForRow(at: indexPath)
-                return cell?.contentView.rx.swCapture() ?? .just(nil)
-            }
-    }
-    
-    private func generateHeaderViewForSection(at index: Int) -> UIView {
-        let view = UIView(frame: CGRect.zero)
-        let label = UILabel(frame: CGRect(x: 0, y: 0, width: containerNode.frame.size.width, height: 16))
-        label.backgroundColor = .darkGray
-        label.textColor = .white
-        label.font = UIFont.preferredPrintFont(forTextStyle: .footnote)
-        label.text = dataSource[index].medicalSection.displayTitle
-        view.addSubview(label)
-        return view
-    }
-}
-
-extension ASHomeViewController: ASTableDelegate {
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 16
-    }
-
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        return generateHeaderViewForSection(at: section)
-    }
-    
-    func tableNode(_ tableNode: ASTableNode, willDisplayRowWith node: ASCellNode) {
-        guard let `reactor` = reactor else { return }
-        if let medicalTermCellNode = node as? ASMedicalTermCellNode<EmptyCellNode<Diagnosis>> {
-            medicalTermCellNode.linesChanged.debounce(0.3, scheduler: MainScheduler.instance)
-                .map { .updateLines(indexPath: $0.indexPath, lines: $0.lines) }
-                .bind(to: reactor.action)
-                .disposed(by: medicalTermCellNode.disposeBag)
-        } else if let medicalTermCellNode = node as? ASMedicalTermCellNode<EmptyCellNode<Symptom>> {
-            medicalTermCellNode.linesChanged.debounce(0.3, scheduler: MainScheduler.instance)
-                .map { .updateLines(indexPath: $0.indexPath, lines: $0.lines) }
-                .bind(to: reactor.action)
-                .disposed(by: medicalTermCellNode.disposeBag)
-        } else if let medicalTermCellNode = node as? ASMedicalTermCellNode<EmptyCellNode<NoMedicalTerm>> {
-            medicalTermCellNode.linesChanged.debounce(0.3, scheduler: MainScheduler.instance)
-                .map { .updateLines(indexPath: $0.indexPath, lines: $0.lines) }
-                .bind(to: reactor.action)
-                .disposed(by: medicalTermCellNode.disposeBag)
-        }
-    }
-    
-    /// Since ASAwareTableNode's delegate is HomeViewController. We have to do this so that ASAwareTableNode is aware of the scrolling.
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        containerNode.tableNode.scrollViewDidScroll(scrollView)
     }
 }

@@ -15,7 +15,7 @@ struct ConsultationRow {
     var lines: [Line]
     let medicalTerm: MedicalTermType
     
-    var isPadder: Bool {
+    var isTerminal: Bool {
         return medicalTerm.name == nil && lines.isEmpty
     }
     init(height: CGFloat, lines: [Line], medicalTerm: MedicalTermType) {

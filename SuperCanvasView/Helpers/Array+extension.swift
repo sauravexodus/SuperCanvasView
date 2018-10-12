@@ -9,6 +9,18 @@
 import Foundation
 import UIKit
 
+extension Array {
+    func firstIndex(where comparer: (Element) -> Bool) -> Index? {
+        return index(where: comparer)
+    }
+}
+
+extension Array where Element: Equatable {
+    func firstIndex(of element: Element) -> Index? {
+        return index(where: { $0 == element })
+    }
+}
+
 extension Array where Element: UIImage {
     
     func mergeToSingleImage() -> UIImage? {

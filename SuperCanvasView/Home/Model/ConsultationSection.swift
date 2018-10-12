@@ -18,8 +18,8 @@ struct ConsultationSection {
         self.items = items
     }
     
-    mutating func insert(_ consultationRow: ConsultationRow, with minimumHeight: CGFloat) {
-        let padderRow = ConsultationRow(height: minimumHeight, lines: [], medicalTerm: consultationRow.medicalTerm.sectionOfSelf.correspondingEmptyTerm)
+    mutating func insert(_ consultationRow: ConsultationRow, with terminalCellHeight: CGFloat) {
+        let padderRow = ConsultationRow(height: terminalCellHeight, lines: [], medicalTerm: consultationRow.medicalTerm.sectionOfSelf.correspondingEmptyTerm)
         if let lastItem = items.last, lastItem.isPadder {
             items.removeLast()
         }

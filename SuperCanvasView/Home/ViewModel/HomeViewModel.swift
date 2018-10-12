@@ -32,7 +32,7 @@ final class HomeViewModel: Reactor {
     struct State {
         var sections: [ConsultationSection] = []
         let pageHeight: CGFloat = 900
-        let minimumHeight: CGFloat = 100
+        let terminalCellHeight: CGFloat = 100
         var focusedIndexPath: IndexPathWithScrollPosition?
     }
     
@@ -77,7 +77,7 @@ extension HomeViewModel {
         }
         guard let sectionIndex = sections.firstIndex(where: { section in section.medicalSection == medicalSection }) else {
             let sectionIndex = sections.firstIndex(where: { section in section.medicalSection.printPosition > medicalSection.printPosition }) ?? sections.endIndex
-            let consultationRow = ConsultationRow(height: currentState.minimumHeight, lines: [], medicalTerm: medicalSection.correspondingEmptyTerm)
+            let consultationRow = ConsultationRow(height: currentState.terminalCellHeight, lines: [], medicalTerm: medicalSection.correspondingEmptyTerm)
             sections.insert(ConsultationSection(medicalSection: medicalSection, items: [consultationRow]), at: sectionIndex)
             let focusedIndexPath = IndexPathWithScrollPosition(indexPath: IndexPath(row: 0, section: sectionIndex), scrollPosition: .top)
             return .concat(.just(.setSections(sections)), .just(.setFocusedIndexPath(focusedIndexPath)))
@@ -95,7 +95,7 @@ extension HomeViewModel {
             sections.insert(ConsultationSection(medicalSection: medicalTerm.sectionOfSelf, items: [consultationRow]), at: sectionIndex)
             return .just(.setSections(sections))
         }
-        sections[sectionIndex].insert(consultationRow, with: currentState.minimumHeight)
+        sections[sectionIndex].insert(consultationRow, with: currentState.terminalCellHeight)
         let rowIndex = sections[sectionIndex].items.count - 1
         let focusedIndexPath = IndexPathWithScrollPosition(indexPath: IndexPath(row: rowIndex, section: sectionIndex), scrollPosition: .none)
         return .concat(.just(.setSections(sections)), .just(.setFocusedIndexPath(focusedIndexPath)))

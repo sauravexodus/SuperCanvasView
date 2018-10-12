@@ -290,8 +290,8 @@ extension ASHomeViewController {
             let label = UILabel(frame: CGRect(x: 0, y: 0, width: width, height: height)).then {
                 $0.backgroundColor = .darkGray
                 $0.textColor = .white
-                $0.font = UIFont.preferredPrintFont(forTextStyle: .footnote)
-                $0.text = dataSource[index].medicalSection.displayTitle
+                $0.font = font
+                $0.text = text
             }
             $0.addSubview(label)
         }

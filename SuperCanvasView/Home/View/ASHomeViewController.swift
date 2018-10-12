@@ -280,14 +280,21 @@ extension ASHomeViewController {
     }
     
     private func generateHeaderViewForSection(at index: Int) -> UIView {
-        let view = UIView(frame: CGRect.zero)
-        let label = UILabel(frame: CGRect(x: 0, y: 0, width: containerNode.frame.size.width, height: 16))
-        label.backgroundColor = .darkGray
-        label.textColor = .white
-        label.font = UIFont.preferredPrintFont(forTextStyle: .footnote)
-        label.text = dataSource[index].medicalSection.displayTitle
-        view.addSubview(label)
-        return view
+        let text = dataSource[index].medicalSection.displayTitle
+        let font = UIFont.preferredPrintFont(forTextStyle: .footnote)
+        let attributedText = NSAttributedString(string: text, attributes: [.font: font])
+        let width = containerNode.frame.size.width
+        let height = attributedText.height(withConstrainedWidth: width)
+
+        return UIView(frame: CGRect.zero).then {
+            let label = UILabel(frame: CGRect(x: 0, y: 0, width: width, height: height)).then {
+                $0.backgroundColor = .darkGray
+                $0.textColor = .white
+                $0.font = UIFont.preferredPrintFont(forTextStyle: .footnote)
+                $0.text = dataSource[index].medicalSection.displayTitle
+            }
+            $0.addSubview(label)
+        }
     }
 }
 
@@ -323,5 +330,16 @@ extension ASHomeViewController: ASTableDelegate {
     /// Since ASAwareTableNode's delegate is HomeViewController. We have to do this so that ASAwareTableNode is aware of the scrolling.
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         containerNode.tableNode.scrollViewDidScroll(scrollView)
+    }
+}
+
+// MARK: Helpers
+
+extension NSAttributedString {
+    fileprivate func height(withConstrainedWidth width: CGFloat) -> CGFloat {
+        let constraintRect = CGSize(width: width, height: .greatestFiniteMagnitude)
+        let boundingBox = boundingRect(with: constraintRect, options: .usesLineFragmentOrigin, context: nil)
+        
+        return ceil(boundingBox.height)
     }
 }

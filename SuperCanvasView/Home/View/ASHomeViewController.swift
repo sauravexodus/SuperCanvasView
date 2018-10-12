@@ -27,7 +27,6 @@ final class ASDisplayNodeWithBackgroundColor: ASDisplayNode {
 
 final class ASAwareTableNode: ASTableNode, ASTableDelegate, UIScrollViewDelegate {
     let endUpdateSubject = PublishSubject<Void>()
-    let endContractSubject = PublishSubject<HomeViewModel.IndexPathWithHeight>()
     let disposeBag = DisposeBag()
     
     override init(style: UITableViewStyle) {
@@ -117,13 +116,13 @@ final class ContainerDisplayNode: ASDisplayNode {
 
 final class ASHomeViewController: ASViewController<ContainerDisplayNode>, ReactorKit.View {
     var disposeBag: DisposeBag = DisposeBag()
-    let dataSource: RxASTableAnimatedDataSource<ConsultationPageSection>
+    let dataSource: RxASTableAnimatedDataSource<ConsultationSection>
     let containerNode = ContainerDisplayNode()
     
     init(viewModel: HomeViewModel) {
         defer { self.reactor = viewModel }
         
-        let configureCell: RxASTableAnimatedDataSource<ConsultationPageSection>.ConfigureCellBlock = { (ds, tableNode, index, item) in
+        let configureCell: RxASTableAnimatedDataSource<ConsultationSection>.ConfigureCellBlock = { (ds, tableNode, index, item) in
             return {
                 switch item.medicalTerm.sectionOfSelf {
                 case .diagnoses:
@@ -200,17 +199,6 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
             .mapTo(.deleteAll)
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
-
-        containerNode.tableNode.endContractSubject
-            .pausableBufferedCombined(
-                containerNode.tableNode.endContractSubject
-                    .debounce(3, scheduler: MainScheduler.instance)
-                    .flatMap { _ in Observable.concat(.just(true), .just(false)) }
-                    .startWith(false),
-                limit: 100)
-            .map { .updateHeights($0) }
-            .bind(to: reactor.action)
-            .disposed(by: disposeBag)
         
         containerNode.printButtonNode.rx
             .tap
@@ -224,7 +212,7 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
     }
     
     private func bindState(reactor: HomeViewModel) {
-        reactor.state.map { $0.pages }
+        reactor.state.map { $0.sections }
             .distinctUntilChanged { old, new in
                 let oldHashes = old.map { $0.items.map { $0.id } }.reduce([], { item, acc -> [String] in
                     var mutable = item
@@ -250,7 +238,11 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
             })
             .disposed(by: disposeBag)
     }
-    
+}
+
+// MARK: Print
+
+extension ASHomeViewController {
     private func generatePages() -> Observable<[UIImage]> {
         return Observable<Int>.interval(0.2, scheduler: MainScheduler.instance)
             .take(containerNode.tableNode.numberOfSections)
@@ -286,11 +278,33 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
             })
             .map { $0.mergeToSingleImage() }
     }
+    
+    private func generateHeaderViewForSection(at index: Int) -> UIView {
+        let text = dataSource[index].medicalSection.displayTitle
+        let font = UIFont.preferredPrintFont(forTextStyle: .footnote)
+        let attributedText = NSAttributedString(string: text, attributes: [.font: font])
+        let width = containerNode.frame.size.width
+        let height = attributedText.height(withConstrainedWidth: width)
+
+        return UIView(frame: CGRect.zero).then {
+            let label = UILabel(frame: CGRect(x: 0, y: 0, width: width, height: height)).then {
+                $0.backgroundColor = .darkGray
+                $0.textColor = .white
+                $0.font = font
+                $0.text = text
+            }
+            $0.addSubview(label)
+        }
+    }
 }
 
 extension ASHomeViewController: ASTableDelegate {
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return 16
+    }
+
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        return generateHeaderViewForSection(at: section)
     }
     
     func tableNode(_ tableNode: ASTableNode, willDisplayRowWith node: ASCellNode) {
@@ -317,10 +331,15 @@ extension ASHomeViewController: ASTableDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         containerNode.tableNode.scrollViewDidScroll(scrollView)
     }
-    
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let view = UIView()
-        view.backgroundColor = .gray
-        return view
+}
+
+// MARK: Helpers
+
+extension NSAttributedString {
+    fileprivate func height(withConstrainedWidth width: CGFloat) -> CGFloat {
+        let constraintRect = CGSize(width: width, height: .greatestFiniteMagnitude)
+        let boundingBox = boundingRect(with: constraintRect, options: .usesLineFragmentOrigin, context: nil)
+        
+        return ceil(boundingBox.height)
     }
 }

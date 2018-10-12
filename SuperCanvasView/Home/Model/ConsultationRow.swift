@@ -14,26 +14,14 @@ struct ConsultationRow {
     var height: CGFloat
     var lines: [Line]
     let medicalTerm: MedicalTermType
-    var needsHeader: Bool
-    var header: String? {
-        guard needsHeader else { return nil }
-        return medicalTerm.sectionOfSelf.displayTitle
-    }
     
     var isPadder: Bool {
         return medicalTerm.name == nil && lines.isEmpty
     }
-    init(height: CGFloat, lines: [Line], medicalTerm: MedicalTermType, needsHeader: Bool = false) {
+    init(height: CGFloat, lines: [Line], medicalTerm: MedicalTermType) {
         self.height = height
         self.lines = lines
         self.medicalTerm = medicalTerm
-        self.needsHeader = needsHeader
-    }
-}
-
-extension ConsultationRow {
-    var heightWithHeader: CGFloat {
-        return needsHeader ? (height + 20) : height
     }
 }
 

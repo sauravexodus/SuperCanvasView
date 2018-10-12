@@ -23,11 +23,6 @@ final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode wher
     let canvasNode = ASDisplayNode {
         CanvasView().then { $0.backgroundColor = .clear }
     }
-
-    let headerTextNode = ASTextNode().then {
-        $0.maximumNumberOfLines = 0
-        $0.backgroundColor = .darkGray
-    }
     
     let editButtonNode = ASButtonNode().then {
         $0.setTitle("EDIT", with: UIFont.systemFont(ofSize: 12, weight: .semibold), with: .black, for: .normal)
@@ -40,7 +35,7 @@ final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode wher
     }
 
     var header: String?
-    let maximumHeight: CGFloat = 842
+    let maximumHeight: CGFloat = 900
     let disposeBag = DisposeBag()
     var item: ConsultationRow?
     
@@ -99,7 +94,7 @@ final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode wher
 
         tableNode.endUpdateSubject
             .debounce(1.5, scheduler: MainScheduler.instance)
-            .subscribe(onNext: { [unowned self] _ in
+            .subscribe(onNext: { [unowned self] type in
                 UIView.setAnimationsEnabled(true)
                 self.contract()
             })
@@ -135,17 +130,9 @@ final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode wher
             print("Something has gone horribly, horribly awry...")
             return
         }
-        if let header = item.header, item.needsHeader {
-            headerTextNode.attributedText = .init(string: header, attributes: [.foregroundColor: UIColor.white])
-            headerTextNode.style.preferredLayoutSize.width = .init(unit: .fraction, value: 1)
-        } else {
-            headerTextNode.style.preferredSize.height = 0
-        }
-        
-        style.preferredSize.height = min(CGFloat(max(CGFloat(item.heightWithHeader), item.lines.highestY ?? 0)), maximumHeight)
-        canvasNode.style.preferredSize.height = .init(item.heightWithHeader)
+        style.preferredSize.height = min(CGFloat(max(CGFloat(item.height), item.lines.highestY ?? 0)), maximumHeight)
         titleTextNode.attributedText = .init(string: term.name ?? "", attributes: [.foregroundColor: UIColor.darkGray])
-        
+
         contentNode.configure(with: term)
         self.item = item
     }
@@ -153,18 +140,15 @@ final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode wher
     // MARK: Lifecycle methods
     
     override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
-        let spacer = ASLayoutSpec()
-        spacer.style.flexGrow = 1
-
-        return [
-            headerTextNode.relative(horizontalPosition: .start, verticalPosition: .start, sizingOption: []),
-            spacer,
-            titleTextNode.insets(.all(16)).relative(horizontalPosition: .start, verticalPosition: .start, sizingOption: []),
-            contentNode.relative(horizontalPosition: .start, verticalPosition: .start, sizingOption: [])
-            ]
-            .stacked(.vertical)
+        var stack: [ASLayoutSpec] = []
+        stack.append(
+            titleTextNode.insets(.all(16))
+            .overlayed(by: contentNode)
             .overlayed(by: canvasNode)
-            .overlayed(by: [editButtonNode, deleteButtonNode].stacked(in: .horizontal, spacing: 16, justifyContent: .end, alignItems: .start).insets(.all(16)))
+            .overlayed(by: [editButtonNode, deleteButtonNode].stacked(in: .horizontal, spacing: 16, justifyContent: .end, alignItems: .start).insets(UIEdgeInsets.all(16)))
+            .then { $0.style.flexGrow = 1  }
+        )
+        return stack.stacked(.vertical)
     }
     
     override func animateLayoutTransition(_ context: ASContextTransitioning) {}
@@ -185,13 +169,10 @@ extension ASMedicalTermCellNode {
     func contract() {
         guard let canvasView = canvasNode.view as? CanvasView else { return }
         guard let `item` = item, !item.isPadder else { return }
-        let newHeight = min(max(titleTextNode.frame.height, (item.lines.highestY ?? 0) + 4, 62.5, deleteButtonNode.frame.height + 32, contentNode.frame.height), maximumHeight)
+        let newHeight = min(max((item.lines.highestY ?? 0) + 4, item.height), maximumHeight)
         style.preferredSize.height = newHeight
         transitionLayout(withAnimation: false, shouldMeasureAsync: true) {
             canvasView.setNeedsDisplay()
-            if let indexPath = self.indexPath, let tableNode = self.owningNode as? ASAwareTableNode {
-                tableNode.endContractSubject.onNext(HomeViewModel.IndexPathWithHeight(indexPath: indexPath, height: newHeight))
-            }
         }
     }
 }

@@ -25,6 +25,12 @@ struct ConsultationSection {
         }
         items += [consultationRow, padderRow]
     }
+    
+    mutating func addTerminalCell(with height: CGFloat) {
+        if let lastItem = items.last, !lastItem.isPadder {
+            items.append(ConsultationRow(height: height, lines: [], medicalTerm: lastItem.medicalTerm.sectionOfSelf.correspondingEmptyTerm))
+        }
+    }
 }
 
 extension ConsultationSection: AnimatableSectionModelType {

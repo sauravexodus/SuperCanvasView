@@ -15,24 +15,28 @@ extension UIEdgeInsets {
         return UIEdgeInsets(top: inset, left: inset, bottom: inset, right: inset)
     }
     
-    mutating func top(_ inset: CGFloat) -> UIEdgeInsets {
-        top = inset
-        return self
+    func top(_ inset: CGFloat) -> UIEdgeInsets {
+        var mutable = self
+        mutable.top = inset
+        return mutable
     }
     
     mutating func bottom(_ inset: CGFloat) -> UIEdgeInsets {
-        bottom = inset
-        return self
+        var mutable = self
+        mutable.bottom = inset
+        return mutable
     }
     
     mutating func left(_ inset: CGFloat) -> UIEdgeInsets {
-        left = inset
-        return self
+        var mutable = self
+        mutable.left = inset
+        return mutable
     }
     
     mutating func right(_ inset: CGFloat) -> UIEdgeInsets {
-        right = inset
-        return self
+        var mutable = self
+        mutable.right = inset
+        return mutable
     }
     
     static func top(_ inset: CGFloat) -> UIEdgeInsets {

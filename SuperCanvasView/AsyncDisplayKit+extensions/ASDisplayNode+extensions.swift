@@ -25,6 +25,13 @@ extension Array where Element: ASDisplayNode {
     func stacked(in direction: ASStackLayoutDirection, spacing: CGFloat, justifyContent: ASStackLayoutJustifyContent, alignItems: ASStackLayoutAlignItems) -> ASStackLayoutSpec {
         return ASStackLayoutSpec(direction: direction, spacing: spacing, justifyContent: justifyContent, alignItems: alignItems, children: self)
     }
+    
+    func stacked(_ direction: ASStackLayoutDirection) -> ASStackLayoutSpec {
+        let stackLayoutSpec = ASStackLayoutSpec()
+        stackLayoutSpec.direction = direction
+        stackLayoutSpec.children = self
+        return stackLayoutSpec
+    }
 }
 
 extension ASDisplayNode {
@@ -50,5 +57,9 @@ extension ASDisplayNode {
     
     func relative(horizontalPosition: ASRelativeLayoutSpecPosition, verticalPosition: ASRelativeLayoutSpecPosition, sizingOption: ASRelativeLayoutSpecSizingOption) -> ASRelativeLayoutSpec {
         return ASRelativeLayoutSpec(horizontalPosition: horizontalPosition, verticalPosition: verticalPosition, sizingOption: sizingOption, child: self)
+    }
+    
+    func background(with node: ASDisplayNode) -> ASBackgroundLayoutSpec {
+        return ASBackgroundLayoutSpec(child: self, background: node)
     }
 }

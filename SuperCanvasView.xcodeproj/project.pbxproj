@@ -17,7 +17,7 @@
 		31C1A4B743788AEC65E535A88C994DB9 /* PDFPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B7EE83444C4A49CA8F4769BF8C1EDCF /* PDFPage.swift */; };
 		4070FCC78B80474FA576AE86694BFADA /* ASLayoutSpec+extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62E97A638EC2768DF47355C2CDA5450 /* ASLayoutSpec+extensions.swift */; };
 		4338832969589F7AC8D575E76DA7FFE6 /* UIView+Capture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1ABE977715B0FDAF2433C93C2FC69A82 /* UIView+Capture.swift */; };
-		5204D069BD91314633190C1DABAE9729 /* ConsultationPageSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = D07FFA17D9AE8A9555A56A40D706252C /* ConsultationPageSection.swift */; };
+		5204D069BD91314633190C1DABAE9729 /* ConsultationSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = D07FFA17D9AE8A9555A56A40D706252C /* ConsultationSection.swift */; };
 		67A469CC49FC75876E22E53FB71C38E2 /* ASHomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC29120EC3DE5785E8660B63F0FD3915 /* ASHomeViewController.swift */; };
 		7AAEE50E80509DD8C8395D2899586F0D /* MedicalSection.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB2BCC32160D6A5098E3FA2C40D1C18E /* MedicalSection.swift */; };
 		94E192DA7D5D0DCE2CC82238C1DF7DAF /* UIScrollView+Capture.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451B7D26FD297BBE66F6B0DB9E95E277 /* UIScrollView+Capture.swift */; };
@@ -63,7 +63,7 @@
 		BCFBE2251E720056AC847FA603F5C0B8 /* ConsultationRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsultationRow.swift; sourceTree = "<group>"; };
 		C62E97A638EC2768DF47355C2CDA5450 /* ASLayoutSpec+extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ASLayoutSpec+extensions.swift"; sourceTree = "<group>"; };
 		CDF6E483FBB5955FBD6AAE91C66C8E8D /* CanvasView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CanvasView.swift; sourceTree = "<group>"; };
-		D07FFA17D9AE8A9555A56A40D706252C /* ConsultationPageSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ConsultationPageSection.swift; path = SuperCanvasView/Home/Model/ConsultationPageSection.swift; sourceTree = SOURCE_ROOT; };
+		D07FFA17D9AE8A9555A56A40D706252C /* ConsultationSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ConsultationSection.swift; path = SuperCanvasView/Home/Model/ConsultationSection.swift; sourceTree = SOURCE_ROOT; };
 		D3F9AF9D78978A62A892FF45D0E28AEE /* ASMedicalTermCellNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ASMedicalTermCellNode.swift; path = Cell/ASMedicalTermCellNode.swift; sourceTree = "<group>"; };
 		D9E57D95AFC9E892EDA9AF1341C585B9 /* ASDisplayNode+extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ASDisplayNode+extensions.swift"; sourceTree = "<group>"; };
 		DC29120EC3DE5785E8660B63F0FD3915 /* ASHomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASHomeViewController.swift; sourceTree = "<group>"; };
@@ -205,7 +205,7 @@
 		F8014D0D9204D04AC63F0A5A24B7D632 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				D07FFA17D9AE8A9555A56A40D706252C /* ConsultationPageSection.swift */,
+				D07FFA17D9AE8A9555A56A40D706252C /* ConsultationSection.swift */,
 				BCFBE2251E720056AC847FA603F5C0B8 /* ConsultationRow.swift */,
 				BB2BCC32160D6A5098E3FA2C40D1C18E /* MedicalSection.swift */,
 				B18DCA121A2E903656C7988756DAAA19 /* MedicalTerm.swift */,
@@ -384,7 +384,7 @@
 				FFF61F4B216E6FC9002294ED /* UIFont+extensions.swift in Sources */,
 				FFF61F3F216E6E6A002294ED /* UIScrollView+extensions.swift in Sources */,
 				05704475B95E7D35BD53184473FB68A2 /* CanvasView.swift in Sources */,
-				5204D069BD91314633190C1DABAE9729 /* ConsultationPageSection.swift in Sources */,
+				5204D069BD91314633190C1DABAE9729 /* ConsultationSection.swift in Sources */,
 				D0D7C673A60B921651A67B85F97C738F /* ConsultationRow.swift in Sources */,
 				C48226222CDAF9B542076645F718778F /* HomeViewModel.swift in Sources */,
 				2BD63062F615C0E019CD4908C62C946C /* Line.swift in Sources */,

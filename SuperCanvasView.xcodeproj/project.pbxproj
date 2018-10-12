@@ -30,6 +30,7 @@
 		982CF99D8A0527878DC238F183FF1279 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5D4B7B67EB41F821C8C25B23F01FE83C /* Assets.xcassets */; };
 		AB90864BE77259AF0654B27216AB6CB6 /* WKWebView+Capture.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7A4B358B214252D8284B41F69BBA33A /* WKWebView+Capture.swift */; };
 		AE639C27C5E66689A39C85C0D1A047CE /* UIBezierPath+extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45A514AA0511D8EB536B182E7E307E8B /* UIBezierPath+extensions.swift */; };
+		BAE40C0921709890002C722C /* UIImage+extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BAE40C0821709890002C722C /* UIImage+extensions.swift */; };
 		C48226222CDAF9B542076645F718778F /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C5DB4E931E4D96ECDD82324F6D664FC /* HomeViewModel.swift */; };
 		C7827C272517091E2CCAED622F6C810F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C318CE3D39793DC76B21BF7A520708D1 /* LaunchScreen.storyboard */; };
 		CA3FE5527984B2BD22482B501E49A68F /* ASDisplayNode+extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9E57D95AFC9E892EDA9AF1341C585B9 /* ASDisplayNode+extensions.swift */; };
@@ -71,6 +72,7 @@
 		B7A4B358B214252D8284B41F69BBA33A /* WKWebView+Capture.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WKWebView+Capture.swift"; sourceTree = "<group>"; };
 		BA27E561216E354B0077DB15 /* UIScrollView+extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIScrollView+extensions.swift"; sourceTree = "<group>"; };
 		BABBB4D3216D1BB7002D8B83 /* Arrray+extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Arrray+extension.swift"; sourceTree = "<group>"; };
+		BAE40C0821709890002C722C /* UIImage+extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+extensions.swift"; sourceTree = "<group>"; };
 		BB2BCC32160D6A5098E3FA2C40D1C18E /* MedicalSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicalSection.swift; sourceTree = "<group>"; };
 		BCFBE2251E720056AC847FA603F5C0B8 /* ConsultationRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConsultationRow.swift; sourceTree = "<group>"; };
 		C62E97A638EC2768DF47355C2CDA5450 /* ASLayoutSpec+extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ASLayoutSpec+extensions.swift"; sourceTree = "<group>"; };
@@ -145,6 +147,7 @@
 				FFF61F3A216E6E6A002294ED /* Hashable.swift */,
 				FFF61F38216E6E6A002294ED /* UIScrollView+extensions.swift */,
 				4E4D303EB45142B60B74306D0A1B5A4F /* UIView+extensions.swift */,
+				BAE40C0821709890002C722C /* UIImage+extensions.swift */,
 				7D5CD201217074260031A9FB /* NSAttributedString+extensions.swift */,
 			);
 			path = Helpers;
@@ -405,6 +408,7 @@
 				7D5CD200217073C30031A9FB /* ASAwareTableNode.swift in Sources */,
 				CA3FE5527984B2BD22482B501E49A68F /* ASDisplayNode+extensions.swift in Sources */,
 				67A469CC49FC75876E22E53FB71C38E2 /* ASHomeViewController.swift in Sources */,
+				BAE40C0921709890002C722C /* UIImage+extensions.swift in Sources */,
 				7D5CD20D217084C60031A9FB /* ASMedicalTermCellNode+UI.swift in Sources */,
 				4070FCC78B80474FA576AE86694BFADA /* ASLayoutSpec+extensions.swift in Sources */,
 				7D5CD20721707DFE0031A9FB /* ASAwareTableNode+rx.swift in Sources */,

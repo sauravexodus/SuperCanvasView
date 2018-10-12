@@ -54,6 +54,19 @@ final class ASAwareTableNode: ASTableNode {
         delegate = self
     }
     
+    // MARK: Lifecycle methods
+    
+    override func didLoad() {
+        super.didLoad()
+        endUpdateSubject.map { [unowned self] _ in self.contentOffset }
+            .debounce(1.5, scheduler: MainScheduler.instance)
+            .subscribe(onNext: { [unowned self] contentOffset in
+                let y = max(0, min(self.view.contentSize.height, contentOffset.y))
+                self.setContentOffset(CGPoint(x: 0, y: y), animated: false)
+            })
+            .disposed(by: disposeBag)
+    }
+    
     // MARK: Instance methods
     
     internal func generateHeaderViewForSection(at index: Int) -> UIView {
@@ -73,7 +86,6 @@ final class ASAwareTableNode: ASTableNode {
             $0.addSubview(label)
         }
     }
-    
 }
 
 // MARK: Delegates

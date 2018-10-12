@@ -25,18 +25,6 @@ final class ASDisplayNodeWithBackgroundColor: ASDisplayNode {
     }
 }
 
-final class ASAwareTableNode: ASTableNode, ASTableDelegate, UIScrollViewDelegate {
-    let endUpdateSubject = PublishSubject<Void>()
-    let disposeBag = DisposeBag()
-    
-    override init(style: UITableViewStyle) {
-        super.init(style: style)
-    }
-    
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        endUpdateSubject.onNext(())
-    }
-}
 
 final class ContainerDisplayNode: ASDisplayNode {
     let addSymptomButtonNode = ASButtonNode().then {
@@ -115,38 +103,16 @@ final class ContainerDisplayNode: ASDisplayNode {
 }
 
 final class ASHomeViewController: ASViewController<ContainerDisplayNode>, ReactorKit.View {
+    
     var disposeBag: DisposeBag = DisposeBag()
-    let dataSource: RxASTableAnimatedDataSource<ConsultationSection>
     let containerNode = ContainerDisplayNode()
     
     init(viewModel: HomeViewModel) {
         defer { self.reactor = viewModel }
         
-        let configureCell: RxASTableAnimatedDataSource<ConsultationSection>.ConfigureCellBlock = { (ds, tableNode, index, item) in
-            return {
-                switch item.medicalTerm.sectionOfSelf {
-                case .diagnoses:
-                    let node = ASMedicalTermCellNode<EmptyCellNode<Diagnosis>>()
-                    node.configure(with: item)
-                    return node
-                case .symptoms:
-                    let node = ASMedicalTermCellNode<EmptyCellNode<Symptom>>()
-                    node.configure(with: item)
-                    return node
-                default:
-                    let node = ASMedicalTermCellNode<EmptyCellNode<NoMedicalTerm>>()
-                    node.configure(with: item)
-                    return node
-                }
-            }
-        }
-        
-        dataSource = RxASTableAnimatedDataSource(configureCellBlock: configureCell)
-
         super.init(node: containerNode)
         containerNode.frame = self.view.bounds
         containerNode.view.backgroundColor = .white
-        containerNode.tableNode.delegate = self
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -226,7 +192,7 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
                 })
                 return diff(old: oldHashes, new: newHashes).isEmpty
             }
-            .bind(to: containerNode.tableNode.rx.items(dataSource: dataSource))
+            .bind(to: containerNode.tableNode.rx.items(dataSource: containerNode.tableNode.animatedDataSource))
             .disposed(by: disposeBag)
         
         reactor.state.map { $0.focusedIndexPath }
@@ -278,68 +244,7 @@ extension ASHomeViewController {
             })
             .map { $0.mergeToSingleImage() }
     }
-    
-    private func generateHeaderViewForSection(at index: Int) -> UIView {
-        let text = dataSource[index].medicalSection.displayTitle
-        let font = UIFont.preferredPrintFont(forTextStyle: .footnote)
-        let attributedText = NSAttributedString(string: text, attributes: [.font: font])
-        let width = containerNode.frame.size.width
-        let height = attributedText.height(withConstrainedWidth: width)
-
-        return UIView(frame: CGRect.zero).then {
-            let label = UILabel(frame: CGRect(x: 0, y: 0, width: width, height: height)).then {
-                $0.backgroundColor = .darkGray
-                $0.textColor = .white
-                $0.font = font
-                $0.text = text
-            }
-            $0.addSubview(label)
-        }
-    }
-}
-
-extension ASHomeViewController: ASTableDelegate {
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 16
-    }
-
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        return generateHeaderViewForSection(at: section)
-    }
-    
-    func tableNode(_ tableNode: ASTableNode, willDisplayRowWith node: ASCellNode) {
-        guard let `reactor` = reactor else { return }
-        if let medicalTermCellNode = node as? ASMedicalTermCellNode<EmptyCellNode<Diagnosis>> {
-            medicalTermCellNode.linesChanged.debounce(0.3, scheduler: MainScheduler.instance)
-                .map { .updateLines(indexPath: $0.indexPath, lines: $0.lines) }
-                .bind(to: reactor.action)
-                .disposed(by: medicalTermCellNode.disposeBag)
-        } else if let medicalTermCellNode = node as? ASMedicalTermCellNode<EmptyCellNode<Symptom>> {
-            medicalTermCellNode.linesChanged.debounce(0.3, scheduler: MainScheduler.instance)
-                .map { .updateLines(indexPath: $0.indexPath, lines: $0.lines) }
-                .bind(to: reactor.action)
-                .disposed(by: medicalTermCellNode.disposeBag)
-        } else if let medicalTermCellNode = node as? ASMedicalTermCellNode<EmptyCellNode<NoMedicalTerm>> {
-            medicalTermCellNode.linesChanged.debounce(0.3, scheduler: MainScheduler.instance)
-                .map { .updateLines(indexPath: $0.indexPath, lines: $0.lines) }
-                .bind(to: reactor.action)
-                .disposed(by: medicalTermCellNode.disposeBag)
-        }
-    }
-    
-    /// Since ASAwareTableNode's delegate is HomeViewController. We have to do this so that ASAwareTableNode is aware of the scrolling.
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        containerNode.tableNode.scrollViewDidScroll(scrollView)
-    }
 }
 
 // MARK: Helpers
 
-extension NSAttributedString {
-    fileprivate func height(withConstrainedWidth width: CGFloat) -> CGFloat {
-        let constraintRect = CGSize(width: width, height: .greatestFiniteMagnitude)
-        let boundingBox = boundingRect(with: constraintRect, options: .usesLineFragmentOrigin, context: nil)
-        
-        return ceil(boundingBox.height)
-    }
-}

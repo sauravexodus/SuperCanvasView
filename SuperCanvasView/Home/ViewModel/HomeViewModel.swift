@@ -31,7 +31,6 @@ final class HomeViewModel: Reactor {
     
     struct State {
         var sections: [ConsultationSection] = []
-        let pageHeight: CGFloat = 900
         let terminalCellHeight: CGFloat = 100
         var focusedIndexPath: IndexPathWithScrollPosition?
     }
@@ -66,13 +65,13 @@ final class HomeViewModel: Reactor {
 extension HomeViewModel {
     private func mutateInitialLoad() -> Observable<Mutation> {
         let medicalSection = MedicalSection.allSections()[0]
-        return .just(.setSections([ConsultationSection(medicalSection: medicalSection, items: [ConsultationRow(height: currentState.pageHeight, lines: [Line](), medicalTerm: medicalSection.correspondingEmptyTerm)])]))
+        return .just(.setSections([ConsultationSection(medicalSection: medicalSection, items: [ConsultationRow(height: currentState.terminalCellHeight, lines: [Line](), medicalTerm: medicalSection.correspondingEmptyTerm)])]))
     }
     
     private func mutateSelectMedicalSection(_ medicalSection: MedicalSection) -> Observable<Mutation> {
         var sections = currentState.sections
         guard !sections.isEmpty, sections[0].items.count > 0, !sections[0].items[0].isPadder else {
-            let consultationRow = ConsultationRow(height: currentState.pageHeight, lines: [], medicalTerm: medicalSection.correspondingEmptyTerm)
+            let consultationRow = ConsultationRow(height: currentState.terminalCellHeight, lines: [], medicalTerm: medicalSection.correspondingEmptyTerm)
             return .just(.setSections([ConsultationSection(medicalSection: medicalSection, items: [consultationRow])]))
         }
         guard let sectionIndex = sections.firstIndex(where: { section in section.medicalSection == medicalSection }) else {

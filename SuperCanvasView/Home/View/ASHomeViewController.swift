@@ -54,6 +54,11 @@ final class ContainerDisplayNode: ASDisplayNode {
     
     let printButtonNode = ASButtonNode().then {
         $0.setTitle("Print", with: .systemFont(ofSize: 13), with: .white, for: .normal)
+        $0.style.preferredSize.width = 100
+    }
+    
+    let showPageBreaksButtonNode = ASButtonNode().then {
+        $0.setTitle("Page Breaks", with: .systemFont(ofSize: 13), with: .white, for: .normal)
         $0.style.preferredSize.width = 120
     }
     
@@ -92,6 +97,7 @@ final class ContainerDisplayNode: ASDisplayNode {
             selectDiagnosisButtonNode,
             deleteAllRowsButtonNode,
             printButtonNode,
+            showPageBreaksButtonNode,
             spacer
         ]
         
@@ -166,6 +172,13 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
+        containerNode.tableNode.rx
+            .linesUpdated
+            .distinctUntilChanged { diff(old: $0.lines, new: $1.lines).isEmpty }
+            .map { .updateLines(indexPath: $0.indexPath, lines: $0.lines) }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
         containerNode.printButtonNode.rx
             .tap
             .flatMap { [weak self] _ -> Observable<[UIImage]> in
@@ -173,6 +186,12 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
                 return strongSelf.generatePages()
             }
             .map { .print($0) }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        containerNode.showPageBreaksButtonNode.rx
+            .tap
+            .mapTo(.showPageBreaks)
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
     }

@@ -38,7 +38,7 @@ final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode wher
     var header: String?
     let maximumHeight: CGFloat = 900
     let disposeBag = DisposeBag()
-    var item: ConsultationRow?
+    var item: ASNodeRow?
     
     // MARK: Init methods
     
@@ -52,15 +52,10 @@ final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode wher
     // MARK: Lifecycle methods
     
     override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
-        var stack: [ASLayoutSpec] = []
-        stack.append(
-            titleTextNode.insets(.all(16))
-                .overlayed(by: contentNode)
-                .overlayed(by: canvasNode)
-                .overlayed(by: [editButtonNode, deleteButtonNode].stacked(in: .horizontal, spacing: 16, justifyContent: .end, alignItems: .start).insets(UIEdgeInsets.all(16)))
-                .then { $0.style.flexGrow = 1  }
-        )
-        return stack.stacked(.vertical)
+        return titleTextNode.insets(.all(16)).relative(horizontalPosition: .start, verticalPosition: .start, sizingOption: [])
+            .overlayed(by: contentNode)
+            .overlayed(by: canvasNode)
+            .overlayed(by: [editButtonNode, deleteButtonNode].stacked(in: .horizontal, spacing: 16, justifyContent: .end, alignItems: .start).insets(UIEdgeInsets.all(16)))
     }
     
     override func animateLayoutTransition(_ context: ASContextTransitioning) {}
@@ -72,7 +67,7 @@ final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode wher
     
     // MARK: Instance methods
 
-    func configure(with item: ConsultationRow) {
+    func configure(with item: ASNodeRow) {
         guard let term = item.medicalTerm as? ContentNode.RepresentationTarget else {
             print("Something has gone horribly, horribly awry...")
             return

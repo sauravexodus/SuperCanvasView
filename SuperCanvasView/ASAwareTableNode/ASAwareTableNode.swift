@@ -31,7 +31,10 @@ final class ASAwareTableNode: ASTableNode {
     override init(style: UITableViewStyle) {
         let configureCell: RxASTableAnimatedDataSource<ConsultationSection>.ConfigureCellBlock = { (ds, tableNode, index, item) in
             return {
-                switch item.medicalTerm.sectionOfSelf {
+                guard case .medicalTerm = item else {
+                    return ASPageBreakCellNode()
+                }
+                switch item.medicalSection {
                 case .diagnoses:
                     let node = ASMedicalTermCellNode<EmptyCellNode<Diagnosis>>()
                     node.configure(with: item)
@@ -65,6 +68,8 @@ final class ASAwareTableNode: ASTableNode {
                 self.setContentOffset(CGPoint(x: 0, y: y), animated: false)
             })
             .disposed(by: disposeBag)
+        
+        
     }
     
     // MARK: Instance methods

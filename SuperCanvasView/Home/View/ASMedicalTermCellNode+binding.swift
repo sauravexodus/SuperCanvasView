@@ -15,10 +15,12 @@ extension ASMedicalTermCellNode {
     
     var linesChanged: Observable<(lines: [Line], indexPath: IndexPath)> {
         guard let canvasView = canvasNode.view as? CanvasView else { return .empty() }
-        return canvasView.rx.lines.map { [unowned self] lines in
-            guard let indexPath = self.indexPath else { throw NSError(domain: "CanvasView", code: 0, userInfo: [NSLocalizedDescriptionKey: "Could not find indexPath"]) }
+        return canvasView.rx.lines.map { [weak self] lines in
+            guard let indexPath = self?.indexPath else { throw NSError(domain: "CanvasView", code: 0, userInfo: [NSLocalizedDescriptionKey: "Could not find indexPath"]) }
             return (lines: lines, indexPath: indexPath)
         }
+        .catchErrorJustReturn(nil)
+        .unwrap()
     }
     
     internal func bind() {

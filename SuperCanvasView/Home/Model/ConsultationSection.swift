@@ -18,23 +18,24 @@ struct ConsultationSection {
         self.items = items
     }
     
-    mutating func insert(_ consultationRow: ConsultationRow, with terminalCellHeight: CGFloat) {
-        let padderRow = ConsultationRow(height: terminalCellHeight, lines: [], medicalTerm: consultationRow.medicalTerm.sectionOfSelf.correspondingEmptyTerm)
+    mutating func insert(_ nodeRow: ASNodeRow, with terminalCellHeight: CGFloat) {
+        guard case let .medicalTerm(_,_,_,medicalTerm) = nodeRow else { return }
+        let padderRow = ASNodeRow(height: terminalCellHeight, lines: [], medicalTerm: medicalTerm.sectionOfSelf.correspondingEmptyTerm)
         if let lastItem = items.last, lastItem.isPadder {
             items.removeLast()
         }
-        items += [consultationRow, padderRow]
+        items += [nodeRow, padderRow]
     }
     
     mutating func addTerminalCell(with height: CGFloat) {
-        if let lastItem = items.last, !lastItem.isPadder {
-            items.append(ConsultationRow(height: height, lines: [], medicalTerm: lastItem.medicalTerm.sectionOfSelf.correspondingEmptyTerm))
+        if let lastItem = items.last, !lastItem.isPadder, case let .medicalTerm(_, _, _, medicalTerm) = lastItem {
+            items.append(ASNodeRow(height: height, lines: [], medicalTerm: medicalTerm.sectionOfSelf.correspondingEmptyTerm))
         }
     }
 }
 
 extension ConsultationSection: AnimatableSectionModelType {
-    typealias Item = ConsultationRow
+    typealias Item = ASNodeRow
     typealias Identity = MedicalSection
     
     var identity: MedicalSection {
@@ -47,10 +48,25 @@ extension ConsultationSection: AnimatableSectionModelType {
     }
 }
 
-extension ConsultationRow: IdentifiableType {
-    typealias Identity = String
+extension Array where Element == ConsultationSection {
+    func withPageBreaks() -> [ConsultationSection] {
+        var lastRemainingSpace: CGFloat = 0
+        return map {
+            var mutable = $0
+            mutable.items = $0.items.withPageBreaks(occupiedHeight: lastRemainingSpace)
+            lastRemainingSpace = mutable.items.remaningHeight(occupiedHeight: lastRemainingSpace)
+            return mutable
+        }
+    }
     
-    var identity: String {
-        return id
+    func removingPageBreaks() -> [ConsultationSection] {
+        return map {
+            var mutable = $0
+            mutable.items = $0.items.filter {
+                guard case .pageBreak = $0 else { return true }
+                return false
+            }
+            return mutable
+        }
     }
 }

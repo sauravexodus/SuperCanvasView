@@ -12,7 +12,7 @@ import Differentiator
 
 enum ASNodeRow {
     case medicalTerm(id: String, height: CGFloat, lines: [Line], medicalTermType: MedicalTermType)
-    case pageBreak(pageNumber: Int)
+    case pageBreak(id: String, pageNumber: Int)
     
     init(height: CGFloat, lines: [Line], medicalTerm: MedicalTermType) {
         self = .medicalTerm(id: UUID().uuidString, height: height, lines: lines, medicalTermType: medicalTerm)
@@ -109,21 +109,17 @@ extension Array where Element == ASNodeRow {
         return map { $0.height }.reduce(0, +)
     }
     
-    func remaningHeight(occupiedHeight: CGFloat) -> CGFloat {
-        return PageSize.A4.height - (split(occupiedHeight: occupiedHeight).last?.height ?? 0)
-    }
-    
-    func withPageBreaks(occupiedHeight: CGFloat) -> [ASNodeRow] {
+    func withPageBreaks(occupiedHeight: CGFloat) -> (items: [ASNodeRow], lastSectionOccupiedHeight: CGFloat) {
         let sectionedArray = split(occupiedHeight: occupiedHeight)
         let finalArray = sectionedArray.enumerated()
             .map { enumerator in
                 guard enumerator.offset != sectionedArray.count - 1 else { return enumerator.element }
                 var mutable = enumerator.element
-                mutable.append(.pageBreak(pageNumber: enumerator.offset))
+                mutable.append(.pageBreak(id: UUID().uuidString, pageNumber: enumerator.offset))
                 return mutable
             }
             .joined()
-        return finalArray
+        return (items: finalArray, lastSectionOccupiedHeight: sectionedArray.last?.height ?? 0)
     }
     
     func split(occupiedHeight: CGFloat) -> [[ASNodeRow]] {

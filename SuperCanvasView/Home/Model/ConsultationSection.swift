@@ -50,11 +50,10 @@ extension ConsultationSection: AnimatableSectionModelType {
 
 extension Array where Element == ConsultationSection {
     func withPageBreaks() -> [ConsultationSection] {
-        var lastRemainingSpace: CGFloat = 0
+        var occupiedHeight: CGFloat = 0
         return map {
             var mutable = $0
-            mutable.items = $0.items.withPageBreaks(occupiedHeight: lastRemainingSpace)
-            lastRemainingSpace = mutable.items.remaningHeight(occupiedHeight: lastRemainingSpace)
+            (mutable.items, occupiedHeight) = $0.items.withPageBreaks(occupiedHeight: occupiedHeight)
             return mutable
         }
     }

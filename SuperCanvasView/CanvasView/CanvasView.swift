@@ -327,9 +327,15 @@ class CanvasView: UIView {
     }
     
     func updateHighestY() {
-        highestY = lines.map { $0.highestY }.sorted()
+        highestY = lines
+            .lazy
+            .map { $0.highestY }
+            .sorted()
             .last ?? 0
+        
         highestYBehaviorSubject.onNext(highestY)
+        
+        assert(highestY <= frame.size.height, "The DEA wants to know why you look so high.")
     }
     
     func endTouches(_ touches: Set<UITouch>, cancel: Bool) {

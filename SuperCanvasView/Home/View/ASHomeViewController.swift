@@ -172,6 +172,7 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
         
         containerNode.tableNode.rx
             .linesUpdated
+            .debug("Lines updated")
             .map { .updateLines(indexPath: $0.indexPath, lines: $0.lines) }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)

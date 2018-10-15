@@ -1,0 +1,9 @@
+# These owners will be the default owners for everything in the repo.
+*       @sauravexodus
+
+# Order is important. The last matching pattern has the most precedence.
+# So if a pull request only touches javascript files, only these owners
+# will be requested to review.
+
+SuperCanvasView/Home/*          @sauravexodus
+SuperCanvasView/ViewCapture/*   @vamseems

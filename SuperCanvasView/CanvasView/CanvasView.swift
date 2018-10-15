@@ -127,7 +127,9 @@ class CanvasView: UIView {
             eraseLines(touches, withEvent: event)
             return
         }
-        drawTouches(touches, withEvent: event)
+        
+        let filtered = touches.filter({ frame.contains($0.location(in: self)) })
+        drawTouches(filtered, withEvent: event)
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -135,8 +137,9 @@ class CanvasView: UIView {
             eraseLines(touches, withEvent: event)
             return
         }
-        drawTouches(touches, withEvent: event)
-        endTouches(touches, cancel: false)
+        let filtered = touches.filter({ frame.contains($0.location(in: self)) })
+        drawTouches(filtered, withEvent: event)
+        endTouches(filtered, cancel: false)
     }
     
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -324,9 +327,15 @@ class CanvasView: UIView {
     }
     
     func updateHighestY() {
-        highestY = lines.map { $0.highestY }.sorted()
+        highestY = lines
+            .lazy
+            .map { $0.highestY }
+            .sorted()
             .last ?? 0
+        
         highestYBehaviorSubject.onNext(highestY)
+        
+        assert(highestY <= frame.size.height, "The DEA wants to know why you look so high.")
     }
     
     func endTouches(_ touches: Set<UITouch>, cancel: Bool) {

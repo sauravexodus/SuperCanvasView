@@ -15,9 +15,16 @@ import RxCocoa
 typealias LinesWithIndexPath = (lines: [Line], indexPath: IndexPath)
 
 final class ASAwareTableNode: ASTableNode {
+    
+    enum InteractionType {
+        case scroll
+        case scribble
+        case tap
+    }
+    
     // MARK: Internal properties
     
-    internal let endUpdateSubject = PublishSubject<Void>()
+    internal let endUpdateSubject = PublishSubject<InteractionType>()
     internal let linesUpdateSubject = PublishSubject<LinesWithIndexPath>()
     internal let itemDeleted = PublishSubject<IndexPath>()
     
@@ -31,7 +38,10 @@ final class ASAwareTableNode: ASTableNode {
     override init(style: UITableViewStyle) {
         let configureCell: RxASTableAnimatedDataSource<ConsultationSection>.ConfigureCellBlock = { (ds, tableNode, index, item) in
             return {
-                switch item.medicalTerm.sectionOfSelf {
+                guard case .medicalTerm = item else {
+                    return ASPageBreakCellNode()
+                }
+                switch item.medicalSection {
                 case .diagnoses:
                     let node = ASMedicalTermCellNode<EmptyCellNode<Diagnosis>>()
                     node.configure(with: item)
@@ -52,6 +62,21 @@ final class ASAwareTableNode: ASTableNode {
         
         super.init(style: style)
         delegate = self
+    }
+    
+    // MARK: Lifecycle methods
+    
+    override func didLoad() {
+        super.didLoad()
+        endUpdateSubject.map { [unowned self] _ in self.contentOffset }
+            .debounce(1.5, scheduler: MainScheduler.instance)
+            .subscribe(onNext: { [unowned self] contentOffset in
+                let y = max(0, min(self.view.contentSize.height, contentOffset.y))
+                self.setContentOffset(CGPoint(x: 0, y: y), animated: false)
+            })
+            .disposed(by: disposeBag)
+        
+        
     }
     
     // MARK: Instance methods
@@ -89,21 +114,21 @@ extension ASAwareTableNode: ASTableDelegate {
     func tableNode(_ tableNode: ASTableNode, willDisplayRowWith node: ASCellNode) {
         if let medicalTermCellNode = node as? ASMedicalTermCellNode<EmptyCellNode<Diagnosis>> {
             medicalTermCellNode.linesChanged.debounce(0.3, scheduler: MainScheduler.instance)
-                .bind(to: linesUpdateSubject)
+                .subscribe(onNext: { [weak self] in self?.linesUpdateSubject.onNext($0) })
                 .disposed(by: medicalTermCellNode.disposeBag)
         } else if let medicalTermCellNode = node as? ASMedicalTermCellNode<EmptyCellNode<Symptom>> {
             medicalTermCellNode.linesChanged.debounce(0.3, scheduler: MainScheduler.instance)
-                .bind(to: linesUpdateSubject)
+                .subscribe(onNext: { [weak self] in self?.linesUpdateSubject.onNext($0) })
                 .disposed(by: medicalTermCellNode.disposeBag)
         } else if let medicalTermCellNode = node as? ASMedicalTermCellNode<EmptyCellNode<NoMedicalTerm>> {
             medicalTermCellNode.linesChanged.debounce(0.3, scheduler: MainScheduler.instance)
-                .bind(to: linesUpdateSubject)
+                .subscribe(onNext: { [weak self] in self?.linesUpdateSubject.onNext($0) })
                 .disposed(by: medicalTermCellNode.disposeBag)
         }
     }
     
     /// Since ASAwareTableNode's delegate is HomeViewController. We have to do this so that ASAwareTableNode is aware of the scrolling.
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        endUpdateSubject.onNext(())
+        endUpdateSubject.onNext(.scroll)
     }
 }

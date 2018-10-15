@@ -28,32 +28,37 @@ final class ASDisplayNodeWithBackgroundColor: ASDisplayNode {
 final class ContainerDisplayNode: ASDisplayNode {
     let addSymptomButtonNode = ASButtonNode().then {
         $0.setTitle("Add Symptom", with: .systemFont(ofSize: 13), with: .white, for: .normal)
-        $0.style.preferredSize.width = 120
+        $0.style.preferredSize.width = 100
     }
     
     let selectSymptomButtonNode = ASButtonNode().then {
         $0.setTitle("Select Symptom", with: .systemFont(ofSize: 13), with: .white, for: .normal)
-        $0.style.preferredSize.width = 120
+        $0.style.preferredSize.width = 100
     }
     
     let addDiagnosisButtonNode = ASButtonNode().then {
         $0.setTitle("Add Diagnosis", with: .systemFont(ofSize: 13), with: .white, for: .normal)
-        $0.style.preferredSize.width = 120
+        $0.style.preferredSize.width = 100
     }
     
     let selectDiagnosisButtonNode = ASButtonNode().then {
         $0.setTitle("Select Diagnosis", with: .systemFont(ofSize: 13), with: .white, for: .normal)
-        $0.style.preferredSize.width = 120
+        $0.style.preferredSize.width = 100
     }
     
     let deleteAllRowsButtonNode = ASButtonNode().then {
         $0.setTitle("Delete All", with: .systemFont(ofSize: 13), with: .white, for: .normal)
-        $0.style.preferredSize.width = 120
+        $0.style.preferredSize.width = 100
     }
     
     let printButtonNode = ASButtonNode().then {
         $0.setTitle("Print", with: .systemFont(ofSize: 13), with: .white, for: .normal)
-        $0.style.preferredSize.width = 120
+        $0.style.preferredSize.width = 100
+    }
+    
+    let showPageBreaksButtonNode = ASButtonNode().then {
+        $0.setTitle("Page Breaks", with: .systemFont(ofSize: 13), with: .white, for: .normal)
+        $0.style.preferredSize.width = 100
     }
     
     let tableNode = ASAwareTableNode(style: .plain).then {
@@ -91,6 +96,7 @@ final class ContainerDisplayNode: ASDisplayNode {
             selectDiagnosisButtonNode,
             deleteAllRowsButtonNode,
             printButtonNode,
+            showPageBreaksButtonNode,
             spacer
         ]
         
@@ -164,17 +170,28 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
+        containerNode.tableNode.rx
+            .linesUpdated
+            .map { .updateLines(indexPath: $0.indexPath, lines: $0.lines) }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
         
         containerNode.printButtonNode.rx
             .tap
             .flatMap { [weak self] _ -> Observable<[UIImage]> in
                 guard let strongSelf = self  else { return .empty() }
-                return strongSelf.containerNode.tableNode.generatePages(strongSelf.reactor?.currentState.pageHeight ?? 0)
+                return strongSelf.containerNode.tableNode.generatePages(strongSelf.reactor?.currentState.pageHeight ?? 0 )
             }
             .map { .print($0) }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
+        containerNode.showPageBreaksButtonNode.rx
+            .tap
+            .mapTo(.showPageBreaks)
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+
         containerNode.tableNode
             .itemDeleted
             .map { .delete($0) }

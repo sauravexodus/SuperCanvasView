@@ -13,11 +13,12 @@ import RxSwift
 // MARK: Reactive Extensions
 
 extension Reactive where Base: ASAwareTableNode {
-    var updatesEnded: ControlProperty<Void> {
+    var updatesEnded: ControlProperty<Base.InteractionType> {
         return ControlProperty(values: base.endUpdateSubject, valueSink: base.endUpdateSubject)
     }
     
     var linesUpdated: ControlProperty<LinesWithIndexPath> {
+        
         return ControlProperty(values: base.linesUpdateSubject, valueSink: base.linesUpdateSubject)
     }
 }

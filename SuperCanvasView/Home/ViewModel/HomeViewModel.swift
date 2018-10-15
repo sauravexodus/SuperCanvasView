@@ -19,6 +19,7 @@ final class HomeViewModel: Reactor {
         case initialLoad
         case select(MedicalSection)
         case add(MedicalTermType)
+        case showPageBreaks
         case updateLines(indexPath: IndexPath, lines: [Line])
         case delete(IndexPath)
         case deleteAll
@@ -42,6 +43,7 @@ final class HomeViewModel: Reactor {
     func mutate(action: HomeViewModel.Action) -> Observable<HomeViewModel.Mutation> {
         switch action {
         case .initialLoad: return mutateInitialLoad()
+        case .showPageBreaks: return mutateAddingPageBreaks()
         case let .select(medicalSection): return mutateSelectMedicalSection(medicalSection)
         case let .add(medicalTerm): return mutateAppendMedicalTerm(medicalTerm)
         case let .updateLines(indexPath, lines): return mutateUpdatingLines(at: indexPath, lines: lines)
@@ -71,11 +73,13 @@ extension HomeViewModel {
         return .just(.setSections([ConsultationSection(medicalSection: medicalSection, items: [ConsultationRow(height: currentState.terminalCellHeight, lines: [Line](), medicalTerm: medicalSection.correspondingEmptyTerm)])]))
     }
     
+    private func mutateAddingPageBreaks() -> Observable<Mutation> {
+        return .just(.setSections(currentState.sections.removingPageBreaks().withPageBreaks()))
+    }
+    
     private func mutateSelectMedicalSection(_ medicalSection: MedicalSection) -> Observable<Mutation> {
-        var sections = currentState.sections
-        sections.removeAll { (section) -> Bool in
-            section.medicalSection != medicalSection && section.isEmpty
-        }
+        var sections = currentState.sections.removingPageBreaks()
+        sections.removeAll { section in section.medicalSection != medicalSection && section.isEmpty }
         guard !sections.isEmpty, sections[0].items.count > 0, !sections[0].items[0].isTerminal else {
             let consultationRow = ConsultationRow(height: currentState.terminalCellHeight, lines: [], medicalTerm: medicalSection.correspondingEmptyTerm)
             return .just(.setSections([ConsultationSection(medicalSection: medicalSection, items: [consultationRow])]))
@@ -92,7 +96,7 @@ extension HomeViewModel {
     }
     
     private func mutateAppendMedicalTerm(_ medicalTerm: MedicalTermType) -> Observable<Mutation> {
-        var sections = currentState.sections
+        var sections = currentState.sections.removingPageBreaks()
         let consultationRow = ConsultationRow(height: 62.5, lines: [], medicalTerm: medicalTerm)
         guard !sections.isEmpty else { return .just(.setSections([ConsultationSection(medicalSection: medicalTerm.sectionOfSelf, items: [consultationRow])])) }
         guard let sectionIndex = sections.firstIndex(where: { section in section.medicalSection == medicalTerm.sectionOfSelf }) else {
@@ -108,10 +112,10 @@ extension HomeViewModel {
     }
 
     private func mutateUpdatingLines(at indexPath: IndexPath, lines: [Line]) -> Observable<Mutation> {
-        var sections = currentState.sections
+        var sections = currentState.sections.removingPageBreaks()
         guard sections.count > indexPath.section, sections[indexPath.section].items.count > indexPath.row else { return .empty() }
-        sections[indexPath.section].addTerminalCell(with: currentState.terminalCellHeight)
         sections[indexPath.section].items[indexPath.row].lines = lines
+        sections[indexPath.section].addTerminalCell(with: currentState.terminalCellHeight)
         return .just(.setSections(sections))
     }
     
@@ -145,8 +149,13 @@ extension HomeViewModel {
 
 #if DEBUG
 extension HomeViewModel {
-    func transform(state: Observable<HomeViewModel.State>) -> Observable<HomeViewModel.State> {
-        return state.debug("HomeViewModel", trimOutput: true)
+    
+    func transform(action: Observable<HomeViewModel.Action>) -> Observable<HomeViewModel.Action> {
+        return action.debug("HomeViewModel", trimOutput: true)
     }
+    
+//    func transform(state: Observable<HomeViewModel.State>) -> Observable<HomeViewModel.State> {
+//        return state.debug("HomeViewModel", trimOutput: true)
+//    }
 }
 #endif

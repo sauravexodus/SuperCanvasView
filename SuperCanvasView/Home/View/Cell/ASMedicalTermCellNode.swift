@@ -51,15 +51,10 @@ final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode wher
     // MARK: Lifecycle methods
     
     override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
-        var stack: [ASLayoutSpec] = []
-        stack.append(
-            titleTextNode.insets(.all(16))
-                .overlayed(by: contentNode)
-                .overlayed(by: canvasNode)
-                .overlayed(by: [editButtonNode, deleteButtonNode].stacked(in: .horizontal, spacing: 16, justifyContent: .end, alignItems: .start).insets(UIEdgeInsets.all(16)))
-                .then { $0.style.flexGrow = 1  }
-        )
-        return stack.stacked(.vertical)
+        return titleTextNode.insets(.all(16)).relative(horizontalPosition: .start, verticalPosition: .start, sizingOption: [])
+            .overlayed(by: contentNode)
+            .overlayed(by: canvasNode)
+            .overlayed(by: [editButtonNode, deleteButtonNode].stacked(in: .horizontal, spacing: 16, justifyContent: .end, alignItems: .start).insets(UIEdgeInsets.all(16)))
     }
     
     override func animateLayoutTransition(_ context: ASContextTransitioning) {}

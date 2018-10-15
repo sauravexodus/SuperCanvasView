@@ -127,7 +127,9 @@ class CanvasView: UIView {
             eraseLines(touches, withEvent: event)
             return
         }
-        drawTouches(touches, withEvent: event)
+        
+        let filtered = touches.filter({ frame.contains($0.location(in: self)) })
+        drawTouches(filtered, withEvent: event)
     }
     
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -135,8 +137,9 @@ class CanvasView: UIView {
             eraseLines(touches, withEvent: event)
             return
         }
-        drawTouches(touches, withEvent: event)
-        endTouches(touches, cancel: false)
+        let filtered = touches.filter({ frame.contains($0.location(in: self)) })
+        drawTouches(filtered, withEvent: event)
+        endTouches(filtered, cancel: false)
     }
     
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {

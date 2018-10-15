@@ -15,11 +15,11 @@ import RxCocoa
 typealias LinesWithIndexPath = (lines: [Line], indexPath: IndexPath)
 
 final class ASAwareTableNode: ASTableNode {
-    
     // MARK: Internal properties
     
     internal let endUpdateSubject = PublishSubject<Void>()
     internal let linesUpdateSubject = PublishSubject<LinesWithIndexPath>()
+    internal let itemDeleted = PublishSubject<IndexPath>()
     
     // MARK: Public properties
     
@@ -107,15 +107,15 @@ extension ASAwareTableNode: ASTableDelegate {
     func tableNode(_ tableNode: ASTableNode, willDisplayRowWith node: ASCellNode) {
         if let medicalTermCellNode = node as? ASMedicalTermCellNode<EmptyCellNode<Diagnosis>> {
             medicalTermCellNode.linesChanged.debounce(0.3, scheduler: MainScheduler.instance)
-                .bind(to: linesUpdateSubject)
+                .subscribe(onNext: { [weak self] in self?.linesUpdateSubject.onNext($0) })
                 .disposed(by: medicalTermCellNode.disposeBag)
         } else if let medicalTermCellNode = node as? ASMedicalTermCellNode<EmptyCellNode<Symptom>> {
             medicalTermCellNode.linesChanged.debounce(0.3, scheduler: MainScheduler.instance)
-                .bind(to: linesUpdateSubject)
+                .subscribe(onNext: { [weak self] in self?.linesUpdateSubject.onNext($0) })
                 .disposed(by: medicalTermCellNode.disposeBag)
         } else if let medicalTermCellNode = node as? ASMedicalTermCellNode<EmptyCellNode<NoMedicalTerm>> {
             medicalTermCellNode.linesChanged.debounce(0.3, scheduler: MainScheduler.instance)
-                .bind(to: linesUpdateSubject)
+                .subscribe(onNext: { [weak self] in self?.linesUpdateSubject.onNext($0) })
                 .disposed(by: medicalTermCellNode.disposeBag)
         }
     }

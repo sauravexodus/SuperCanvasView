@@ -13,29 +13,36 @@ struct ConsultationSection {
     var medicalSection: MedicalSection
     var items: [Item]
     
+    var isEmpty: Bool {
+        return items.count == 0 || (items.count == 1 && items[0].isTerminal)
+    }
+    
     init(medicalSection: MedicalSection, items: [Item]) {
         self.medicalSection = medicalSection
         self.items = items
     }
     
-    mutating func insert(_ nodeRow: ASNodeRow, with terminalCellHeight: CGFloat) {
-        guard case let .medicalTerm(_,_,_,medicalTerm) = nodeRow else { return }
-        let padderRow = ASNodeRow(height: terminalCellHeight, lines: [], medicalTerm: medicalTerm.sectionOfSelf.correspondingEmptyTerm)
-        if let lastItem = items.last, lastItem.isPadder {
+    mutating func insert(_ consultationRow: ConsultationRow, with terminalCellHeight: CGFloat) {
+        guard case let .medicalTerm(_,_,_,medicalTerm) = consultationRow else { return }
+        let padderRow = ConsultationRow(height: terminalCellHeight, lines: [], medicalTerm: medicalTerm.sectionOfSelf.correspondingEmptyTerm)
+        if let lastItem = items.last, lastItem.isTerminal {
             items.removeLast()
         }
-        items += [nodeRow, padderRow]
+        items += [consultationRow, padderRow]
     }
     
     mutating func addTerminalCell(with height: CGFloat) {
-        if let lastItem = items.last, !lastItem.isPadder, case let .medicalTerm(_, _, _, medicalTerm) = lastItem {
-            items.append(ASNodeRow(height: height, lines: [], medicalTerm: medicalTerm.sectionOfSelf.correspondingEmptyTerm))
+        if items.count == 0 {
+            items.append(ConsultationRow(height: height, lines: [], medicalTerm: medicalSection.correspondingEmptyTerm))
+        }
+        if let lastItem = items.last, !lastItem.isTerminal, case let .medicalTerm(_, _, _, medicalTerm) = lastItem {
+            items.append(ConsultationRow(height: height, lines: [], medicalTerm: medicalTerm.sectionOfSelf.correspondingEmptyTerm))
         }
     }
 }
 
 extension ConsultationSection: AnimatableSectionModelType {
-    typealias Item = ASNodeRow
+    typealias Item = ConsultationRow
     typealias Identity = MedicalSection
     
     var identity: MedicalSection {

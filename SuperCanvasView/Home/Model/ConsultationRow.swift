@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import Differentiator
 
-enum ASNodeRow {
+enum ConsultationRow {
     case medicalTerm(id: String, height: CGFloat, lines: [Line], medicalTermType: MedicalTermType)
     case pageBreak(id: String, pageNumber: Int)
     
@@ -18,9 +18,16 @@ enum ASNodeRow {
         self = .medicalTerm(id: UUID().uuidString, height: height, lines: lines, medicalTermType: medicalTerm)
     }
     
-    var isPadder: Bool {
+    var isTerminal: Bool {
         switch self {
         case let .medicalTerm(_, _, lines, medicalTerm): return medicalTerm.name == nil && lines.isEmpty
+        default: return false
+        }
+    }
+    
+    var isPageBreak: Bool {
+        switch self {
+        case .pageBreak: return true
         default: return false
         }
     }
@@ -65,9 +72,9 @@ enum ASNodeRow {
     }
 }
 
-extension ASNodeRow: Hashable {
+extension ConsultationRow: Hashable {
     
-    static func == (lhs: ASNodeRow, rhs: ASNodeRow) -> Bool {
+    static func == (lhs: ConsultationRow, rhs: ConsultationRow) -> Bool {
         return lhs.hashValue == rhs.hashValue
     }
     
@@ -76,7 +83,7 @@ extension ASNodeRow: Hashable {
     }
 }
 
-extension ASNodeRow: IdentifiableType {
+extension ConsultationRow: IdentifiableType {
     typealias Identity = String
     
     var identity: String {
@@ -84,8 +91,8 @@ extension ASNodeRow: IdentifiableType {
     }
 }
 
-extension Array where Element == Array<ASNodeRow> {
-    func joined(separator element: ASNodeRow) -> [ASNodeRow] {
+extension Array where Element == Array<ConsultationRow> {
+    func joined(separator element: ConsultationRow) -> [ConsultationRow] {
         return reduce([], { seed, acc in
             var mutable = seed
             mutable.append(contentsOf: acc)
@@ -94,7 +101,7 @@ extension Array where Element == Array<ASNodeRow> {
         })
     }
     
-    func joined() -> [ASNodeRow] {
+    func joined() -> [ConsultationRow] {
         return reduce([], { seed, acc in
             var mutable = seed
             mutable.append(contentsOf: acc)
@@ -103,13 +110,12 @@ extension Array where Element == Array<ASNodeRow> {
     }
 }
 
-extension Array where Element == ASNodeRow {
-    
+extension Array where Element == ConsultationRow {
     var height: CGFloat {
         return map { $0.height }.reduce(0, +)
     }
     
-    func withPageBreaks(occupiedHeight: CGFloat) -> (items: [ASNodeRow], lastSectionOccupiedHeight: CGFloat) {
+    func withPageBreaks(occupiedHeight: CGFloat) -> (items: [ConsultationRow], lastSectionOccupiedHeight: CGFloat) {
         let sectionedArray = split(occupiedHeight: occupiedHeight)
         let finalArray = sectionedArray.enumerated()
             .map { enumerator in
@@ -122,12 +128,12 @@ extension Array where Element == ASNodeRow {
         return (items: finalArray, lastSectionOccupiedHeight: sectionedArray.last?.height ?? 0)
     }
     
-    func split(occupiedHeight: CGFloat) -> [[ASNodeRow]] {
+    func split(occupiedHeight: CGFloat) -> [[ConsultationRow]] {
         var occupiedHeight = occupiedHeight
-        return reduce([]) { (acc, row) -> [[ASNodeRow]] in
+        return reduce([]) { (acc, row) -> [[ConsultationRow]] in
             var acc = acc
             guard !acc.isEmpty else { return [[row]] }
-            if var lastArray = acc.last, lastArray.height + row.height < PageSize.A4.height - occupiedHeight || row.isPadder {
+            if var lastArray = acc.last, lastArray.height + row.height < PageSize.A4.height - occupiedHeight || row.isTerminal {
                 lastArray.append(row)
                 acc[acc.count - 1] = lastArray
                 return acc

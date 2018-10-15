@@ -12,7 +12,6 @@ import SnapKit
 import RxSwift
 
 final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode where ContentNode.RepresentationTarget: MedicalTermType {
-    
     internal let titleTextNode = ASTextNode().then {
         $0.maximumNumberOfLines = 0
     }
@@ -38,7 +37,7 @@ final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode wher
     var header: String?
     let maximumHeight: CGFloat = 900
     let disposeBag = DisposeBag()
-    var item: ASNodeRow?
+    var item: ConsultationRow?
     
     // MARK: Init methods
     
@@ -67,7 +66,7 @@ final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode wher
     
     // MARK: Instance methods
 
-    func configure(with item: ASNodeRow) {
+    func configure(with item: ConsultationRow) {
         guard let term = item.medicalTerm as? ContentNode.RepresentationTarget else {
             print("Something has gone horribly, horribly awry...")
             return
@@ -78,6 +77,5 @@ final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode wher
         contentNode.configure(with: term)
         self.item = item
     }
-    
 }
 

@@ -18,6 +18,7 @@ extension Reactive where Base: ASAwareTableNode {
     }
     
     var linesUpdated: ControlProperty<LinesWithIndexPath> {
+        
         return ControlProperty(values: base.linesUpdateSubject, valueSink: base.linesUpdateSubject)
     }
 }

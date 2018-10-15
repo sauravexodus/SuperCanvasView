@@ -12,17 +12,23 @@ import RxSwift
 // MARK: Bindings
 
 extension ASMedicalTermCellNode {
-    
+
     var linesChanged: Observable<(lines: [Line], indexPath: IndexPath)> {
         guard let canvasView = canvasNode.view as? CanvasView else { return .empty() }
-        return canvasView.rx.lines.map { [weak self] lines in
-            guard let indexPath = self?.indexPath else { throw NSError(domain: "CanvasView", code: 0, userInfo: [NSLocalizedDescriptionKey: "Could not find indexPath"]) }
-            return (lines: lines, indexPath: indexPath)
-        }
-        .catchErrorJustReturn(nil)
-        .unwrap()
+        return canvasView.rx.lines
+            .distinctUntilChanged()
+            .map { [weak self] lines in
+                guard let indexPath = self?.indexPath else { throw NSError(domain: "CanvasView", code: 0, userInfo: [NSLocalizedDescriptionKey: "Could not find indexPath"]) }
+                return (lines: lines, indexPath: indexPath)
+            }
+            .catchErrorJustReturn(nil)
+            .unwrap()
     }
-    
+
+    var delete: Observable<IndexPath> {
+        return deleteButtonNode.rx.tap.mapTo(indexPath).unwrap()
+    }
+
     internal func bind() {
         bindEditAction()
         bindDeleteAction()
@@ -31,7 +37,7 @@ extension ASMedicalTermCellNode {
         bindExpanding()
         bindContracting()
     }
-    
+
     private func bindExpanding() {
         guard let canvasView = canvasNode.view as? CanvasView,
             let tableNode = owningNode as? ASAwareTableNode else { return }
@@ -52,7 +58,7 @@ extension ASMedicalTermCellNode {
             .bind(to: tableNode.rx.updatesEnded)
             .disposed(by: disposeBag)
     }
-    
+
     private func bindContracting() {
         guard let tableNode = owningNode as? ASAwareTableNode else { return }
         tableNode.rx.updatesEnded
@@ -82,10 +88,11 @@ extension ASMedicalTermCellNode {
     }
     
     private func bindDeleteAction() {
+        guard let tableNode = owningNode as? ASAwareTableNode else { return }
         deleteButtonNode.rx.tap
-            .subscribe(onNext: { _ in
-                print("Delete Tapped")
-            })
+            .map { [weak self] _ in self?.indexPath }
+            .unwrap()
+            .bind(to: tableNode.itemDeleted)
             .disposed(by: disposeBag)
     }
 }

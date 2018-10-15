@@ -13,7 +13,8 @@ import RxSwift
 
 extension ASAwareTableNode {
     func generatePages(_ pageHeight: CGFloat) -> Observable<[UIImage]> {
-        return Observable<Int>.interval(0.01, scheduler: MainScheduler.instance)
+        scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
+        return Observable<Int>.interval(0.1, scheduler: MainScheduler.instance)
             .take(numberOfSections)
             .concatMap { [weak self] section -> Observable<UIImage?> in
                 guard let strongSelf = self else { return .just(nil) }
@@ -38,7 +39,7 @@ extension ASAwareTableNode {
     }
     
     private func captureSinglePage(_ section: Int) -> Observable<UIImage?> {
-        return Observable<Int>.interval(0.01, scheduler: MainScheduler.instance)
+        return Observable<Int>.interval(0.1, scheduler: MainScheduler.instance)
             .take(numberOfRows(inSection: section))
             .concatMap { [weak self] row -> Observable<UIImage?> in
                 guard let strongSelf = self else { return .just(nil) }

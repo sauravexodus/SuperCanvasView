@@ -60,7 +60,8 @@ extension Array where Element == ConsultationSection {
         var occupiedHeight: CGFloat = 0
         return map {
             var mutable = $0
-            (mutable.items, occupiedHeight) = $0.items.withPageBreaks(occupiedHeight: occupiedHeight)
+            print("[Page Break] Section Changed \($0.medicalSection.title)")
+            (mutable.items, occupiedHeight) = $0.items.withPageBreaks(occupiedHeight: occupiedHeight + 16)
             return mutable
         }
     }

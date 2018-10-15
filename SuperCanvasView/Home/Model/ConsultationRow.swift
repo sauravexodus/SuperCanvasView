@@ -130,10 +130,12 @@ extension Array where Element == ConsultationRow {
     
     func split(occupiedHeight: CGFloat) -> [[ConsultationRow]] {
         var occupiedHeight = occupiedHeight
+        print("[Page Break] Occupied Height", occupiedHeight)
         return reduce([]) { (acc, row) -> [[ConsultationRow]] in
             var acc = acc
             guard !acc.isEmpty else { return [[row]] }
-            if var lastArray = acc.last, lastArray.height + row.height < PageSize.A4.height - occupiedHeight || row.isTerminal {
+            print("[Page Break] Current Page Height", (acc.last?.height ?? 0) + occupiedHeight, "New Height", (acc.last?.height ?? 0) + row.height + occupiedHeight)
+            if var lastArray = acc.last, lastArray.height + row.height + occupiedHeight < PageSize.A4.height || row.isTerminal {
                 lastArray.append(row)
                 acc[acc.count - 1] = lastArray
                 return acc

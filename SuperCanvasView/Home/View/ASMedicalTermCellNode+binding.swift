@@ -54,7 +54,7 @@ extension ASMedicalTermCellNode {
             })
             .disposed(by: disposeBag)
         
-        Observable.merge(tapObservable, canvasView.rx.pencilDidStopMoving)
+        Observable.merge(tapObservable.mapTo(.tap), canvasView.rx.pencilDidStopMoving.mapTo(.scribble))
             .bind(to: tableNode.rx.updatesEnded)
             .disposed(by: disposeBag)
     }
@@ -65,7 +65,7 @@ extension ASMedicalTermCellNode {
             .debounce(1.5, scheduler: MainScheduler.instance)
             .subscribe(onNext: { [unowned self] type in
                 UIView.setAnimationsEnabled(true)
-                self.contract()
+                self.contract(interactionType: type)
             })
             .disposed(by: disposeBag)
     }

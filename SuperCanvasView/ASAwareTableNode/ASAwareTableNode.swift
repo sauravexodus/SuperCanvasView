@@ -15,9 +15,16 @@ import RxCocoa
 typealias LinesWithIndexPath = (lines: [Line], indexPath: IndexPath)
 
 final class ASAwareTableNode: ASTableNode {
+    
+    enum InteractionType {
+        case scroll
+        case scribble
+        case tap
+    }
+    
     // MARK: Internal properties
     
-    internal let endUpdateSubject = PublishSubject<Void>()
+    internal let endUpdateSubject = PublishSubject<InteractionType>()
     internal let linesUpdateSubject = PublishSubject<LinesWithIndexPath>()
     internal let itemDeleted = PublishSubject<IndexPath>()
     
@@ -122,6 +129,6 @@ extension ASAwareTableNode: ASTableDelegate {
     
     /// Since ASAwareTableNode's delegate is HomeViewController. We have to do this so that ASAwareTableNode is aware of the scrolling.
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        endUpdateSubject.onNext(())
+        endUpdateSubject.onNext(.scroll)
     }
 }

@@ -12,7 +12,6 @@ import RxSwift
 // MARK: Bindings
 
 extension ASMedicalTermCellNode {
-
     var linesChanged: Observable<(lines: [Line], indexPath: IndexPath)> {
         guard let canvasView = canvasNode.view as? CanvasView else { return .empty() }
         return canvasView.rx.lines
@@ -35,37 +34,20 @@ extension ASMedicalTermCellNode {
         bindCanvas()
         
         bindExpanding()
-        bindContracting()
     }
 
     private func bindExpanding() {
-        guard let canvasView = canvasNode.view as? CanvasView,
-            let tableNode = owningNode as? ASAwareTableNode else { return }
+        guard let canvasView = canvasNode.view as? CanvasView else { return }
         
         let tapObservable = rx.tapGesture { gesture, _ in
             gesture.allowedTouchTypes = [NSNumber(value: UITouchType.direct.rawValue)]
             }
             .mapTo(())
         
-        Observable.merge(tapObservable,canvasView.rx.pencilTouchDidNearBottom)
+        Observable.merge(tapObservable, canvasView.rx.pencilTouchDidNearBottom)
             .subscribe(onNext: { [unowned self] _ in
                 UIView.setAnimationsEnabled(false)
                 self.expand()
-            })
-            .disposed(by: disposeBag)
-        
-        Observable.merge(tapObservable.mapTo(.tap), canvasView.rx.pencilDidStopMoving.mapTo(.scribble))
-            .bind(to: tableNode.rx.updatesEnded)
-            .disposed(by: disposeBag)
-    }
-
-    private func bindContracting() {
-        guard let tableNode = owningNode as? ASAwareTableNode else { return }
-        tableNode.rx.updatesEnded
-            .debounce(1.5, scheduler: MainScheduler.instance)
-            .subscribe(onNext: { [unowned self] type in
-                UIView.setAnimationsEnabled(true)
-                self.contract(interactionType: type)
             })
             .disposed(by: disposeBag)
     }

@@ -73,7 +73,6 @@ enum ConsultationRow {
 }
 
 extension ConsultationRow: Hashable {
-    
     static func == (lhs: ConsultationRow, rhs: ConsultationRow) -> Bool {
         return lhs.hashValue == rhs.hashValue
     }

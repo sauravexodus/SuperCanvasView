@@ -65,6 +65,8 @@ final class ContainerDisplayNode: ASDisplayNode {
         $0.view.panGestureRecognizer.allowedTouchTypes = [NSNumber(value: UITouchType.direct.rawValue)]
         $0.view.tableFooterView = UIView()
         $0.view.backgroundColor = .white
+        $0.view.tableFooterView = UIView()
+        $0.view.tableFooterView?.frame.size.height = PageSize.A4.height
         $0.style.flexGrow = 1
     }
     
@@ -172,7 +174,6 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
         
         containerNode.tableNode.rx
             .linesUpdated
-            .debug("Lines updated")
             .map { .updateLines(indexPath: $0.indexPath, lines: $0.lines) }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)

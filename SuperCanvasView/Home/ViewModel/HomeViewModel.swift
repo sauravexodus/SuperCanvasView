@@ -78,7 +78,7 @@ extension HomeViewModel {
     }
     
     private func mutateSelectMedicalSection(_ medicalSection: MedicalSection) -> Observable<Mutation> {
-        var sections = currentState.sections.removingPageBreaks()
+        var sections = currentState.sections
         sections.removeAll { section in section.medicalSection != medicalSection && section.isEmpty }
         guard !sections.isEmpty, sections[0].items.count > 0, !sections[0].items[0].isTerminal else {
             let consultationRow = ConsultationRow(height: currentState.terminalCellHeight, lines: [], medicalTerm: medicalSection.correspondingEmptyTerm)
@@ -96,7 +96,8 @@ extension HomeViewModel {
     }
     
     private func mutateAppendMedicalTerm(_ medicalTerm: MedicalTermType) -> Observable<Mutation> {
-        var sections = currentState.sections.removingPageBreaks()
+        var sections = currentState.sections
+        sections.removeAll { section in section.medicalSection != medicalTerm.sectionOfSelf && section.isEmpty }
         let consultationRow = ConsultationRow(height: 62.5, lines: [], medicalTerm: medicalTerm)
         guard !sections.isEmpty else { return .just(.setSections([ConsultationSection(medicalSection: medicalTerm.sectionOfSelf, items: [consultationRow])])) }
         guard let sectionIndex = sections.firstIndex(where: { section in section.medicalSection == medicalTerm.sectionOfSelf }) else {
@@ -112,7 +113,7 @@ extension HomeViewModel {
     }
 
     private func mutateUpdatingLines(at indexPath: IndexPath, lines: [Line]) -> Observable<Mutation> {
-        var sections = currentState.sections.removingPageBreaks()
+        var sections = currentState.sections
         guard sections.count > indexPath.section, sections[indexPath.section].items.count > indexPath.row else { return .empty() }
         sections[indexPath.section].items[indexPath.row].lines = lines
         sections[indexPath.section].addTerminalCell(with: currentState.terminalCellHeight)

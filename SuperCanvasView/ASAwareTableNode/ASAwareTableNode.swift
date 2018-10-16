@@ -23,8 +23,7 @@ final class ASAwareTableNode: ASTableNode {
     }
     
     // MARK: Internal properties
-    
-    internal let endUpdateSubject = PublishSubject<InteractionType>()
+
     internal let linesUpdateSubject = PublishSubject<LinesWithIndexPath>()
     internal let itemDeleted = PublishSubject<IndexPath>()
     
@@ -68,15 +67,6 @@ final class ASAwareTableNode: ASTableNode {
     
     override func didLoad() {
         super.didLoad()
-        endUpdateSubject.map { [unowned self] _ in self.contentOffset }
-            .debounce(1.5, scheduler: MainScheduler.instance)
-            .subscribe(onNext: { [unowned self] contentOffset in
-                let y = max(0, min(self.view.contentSize.height, contentOffset.y))
-                self.setContentOffset(CGPoint(x: 0, y: y), animated: false)
-            })
-            .disposed(by: disposeBag)
-        
-        
     }
     
     // MARK: Instance methods
@@ -129,6 +119,5 @@ extension ASAwareTableNode: ASTableDelegate {
     
     /// Since ASAwareTableNode's delegate is HomeViewController. We have to do this so that ASAwareTableNode is aware of the scrolling.
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        endUpdateSubject.onNext(.scroll)
     }
 }

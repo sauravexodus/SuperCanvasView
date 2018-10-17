@@ -27,7 +27,6 @@ final class ASAwareTableNode: ASTableNode {
         case scroll
         case scribble
         case tap
-        case canvasControls
     }
     
     // MARK: Internal properties
@@ -143,7 +142,6 @@ extension ASAwareTableNode {
         }
         undoableActionsIndexes.removeAll()
         redoableActionsIndexes.removeAll()
-        endUpdateSubject.onNext(.canvasControls)
     }
 }
 

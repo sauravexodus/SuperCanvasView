@@ -14,7 +14,7 @@ enum PrintFontSetting {
     case regular
     case comfortable
     
-    static var current: PrintFontSetting = .comfortable
+    static var current: PrintFontSetting = .compact
 }
 
 extension UIFont {

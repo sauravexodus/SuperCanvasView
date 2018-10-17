@@ -76,7 +76,7 @@ final class ASAwareTableNode: ASTableNode {
         let font = UIFont.preferredPrintFont(forTextStyle: .callout)
         let attributedText = NSAttributedString(string: text, attributes: [.font: font])
         let width = frame.size.width
-        let height = attributedText.height(withConstrainedWidth: width)
+        let height = attributedText.height(withConstrainedWidth: width) + 8
         
         return UIView(frame: CGRect.zero).then {
             let label = UILabel(frame: CGRect(x: 8, y: 0, width: width, height: height)).then {
@@ -94,7 +94,7 @@ final class ASAwareTableNode: ASTableNode {
         let attributedText = NSAttributedString(string: "Random", attributes: [.font: font])
         let width = frame.size.width
         let height = attributedText.height(withConstrainedWidth: width)
-        return height
+        return height + 8
     }
 }
 

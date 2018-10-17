@@ -43,6 +43,7 @@ final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode wher
     }
     
     let bottomInset: CGFloat = 4
+    let leftInset: CGFloat = 12
 
     var header: String?
     let maximumHeight: CGFloat = 900
@@ -61,7 +62,7 @@ final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode wher
     // MARK: Lifecycle methods
     
     override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
-        return titleTextNode.insets(.init(top: 0, left: 12, bottom: bottomInset, right: 0)).relative(horizontalPosition: .start, verticalPosition: .start, sizingOption: [])
+        return titleTextNode.insets(.init(top: 0, left: leftInset, bottom: bottomInset, right: 0)).relative(horizontalPosition: .start, verticalPosition: .start, sizingOption: [])
             .overlayed(by: contentNode)
             .overlayed(by: canvasNode)
             .overlayed(by: [editButtonNode, deleteButtonNode].stacked(in: .horizontal, spacing: 8, justifyContent: .end, alignItems: .start))

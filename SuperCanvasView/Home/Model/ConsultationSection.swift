@@ -56,12 +56,32 @@ extension ConsultationSection: AnimatableSectionModelType {
 }
 
 extension Array where Element == ConsultationSection {
-    func withPageBreaks() -> [ConsultationSection] {
-        var occupiedHeight: CGFloat = 0
+    func withPageBreaks(sectionHeaderHeight: CGFloat) -> [ConsultationSection] {
+        var currentHeight: CGFloat = 0
+        var pageNumber = 0
         return map {
             var mutable = $0
-            print("[Page Break] Section Changed \($0.medicalSection.title)")
-            (mutable.items, occupiedHeight) = $0.items.withPageBreaks(occupiedHeight: occupiedHeight + 16)
+            var items: [ConsultationRow] = []
+            currentHeight += 16
+            $0.items.forEach { row in
+                if row.isTerminal {
+                    items.append(row)
+                    return
+                }
+                if currentHeight + row.height > PageSize.A4.height {
+                    items.append(.pageBreak(pageNumber: pageNumber))
+                    pageNumber += 1
+                    currentHeight = 0
+                }
+                items.append(row)
+                currentHeight += row.height
+            }
+            if currentHeight + sectionHeaderHeight > PageSize.A4.height {
+                items.append(.pageBreak(pageNumber: pageNumber))
+                pageNumber += 1
+                currentHeight = 0
+            }
+            mutable.items = items
             return mutable
         }
     }

@@ -220,7 +220,7 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
             .tap
             .flatMap { [weak self] _ -> Observable<[UIImage]> in
                 guard let strongSelf = self  else { return .empty() }
-                return strongSelf.containerNode.tableNode.generatePages(strongSelf.reactor?.currentState.pageHeight ?? 0 )
+                return strongSelf.containerNode.tableNode.generatePages(PageSize.A4.height)
             }
             .map { .print($0) }
             .bind(to: reactor.action)

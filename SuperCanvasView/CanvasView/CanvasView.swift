@@ -508,7 +508,7 @@ extension Reactive where Base: CanvasView {
             .filter { [weak base] touches in
                 guard let base = base else { return false }
                 if let first = touches.first, first.type == .stylus {
-                    if first.location(in: base).y > (base.frameInDisplay.height - 75) {
+                    if first.location(in: base).y > (base.frameInDisplay.height - 30) {
                         return true
                     }
                 }
@@ -522,7 +522,7 @@ extension Reactive where Base: CanvasView {
             .filter { [weak base] touches in
                 guard let base = base else { return false }
                 if let first = touches.first, first.type == .stylus {
-                    if first.location(in: base).y > (base.frameInDisplay.height - 75) {
+                    if first.location(in: base).y > (base.frameInDisplay.height - 30) {
                         return true
                     }
                 }

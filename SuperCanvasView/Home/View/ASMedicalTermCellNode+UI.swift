@@ -16,7 +16,7 @@ extension ASMedicalTermCellNode {
     func expand() {
         guard let canvasView = canvasNode.view as? CanvasView else { return }
         guard style.preferredSize.height < maximumHeight else { return }
-        style.preferredSize.height = min(max((item?.lines.highestY ?? 0) + 200, style.preferredSize.height), maximumHeight)
+        style.preferredSize.height = min(max(canvasView.highestY + 30, style.preferredSize.height), maximumHeight)
         transitionLayout(withAnimation: false, shouldMeasureAsync: false) {
             canvasView.setNeedsDisplay()
         }
@@ -49,13 +49,5 @@ extension ASMedicalTermCellNode {
         canvasView.setNeedsDisplay()
     }
     
-    private func setupStyles() {
-        editButtonNode.layer.borderColor = UIColor.black.cgColor
-        editButtonNode.layer.borderWidth = 2
-        editButtonNode.layer.cornerRadius = 3
-        
-        deleteButtonNode.layer.borderColor = UIColor.black.cgColor
-        deleteButtonNode.layer.borderWidth = 2
-        deleteButtonNode.layer.cornerRadius = 3
-    }
+    private func setupStyles() { }
 }

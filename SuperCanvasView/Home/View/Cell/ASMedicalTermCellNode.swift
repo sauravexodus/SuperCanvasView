@@ -33,7 +33,7 @@ final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode wher
         $0.contentEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 16)
     }
     
-    let textFont: UIFont = UIFont.preferredFont(forTextStyle: .body)
+    let textFont: UIFont = UIFont.preferredPrintFont(forTextStyle: .body)
     
     var minimumHeight: CGFloat {
         let attributedText = NSAttributedString(string: "Random", attributes: [.font: textFont])

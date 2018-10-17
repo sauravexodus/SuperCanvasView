@@ -88,13 +88,21 @@ final class ASAwareTableNode: ASTableNode {
             $0.addSubview(label)
         }
     }
+    
+    internal func getHeaderHeightForSection(at index: Int) -> CGFloat {
+        let font = UIFont.preferredPrintFont(forTextStyle: .callout)
+        let attributedText = NSAttributedString(string: "Random", attributes: [.font: font])
+        let width = frame.size.width
+        let height = attributedText.height(withConstrainedWidth: width)
+        return height
+    }
 }
 
 // MARK: Delegates
 
 extension ASAwareTableNode: ASTableDelegate {
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 16
+        return getHeaderHeightForSection(at: section)
     }
     
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {

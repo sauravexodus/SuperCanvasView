@@ -73,18 +73,18 @@ final class ASAwareTableNode: ASTableNode {
     
     internal func generateHeaderViewForSection(at index: Int) -> UIView {
         let text = animatedDataSource[index].medicalSection.displayTitle
-        let font = UIFont.preferredPrintFont(forTextStyle: .footnote)
+        let font = UIFont.preferredPrintFont(forTextStyle: .callout)
         let attributedText = NSAttributedString(string: text, attributes: [.font: font])
         let width = frame.size.width
         let height = attributedText.height(withConstrainedWidth: width)
         
         return UIView(frame: CGRect.zero).then {
-            let label = UILabel(frame: CGRect(x: 0, y: 0, width: width, height: height)).then {
-                $0.backgroundColor = .darkGray
+            let label = UILabel(frame: CGRect(x: 8, y: 0, width: width, height: height)).then {
                 $0.textColor = .white
                 $0.font = font
                 $0.text = text
             }
+            $0.backgroundColor = .darkGray
             $0.addSubview(label)
         }
     }

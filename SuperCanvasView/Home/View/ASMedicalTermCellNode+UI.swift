@@ -49,13 +49,5 @@ extension ASMedicalTermCellNode {
         canvasView.setNeedsDisplay()
     }
     
-    private func setupStyles() {
-        editButtonNode.layer.borderColor = UIColor.black.cgColor
-        editButtonNode.layer.borderWidth = 2
-        editButtonNode.layer.cornerRadius = 3
-        
-        deleteButtonNode.layer.borderColor = UIColor.black.cgColor
-        deleteButtonNode.layer.borderWidth = 2
-        deleteButtonNode.layer.cornerRadius = 3
-    }
+    private func setupStyles() { }
 }

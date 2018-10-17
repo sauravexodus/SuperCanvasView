@@ -12,7 +12,7 @@ import Differentiator
 
 enum ConsultationRow {
     case medicalTerm(id: String, height: CGFloat, lines: [Line], medicalTermType: MedicalTermType)
-    case pageBreak(id: String, pageNumber: Int)
+    case pageBreak(pageNumber: Int)
     
     init(height: CGFloat, lines: [Line], medicalTerm: MedicalTermType) {
         self = .medicalTerm(id: UUID().uuidString, height: height, lines: lines, medicalTermType: medicalTerm)
@@ -67,7 +67,7 @@ enum ConsultationRow {
     var id: String {
         switch self {
         case let .medicalTerm(id, _, _, _): return id
-        case let .pageBreak(pageNumber): return "Page break \(pageNumber)"
+        case let .pageBreak(pageNumber): return "\(pageNumber)"
         }
     }
 }
@@ -87,61 +87,5 @@ extension ConsultationRow: IdentifiableType {
     
     var identity: String {
         return id
-    }
-}
-
-extension Array where Element == Array<ConsultationRow> {
-    func joined(separator element: ConsultationRow) -> [ConsultationRow] {
-        return reduce([], { seed, acc in
-            var mutable = seed
-            mutable.append(contentsOf: acc)
-            mutable.append(element)
-            return mutable
-        })
-    }
-    
-    func joined() -> [ConsultationRow] {
-        return reduce([], { seed, acc in
-            var mutable = seed
-            mutable.append(contentsOf: acc)
-            return mutable
-        })
-    }
-}
-
-extension Array where Element == ConsultationRow {
-    var height: CGFloat {
-        return map { $0.height }.reduce(0, +)
-    }
-    
-    func withPageBreaks(occupiedHeight: CGFloat) -> (items: [ConsultationRow], lastSectionOccupiedHeight: CGFloat) {
-        let sectionedArray = split(occupiedHeight: occupiedHeight)
-        let finalArray = sectionedArray.enumerated()
-            .map { enumerator in
-                guard enumerator.offset != sectionedArray.count - 1 else { return enumerator.element }
-                var mutable = enumerator.element
-                mutable.append(.pageBreak(id: UUID().uuidString, pageNumber: enumerator.offset))
-                return mutable
-            }
-            .joined()
-        return (items: finalArray, lastSectionOccupiedHeight: sectionedArray.last?.height ?? 0)
-    }
-    
-    func split(occupiedHeight: CGFloat) -> [[ConsultationRow]] {
-        var occupiedHeight = occupiedHeight
-        print("[Page Break] Occupied Height", occupiedHeight)
-        return reduce([]) { (acc, row) -> [[ConsultationRow]] in
-            var acc = acc
-            guard !acc.isEmpty else { return [[row]] }
-            print("[Page Break] Current Page Height", (acc.last?.height ?? 0) + occupiedHeight, "New Height", (acc.last?.height ?? 0) + row.height + occupiedHeight)
-            if var lastArray = acc.last, lastArray.height + row.height + occupiedHeight < PageSize.A4.height || row.isTerminal {
-                lastArray.append(row)
-                acc[acc.count - 1] = lastArray
-                return acc
-            }
-            occupiedHeight = 0
-            acc.append([row])
-            return acc
-        }
     }
 }

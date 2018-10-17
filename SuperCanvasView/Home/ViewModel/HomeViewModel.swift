@@ -74,7 +74,7 @@ extension HomeViewModel {
     }
     
     private func mutateAddingPageBreaks() -> Observable<Mutation> {
-        return .just(.setSections(currentState.sections.removingPageBreaks().withPageBreaks()))
+        return .just(.setSections(currentState.sections.removingPageBreaks().withPageBreaks(sectionHeaderHeight: 16)))
     }
     
     private func mutateSelectMedicalSection(_ medicalSection: MedicalSection) -> Observable<Mutation> {
@@ -96,7 +96,7 @@ extension HomeViewModel {
     }
     
     private func mutateAppendMedicalTerm(_ medicalTerm: MedicalTermType) -> Observable<Mutation> {
-        var sections = currentState.sections
+        var sections = currentState.sections.removingPageBreaks()
         sections.removeAll { section in section.medicalSection != medicalTerm.sectionOfSelf && section.isEmpty }
         let consultationRow = ConsultationRow(height: 0, lines: [], medicalTerm: medicalTerm)
         guard !sections.isEmpty else { return .just(.setSections([ConsultationSection(medicalSection: medicalTerm.sectionOfSelf, items: [consultationRow])])) }
@@ -113,7 +113,7 @@ extension HomeViewModel {
     }
 
     private func mutateUpdatingLines(at indexPath: IndexPath, lines: [Line]) -> Observable<Mutation> {
-        var sections = currentState.sections
+        var sections = currentState.sections.removingPageBreaks()
         guard sections.count > indexPath.section, sections[indexPath.section].items.count > indexPath.row else { return .empty() }
         sections[indexPath.section].items[indexPath.row].lines = lines
         sections[indexPath.section].addTerminalCell(with: currentState.terminalCellHeight)
@@ -121,7 +121,7 @@ extension HomeViewModel {
     }
     
     private func mutateDeleteRow(at indexPath: IndexPath) -> Observable<Mutation> {
-        var sections = currentState.sections
+        var sections = currentState.sections.removingPageBreaks()
         guard sections.count > indexPath.section, sections[indexPath.section].items.count > indexPath.row else { return .empty() }
         sections[indexPath.section].items.remove(at: indexPath.row)
         if sections.count > 1 && sections[indexPath.section].isEmpty {

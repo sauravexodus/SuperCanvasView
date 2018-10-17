@@ -14,7 +14,7 @@ extension UIImage {
     func padToPage(of height: CGFloat) -> UIImage {
         let diffInHeight = height - self.size.height
         if diffInHeight > 0 {
-            UIGraphicsBeginImageContextWithOptions(CGSize(width: self.size.width, height: self.size.height + diffInHeight), false, self.scale)
+            UIGraphicsBeginImageContextWithOptions(CGSize(width: self.size.width, height: height), false, self.scale)
             UIGraphicsGetCurrentContext()
             let origin = CGPoint(x: 0, y: 0)
             self.draw(at: origin)

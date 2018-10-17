@@ -12,7 +12,7 @@ import Differentiator
 
 enum ConsultationRow {
     case medicalTerm(id: String, height: CGFloat, lines: [Line], medicalTermType: MedicalTermType)
-    case pageBreak(id: String, pageNumber: Int)
+    case pageBreak(pageNumber: Int)
     
     init(height: CGFloat, lines: [Line], medicalTerm: MedicalTermType) {
         self = .medicalTerm(id: UUID().uuidString, height: height, lines: lines, medicalTermType: medicalTerm)
@@ -67,7 +67,7 @@ enum ConsultationRow {
     var id: String {
         switch self {
         case let .medicalTerm(id, _, _, _): return id
-        case let .pageBreak(id, _): return id
+        case let .pageBreak(pageNumber): return "\(pageNumber)"
         }
     }
 }

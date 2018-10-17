@@ -69,7 +69,7 @@ extension Array where Element == ConsultationSection {
                     return
                 }
                 if currentHeight + row.height > PageSize.A4.height {
-                    items.append(.pageBreak(id: UUID().uuidString, pageNumber: pageNumber))
+                    items.append(.pageBreak(pageNumber: pageNumber))
                     pageNumber += 1
                     currentHeight = 0
                 }
@@ -77,7 +77,7 @@ extension Array where Element == ConsultationSection {
                 currentHeight += row.height
             }
             if currentHeight + sectionHeaderHeight > PageSize.A4.height {
-                items.append(.pageBreak(id: UUID().uuidString, pageNumber: pageNumber))
+                items.append(.pageBreak(pageNumber: pageNumber))
                 pageNumber += 1
                 currentHeight = 0
             }

@@ -25,14 +25,25 @@ final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode wher
     }
     
     internal let editButtonNode = ASButtonNode().then {
-        $0.setTitle("EDIT", with: UIFont.systemFont(ofSize: 12, weight: .semibold), with: .black, for: .normal)
-        $0.contentEdgeInsets = UIEdgeInsets(top: 8, left: 12, bottom: 8, right: 12)
+        $0.setImage(UIImage(named: "Edit"), for: .normal)
     }
     
     internal let deleteButtonNode = ASButtonNode().then {
-        $0.setTitle("DELETE", with: UIFont.systemFont(ofSize: 12, weight: .semibold), with: .black, for: .normal)
-        $0.contentEdgeInsets = UIEdgeInsets(top: 8, left: 12, bottom: 8, right: 12)
+        $0.setImage(UIImage(named: "Delete"), for: .normal)
+        $0.contentEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 16)
     }
+    
+    let textFont: UIFont = UIFont.preferredPrintFont(forTextStyle: .body)
+    
+    var minimumHeight: CGFloat {
+        let attributedText = NSAttributedString(string: "Random", attributes: [.font: textFont])
+        let width = frame.size.width
+        let height = attributedText.height(withConstrainedWidth: width)
+        return height + bottomInset
+    }
+    
+    let bottomInset: CGFloat = 4
+    let leftInset: CGFloat = 12
 
     var header: String?
     let maximumHeight: CGFloat = 900
@@ -51,10 +62,10 @@ final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode wher
     // MARK: Lifecycle methods
     
     override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
-        return titleTextNode.insets(.all(16)).relative(horizontalPosition: .start, verticalPosition: .start, sizingOption: [])
+        return titleTextNode.insets(.init(top: 0, left: leftInset, bottom: bottomInset, right: 0)).relative(horizontalPosition: .start, verticalPosition: .start, sizingOption: [])
             .overlayed(by: contentNode)
             .overlayed(by: canvasNode)
-            .overlayed(by: [editButtonNode, deleteButtonNode].stacked(in: .horizontal, spacing: 16, justifyContent: .end, alignItems: .start).insets(UIEdgeInsets.all(16)))
+            .overlayed(by: [editButtonNode, deleteButtonNode].stacked(in: .horizontal, spacing: 8, justifyContent: .end, alignItems: .start))
     }
     
     override func animateLayoutTransition(_ context: ASContextTransitioning) {}
@@ -71,8 +82,8 @@ final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode wher
             print("Something has gone horribly, horribly awry...")
             return
         }
-        style.preferredSize.height = min(CGFloat(max(CGFloat(item.height), item.lines.highestY ?? 0)), maximumHeight)
-        titleTextNode.attributedText = .init(string: term.name ?? "", attributes: [.foregroundColor: UIColor.darkGray])
+        style.preferredSize.height = min(CGFloat(max(CGFloat(item.height), item.lines.highestY ?? 0, minimumHeight)), maximumHeight)
+        titleTextNode.attributedText = .init(string: term.name ?? "", attributes: [.foregroundColor: UIColor.darkGray, .font: textFont])
 
         contentNode.configure(with: term)
         self.item = item

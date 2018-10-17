@@ -33,7 +33,7 @@ final class HomeViewModel: Reactor {
     
     struct State {
         var sections: [ConsultationSection] = []
-        let terminalCellHeight: CGFloat = 100
+        let terminalCellHeight: CGFloat = 40
         let pageHeight: CGFloat = 842
         var focusedIndexPath: IndexPathWithScrollPosition?
     }
@@ -98,7 +98,7 @@ extension HomeViewModel {
     private func mutateAppendMedicalTerm(_ medicalTerm: MedicalTermType) -> Observable<Mutation> {
         var sections = currentState.sections
         sections.removeAll { section in section.medicalSection != medicalTerm.sectionOfSelf && section.isEmpty }
-        let consultationRow = ConsultationRow(height: 62.5, lines: [], medicalTerm: medicalTerm)
+        let consultationRow = ConsultationRow(height: 0, lines: [], medicalTerm: medicalTerm)
         guard !sections.isEmpty else { return .just(.setSections([ConsultationSection(medicalSection: medicalTerm.sectionOfSelf, items: [consultationRow])])) }
         guard let sectionIndex = sections.firstIndex(where: { section in section.medicalSection == medicalTerm.sectionOfSelf }) else {
             let sectionIndex = sections.firstIndex(where: { section in section.medicalSection.printPosition > medicalTerm.sectionOfSelf.printPosition }) ?? sections.endIndex

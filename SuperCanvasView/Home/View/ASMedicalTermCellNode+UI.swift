@@ -16,7 +16,7 @@ extension ASMedicalTermCellNode {
     func expand() {
         guard let canvasView = canvasNode.view as? CanvasView else { return }
         guard style.preferredSize.height < maximumHeight else { return }
-        style.preferredSize.height = min(max((item?.lines.highestY ?? 0) + 200, style.preferredSize.height), maximumHeight)
+        style.preferredSize.height = min(max((canvasView.highestY) + 200, style.preferredSize.height), maximumHeight)
         transitionLayout(withAnimation: false, shouldMeasureAsync: false) {
             canvasView.setNeedsDisplay()
         }
@@ -25,7 +25,7 @@ extension ASMedicalTermCellNode {
     func contract(interactionType: ASAwareTableNode.InteractionType) {
         guard let canvasView = canvasNode.view as? CanvasView else { return }
         guard let `item` = item else { return }
-        let newHeight = min(max((item.lines.highestY ?? 0) + 4, item.height), maximumHeight)
+        let newHeight = min(max((canvasView.highestY) + 4, item.height), maximumHeight)
         style.preferredSize.height = newHeight
         transitionLayout(withAnimation: false, shouldMeasureAsync: true) {
             guard case .scribble = interactionType else { return }

@@ -42,7 +42,10 @@ class CanvasView: UIView {
     }
     var needsFullRedraw = true
     
-    var canvasTool: CanvasTool = .pencil
+    var canvasTool: CanvasTool {
+        get { return ASAwareTableNode.canvasTool }
+        set { ASAwareTableNode.canvasTool = newValue }
+    }
     
     /// Array containing all line objects that need to be drawn in `drawRect(_:)`.
     var lines = [Line]()

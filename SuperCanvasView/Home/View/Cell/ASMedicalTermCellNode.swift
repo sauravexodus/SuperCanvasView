@@ -11,7 +11,7 @@ import AsyncDisplayKit
 import SnapKit
 import RxSwift
 
-final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode where ContentNode.RepresentationTarget: MedicalTermType {
+final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode, CanvasCompatibleCellNode where ContentNode.RepresentationTarget: MedicalTermType {
     internal let titleTextNode = ASTextNode().then {
         $0.maximumNumberOfLines = 0
     }
@@ -20,7 +20,7 @@ final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode wher
         
     }
     
-    let canvasNode = ASDisplayNode {
+    var canvasNode = ASDisplayNode {
         CanvasView().then { $0.backgroundColor = .clear }
     }
     

@@ -75,7 +75,40 @@ extension ASMedicalTermCellNode {
         canvasView.rx.lines.subscribe(onNext: { [weak self] lines in
             guard let strongSelf = self else { return }
             strongSelf.item?.lines = lines
-        })
+        }).disposed(by: disposeBag)
+        
+        canvasView.rx.redoableActions
+            .subscribe(onNext: { [weak self] redoableActions in
+                guard
+                    let owningNode = self?.owningNode as? ASAwareTableNode,
+                    let indexPath = self?.indexPath,
+                    redoableActions.count != owningNode.redoableActionsIndexes.filter({ $0 == indexPath }).count
+                    else { return }
+                owningNode.redoableActionsIndexes.append(indexPath)
+            })
+            .disposed(by: disposeBag)
+        
+        canvasView.rx.undoableActions
+            .subscribe(onNext: { [weak self] undoableActions in
+                guard
+                    let owningNode = self?.owningNode as? ASAwareTableNode,
+                    let indexPath = self?.indexPath,
+                    undoableActions.count != owningNode.undoableActionsIndexes.filter({ $0 == indexPath }).count
+                    else { return }
+                owningNode.undoableActionsIndexes.append(indexPath)
+            })
+            .disposed(by: disposeBag)
+        
+        deleteButtonNode.rx.tap
+            .subscribe(onNext: { [weak self] _ in
+                guard
+                    let owningNode = self?.owningNode as? ASAwareTableNode,
+                    let indexPath = self?.indexPath
+                    else { return }
+                
+                owningNode.undoableActionsIndexes = owningNode.undoableActionsIndexes.filter { $0 == indexPath }
+                owningNode.redoableActionsIndexes = owningNode.redoableActionsIndexes.filter { $0 == indexPath }
+            })
             .disposed(by: disposeBag)
     }
     

@@ -21,7 +21,7 @@ final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode, Can
     }
     
     var canvasNode = ASDisplayNode {
-        CanvasView().then { $0.backgroundColor = .clear }
+        CanvasView().then { $0.backgroundColor = UIColor.lightGray.withAlphaComponent(0.3) }
     }
     
     internal let editButtonNode = ASButtonNode().then {
@@ -62,9 +62,11 @@ final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode, Can
     // MARK: Lifecycle methods
     
     override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
+        let a4CanvasStack: ASStackLayoutSpec = .horizontal()
+        a4CanvasStack.children = [ canvasNode.then { $0.style.preferredSize.width = PageSize.A4.width }, ASLayoutSpec().then { $0.style.flexGrow = 1 } ]
         return titleTextNode.insets(.init(top: 0, left: leftInset, bottom: bottomInset, right: 0)).relative(horizontalPosition: .start, verticalPosition: .start, sizingOption: [])
             .overlayed(by: contentNode)
-            .overlayed(by: canvasNode)
+            .overlayed(by: a4CanvasStack)
             .overlayed(by: [editButtonNode, deleteButtonNode].stacked(in: .horizontal, spacing: 8, justifyContent: .end, alignItems: .start))
     }
     

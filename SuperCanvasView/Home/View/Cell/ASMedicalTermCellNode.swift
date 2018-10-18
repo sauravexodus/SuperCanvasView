@@ -46,7 +46,7 @@ final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode, Can
     let leftInset: CGFloat = 12
 
     var header: String?
-    let maximumHeight: CGFloat = 900
+    let maximumHeight: CGFloat = PageSize.A4.height
     let disposeBag = DisposeBag()
     var item: ConsultationRow?
     

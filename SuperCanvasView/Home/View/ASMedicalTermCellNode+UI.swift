@@ -22,16 +22,16 @@ extension ASMedicalTermCellNode {
         }
     }
     
-    func contract(interactionType: ASAwareTableNode.InteractionType) {
-        guard let canvasView = canvasNode.view as? CanvasView else { return }
-        guard let `item` = item else { return }
-        let newHeight = min(max((item.lines.highestY ?? 0) + 4, item.height), maximumHeight)
-        style.preferredSize.height = newHeight
-        transitionLayout(withAnimation: false, shouldMeasureAsync: true) {
-            guard case .scribble = interactionType else { return }
-            canvasView.setNeedsDisplay()
-        }
-    }
+//    func contract(interactionType: ASAwareTableNode.InteractionType) {
+//        guard let canvasView = canvasNode.view as? CanvasView else { return }
+//        guard let `item` = item else { return }
+//        let newHeight = min(max((canvasView.highestY) + 4, item.height), maximumHeight)
+//        style.preferredSize.height = newHeight
+//        transitionLayout(withAnimation: false, shouldMeasureAsync: true) {
+//            guard case .scribble = interactionType else { return }
+//            canvasView.setNeedsDisplay()
+//        }
+//    }
 }
 
 // MARK: Styling

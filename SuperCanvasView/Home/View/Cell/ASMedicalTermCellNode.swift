@@ -11,7 +11,7 @@ import AsyncDisplayKit
 import SnapKit
 import RxSwift
 
-final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode where ContentNode.RepresentationTarget: MedicalTermType {
+final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode, CanvasCompatibleCellNode where ContentNode.RepresentationTarget: MedicalTermType {
     internal let titleTextNode = ASTextNode().then {
         $0.maximumNumberOfLines = 0
     }
@@ -20,8 +20,8 @@ final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode wher
         
     }
     
-    let canvasNode = ASDisplayNode {
-        CanvasView().then { $0.backgroundColor = .clear }
+    var canvasNode = ASDisplayNode {
+        CanvasView().then { $0.backgroundColor = UIColor.lightGray.withAlphaComponent(0.3) }
     }
     
     internal let editButtonNode = ASButtonNode().then {
@@ -46,7 +46,7 @@ final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode wher
     let leftInset: CGFloat = 12
 
     var header: String?
-    let maximumHeight: CGFloat = 900
+    let maximumHeight: CGFloat = PageSize.selectedPage.height
     let disposeBag = DisposeBag()
     var item: ConsultationRow?
     
@@ -62,9 +62,11 @@ final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode wher
     // MARK: Lifecycle methods
     
     override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
+        let a4CanvasStack: ASStackLayoutSpec = .horizontal()
+        a4CanvasStack.children = [ canvasNode.then { $0.style.preferredSize.width = PageSize.selectedPage.width }, ASLayoutSpec().then { $0.style.flexGrow = 1 } ]
         return titleTextNode.insets(.init(top: 0, left: leftInset, bottom: bottomInset, right: 0)).relative(horizontalPosition: .start, verticalPosition: .start, sizingOption: [])
             .overlayed(by: contentNode)
-            .overlayed(by: canvasNode)
+            .overlayed(by: a4CanvasStack)
             .overlayed(by: [editButtonNode, deleteButtonNode].stacked(in: .horizontal, spacing: 8, justifyContent: .end, alignItems: .start))
     }
     

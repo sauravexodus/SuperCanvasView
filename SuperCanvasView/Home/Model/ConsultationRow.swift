@@ -59,7 +59,7 @@ enum ConsultationRow {
     var height: CGFloat {
         switch self {
         case let .medicalTerm(_, initialHeight, lines, medicalTerm):
-            return min(max(NSAttributedString(string: medicalTerm.name ?? "").heightContrainedToA4, lines.highestY ?? 0, initialHeight), PageSize.A4.height)
+            return min(max(NSAttributedString(string: medicalTerm.name ?? "").heightContrainedToA4, lines.highestY ?? 0, initialHeight), PageSize.selectedPage.height)
         default: return 1
         }
     }

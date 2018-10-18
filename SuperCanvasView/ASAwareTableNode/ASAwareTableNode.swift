@@ -14,7 +14,14 @@ import RxCocoa
 
 typealias LinesWithIndexPath = (lines: [Line], indexPath: IndexPath)
 
+protocol CanvasCompatibleCellNode {
+    var canvasNode: ASDisplayNode { get }
+    func expand()
+}
+
 final class ASAwareTableNode: ASTableNode {
+    
+    static var canvasTool: CanvasTool = .pencil
     
     enum InteractionType {
         case scroll
@@ -31,6 +38,11 @@ final class ASAwareTableNode: ASTableNode {
     
     let disposeBag = DisposeBag()
     let animatedDataSource: RxASTableAnimatedDataSource<ConsultationSection>
+    
+    // MARK: Canvas controls
+    
+    var undoableActionsIndexes: [IndexPath] = []
+    var redoableActionsIndexes: [IndexPath] = []
     
     // MARK: Init methods
     
@@ -95,6 +107,41 @@ final class ASAwareTableNode: ASTableNode {
         let width = frame.size.width
         let height = attributedText.height(withConstrainedWidth: width)
         return height + 8
+    }
+}
+
+// MARK: Undo and redo
+
+extension ASAwareTableNode {
+    func undo() {
+        guard let indexPath = undoableActionsIndexes.popLast() else { return }
+        guard let cellNode = nodeForRow(at: indexPath) as? CanvasCompatibleCellNode else { fatalError("Canvas view was not found") }
+        guard let canvasView = cellNode.canvasNode.view as? CanvasView else { return }
+        scrollToRow(at: indexPath, at: .middle, animated: true)
+        canvasView.undo()
+        cellNode.expand()
+    }
+    
+    func redo() {
+        guard let indexPath = redoableActionsIndexes.popLast() else { return }
+        guard let cellNode = nodeForRow(at: indexPath) as? CanvasCompatibleCellNode else { return }
+        guard let canvasView = cellNode.canvasNode.view as? CanvasView else { fatalError("Canvas view was not found") }
+        scrollToRow(at: indexPath, at: .middle, animated: true)
+        canvasView.redo()
+        cellNode.expand()
+    }
+    
+    func clear() {
+        Array(0...numberOfSections - 1).forEach { section in
+            Array(0...numberOfRows(inSection: section) - 1).forEach { row in
+                let indexPath = IndexPath(row: row, section: section)
+                guard let cellNode = nodeForRow(at: indexPath) as? CanvasCompatibleCellNode else { return }
+                guard let canvasView = cellNode.canvasNode.view as? CanvasView else { fatalError("Canvas view was not found") }
+                canvasView.clear()
+            }
+        }
+        undoableActionsIndexes.removeAll()
+        redoableActionsIndexes.removeAll()
     }
 }
 

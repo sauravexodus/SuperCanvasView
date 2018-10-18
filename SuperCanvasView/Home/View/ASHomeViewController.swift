@@ -61,12 +61,37 @@ final class ContainerDisplayNode: ASDisplayNode {
         $0.style.preferredSize.width = 100
     }
     
+    let undoButtonNode = ASButtonNode().then {
+        $0.setTitle("Undo", with: .systemFont(ofSize: 13), with: .white, for: .normal)
+        $0.style.preferredSize.width = 100
+    }
+    
+    let redoButtonNode = ASButtonNode().then {
+        $0.setTitle("Redo", with: .systemFont(ofSize: 13), with: .white, for: .normal)
+        $0.style.preferredSize.width = 100
+    }
+    
+    let clearButtonNode = ASButtonNode().then {
+        $0.setTitle("Clear", with: .systemFont(ofSize: 13), with: .white, for: .normal)
+        $0.style.preferredSize.width = 100
+    }
+    
+    let pencilButtonNode = ASButtonNode().then {
+        $0.setTitle("Pencil", with: .systemFont(ofSize: 13), with: .white, for: .normal)
+        $0.style.preferredSize.width = 100
+    }
+    
+    let eraserButtonNode = ASButtonNode().then {
+        $0.setTitle("Eraser", with: .systemFont(ofSize: 13), with: .white, for: .normal)
+        $0.style.preferredSize.width = 100
+    }
+    
     let tableNode = ASAwareTableNode(style: .plain).then {
         $0.view.panGestureRecognizer.allowedTouchTypes = [NSNumber(value: UITouchType.direct.rawValue)]
         $0.view.tableFooterView = UIView()
         $0.view.backgroundColor = .white
         $0.view.tableFooterView = UIView()
-        $0.view.tableFooterView?.frame.size.height = PageSize.A4.height
+        $0.view.tableFooterView?.frame.size.height = PageSize.selectedPage.height
         $0.style.flexGrow = 1
     }
     
@@ -102,7 +127,20 @@ final class ContainerDisplayNode: ASDisplayNode {
             spacer
         ]
         
-        mainStack.children = [backgroundSpec, tableNode]
+        let canvasControlsStack: ASStackLayoutSpec = .horizontal()
+        canvasControlsStack.style.preferredSize.height = 48
+        canvasControlsStack.children = [
+            pencilButtonNode,
+            eraserButtonNode,
+            undoButtonNode,
+            redoButtonNode,
+            clearButtonNode
+        ]
+        canvasControlsStack.spacing = 8
+        
+        let canvasControlsBackground = ASBackgroundLayoutSpec(child: canvasControlsStack, background: ASDisplayNodeWithBackgroundColor(color: .purple))
+        
+        mainStack.children = [backgroundSpec, canvasControlsBackground, tableNode]
         
         let insetSpec = ASInsetLayoutSpec(insets: UIEdgeInsets(top: 20, left: 0, bottom: 0, right: 0), child: mainStack)
         return insetSpec
@@ -182,7 +220,7 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
             .tap
             .flatMap { [weak self] _ -> Observable<[UIImage]> in
                 guard let strongSelf = self  else { return .empty() }
-                return strongSelf.containerNode.tableNode.generatePages(PageSize.A4.height)
+                return strongSelf.containerNode.tableNode.generatePages(PageSize.selectedPage.height)
             }
             .map { .print($0) }
             .bind(to: reactor.action)
@@ -199,6 +237,12 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
             .map { .delete($0) }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
+        
+        containerNode.pencilButtonNode.rx.tap.mapTo(.pencil).bind(to: containerNode.tableNode.rx.canvasTool).disposed(by: disposeBag)
+        containerNode.eraserButtonNode.rx.tap.mapTo(.eraser).bind(to: containerNode.tableNode.rx.canvasTool).disposed(by: disposeBag)
+        containerNode.undoButtonNode.rx.tap.mapTo(()).bind(to: containerNode.tableNode.rx.undo).disposed(by: disposeBag)
+        containerNode.redoButtonNode.rx.tap.mapTo(()).bind(to: containerNode.tableNode.rx.redo).disposed(by: disposeBag)
+        containerNode.clearButtonNode.rx.tap.mapTo(()).bind(to: containerNode.tableNode.rx.clear).disposed(by: disposeBag)
         
     }
     

@@ -46,7 +46,7 @@ final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode, Can
     let leftInset: CGFloat = 12
 
     var header: String?
-    let maximumHeight: CGFloat = PageSize.A4.height
+    let maximumHeight: CGFloat = PageSize.selectedPage.height
     let disposeBag = DisposeBag()
     var item: ConsultationRow?
     
@@ -63,7 +63,7 @@ final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode, Can
     
     override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
         let a4CanvasStack: ASStackLayoutSpec = .horizontal()
-        a4CanvasStack.children = [ canvasNode.then { $0.style.preferredSize.width = PageSize.A4.width }, ASLayoutSpec().then { $0.style.flexGrow = 1 } ]
+        a4CanvasStack.children = [ canvasNode.then { $0.style.preferredSize.width = PageSize.selectedPage.width }, ASLayoutSpec().then { $0.style.flexGrow = 1 } ]
         return titleTextNode.insets(.init(top: 0, left: leftInset, bottom: bottomInset, right: 0)).relative(horizontalPosition: .start, verticalPosition: .start, sizingOption: [])
             .overlayed(by: contentNode)
             .overlayed(by: a4CanvasStack)

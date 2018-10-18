@@ -68,7 +68,7 @@ extension Array where Element == ConsultationSection {
                     items.append(row)
                     return
                 }
-                if currentHeight + row.height > PageSize.A4.height {
+                if currentHeight + row.height > PageSize.selectedPage.height {
                     items.append(.pageBreak(pageNumber: pageNumber))
                     pageNumber += 1
                     currentHeight = 0
@@ -76,7 +76,7 @@ extension Array where Element == ConsultationSection {
                 items.append(row)
                 currentHeight += row.height
             }
-            if currentHeight + sectionHeaderHeight > PageSize.A4.height {
+            if currentHeight + sectionHeaderHeight > PageSize.selectedPage.height {
                 items.append(.pageBreak(pageNumber: pageNumber))
                 pageNumber += 1
                 currentHeight = 0

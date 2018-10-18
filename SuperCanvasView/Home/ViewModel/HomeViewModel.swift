@@ -34,7 +34,7 @@ final class HomeViewModel: Reactor {
     struct State {
         var sections: [ConsultationSection] = []
         let terminalCellHeight: CGFloat = 40
-        let pageHeight: CGFloat = 842
+        let pageHeight: CGFloat = PageSize.selectedPage.height
         var focusedIndexPath: IndexPathWithScrollPosition?
     }
     

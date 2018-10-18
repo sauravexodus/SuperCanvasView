@@ -91,7 +91,7 @@ final class ContainerDisplayNode: ASDisplayNode {
         $0.view.tableFooterView = UIView()
         $0.view.backgroundColor = .white
         $0.view.tableFooterView = UIView()
-        $0.view.tableFooterView?.frame.size.height = PageSize.A4.height
+        $0.view.tableFooterView?.frame.size.height = PageSize.selectedPage.height
         $0.style.flexGrow = 1
     }
     
@@ -220,7 +220,7 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
             .tap
             .flatMap { [weak self] _ -> Observable<[UIImage]> in
                 guard let strongSelf = self  else { return .empty() }
-                return strongSelf.containerNode.tableNode.generatePages(PageSize.A4.height)
+                return strongSelf.containerNode.tableNode.generatePages(PageSize.selectedPage.height)
             }
             .map { .print($0) }
             .bind(to: reactor.action)

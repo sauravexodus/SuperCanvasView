@@ -47,6 +47,7 @@ final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode, Can
 
     var header: String?
     let maximumHeight: CGFloat = PageSize.selectedPage.height
+    let terminalCellHeight: CGFloat = 40
     let disposeBag = DisposeBag()
     var item: ConsultationRow?
     
@@ -80,15 +81,16 @@ final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode, Can
     // MARK: Instance methods
 
     func configure(with item: ConsultationRow) {
+        // TODO: Improve
         guard let term = item.medicalTerm as? ContentNode.RepresentationTarget else {
-            print("Something has gone horribly, horribly awry...")
+            style.preferredSize.height = terminalCellHeight
+            titleTextNode.attributedText = .init(string: "", attributes: [.foregroundColor: UIColor.darkGray, .font: textFont])
+            self.item = item
             return
         }
         style.preferredSize.height = min(CGFloat(max(CGFloat(item.height), item.lines.highestY ?? 0, minimumHeight)), maximumHeight)
         titleTextNode.attributedText = .init(string: term.name ?? "", attributes: [.foregroundColor: UIColor.darkGray, .font: textFont])
-
         contentNode.configure(with: term)
         self.item = item
     }
 }
-

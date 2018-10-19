@@ -19,7 +19,7 @@ typealias CellContentNode = _CellContentNode & ASDisplayNode
 
 // MARK: Concrete Implementations
 
-final class EmptyCellNode<T>: CellContentNode {
+final class TerminalCellNode<T>: CellContentNode {
     typealias RepresentationTarget = T
     
     func configure(with _: T) {

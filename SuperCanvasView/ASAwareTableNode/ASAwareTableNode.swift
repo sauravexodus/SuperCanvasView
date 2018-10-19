@@ -49,22 +49,65 @@ final class ASAwareTableNode: ASTableNode {
     override init(style: UITableViewStyle) {
         let configureCell: RxASTableAnimatedDataSource<ConsultationSection>.ConfigureCellBlock = { (ds, tableNode, index, item) in
             return {
-                guard case .medicalTerm = item else {
+                switch item {
+                case .medicalTerm:
+                    guard let termSection = item.medicalTermSection else { fatalError("Medical term without a section!") }
+                    switch termSection {
+                    case .symptoms:
+                        let node = ASMedicalTermCellNode<TerminalCellNode<Symptom>>()
+                        node.configure(with: item)
+                        return node
+                    case .diagnoses:
+                        let node = ASMedicalTermCellNode<TerminalCellNode<Diagnosis>>()
+                        node.configure(with: item)
+                        return node
+                    case .examinations:
+                        let node = ASMedicalTermCellNode<TerminalCellNode<Examination>>()
+                        node.configure(with: item)
+                        return node
+                    case .prescriptions:
+                        let node = ASMedicalTermCellNode<TerminalCellNode<Prescription>>()
+                        node.configure(with: item)
+                        return node
+                    case .tests:
+                        let node = ASMedicalTermCellNode<TerminalCellNode<Test>>()
+                        node.configure(with: item)
+                        return node
+                    case .procedures:
+                        let node = ASMedicalTermCellNode<TerminalCellNode<Procedure>>()
+                        node.configure(with: item)
+                        return node
+                    case .instructions:
+                        let node = ASMedicalTermCellNode<TerminalCellNode<Instruction>>()
+                        node.configure(with: item)
+                        return node
+                    }
+                case .medicalForm:
+                    guard let formSection = item.medicalFormSection else { fatalError("Medical form without a section!") }
+                    switch formSection {
+                    case .obstetricHistory:
+                        let node = ASMedicalFormCellNode<TerminalCellNode<ObstetricHistory>>()
+                        node.configure(with: item)
+                        return node
+                    case .menstrualHistory:
+                        let node = ASMedicalFormCellNode<TerminalCellNode<MenstrualHistory>>()
+                        node.configure(with: item)
+                        return node
+                    case .familyHistory:
+                        let node = ASMedicalFormCellNode<TerminalCellNode<FamilyHistory>>()
+                        node.configure(with: item)
+                        return node
+                    case .personalHistory:
+                        let node = ASMedicalFormCellNode<TerminalCellNode<PersonalHistory>>()
+                        node.configure(with: item)
+                        return node
+                    case .generalHistory:
+                        let node = ASMedicalFormCellNode<TerminalCellNode<GeneralHistory>>()
+                        node.configure(with: item)
+                        return node
+                    }
+                case .pageBreak:
                     return ASPageBreakCellNode()
-                }
-                switch item.medicalSection {
-                case .diagnoses:
-                    let node = ASMedicalTermCellNode<EmptyCellNode<Diagnosis>>()
-                    node.configure(with: item)
-                    return node
-                case .symptoms:
-                    let node = ASMedicalTermCellNode<EmptyCellNode<Symptom>>()
-                    node.configure(with: item)
-                    return node
-                default:
-                    let node = ASMedicalTermCellNode<EmptyCellNode<NoMedicalTerm>>()
-                    node.configure(with: item)
-                    return node
                 }
             }
         }
@@ -157,18 +200,54 @@ extension ASAwareTableNode: ASTableDelegate {
     }
     
     func tableNode(_ tableNode: ASTableNode, willDisplayRowWith node: ASCellNode) {
-        if let medicalTermCellNode = node as? ASMedicalTermCellNode<EmptyCellNode<Diagnosis>> {
+        if let medicalTermCellNode = node as? ASMedicalTermCellNode<TerminalCellNode<Symptom>> {
             medicalTermCellNode.linesChanged.debounce(0.3, scheduler: MainScheduler.instance)
                 .subscribe(onNext: { [weak self] in self?.linesUpdateSubject.onNext($0) })
                 .disposed(by: medicalTermCellNode.disposeBag)
-        } else if let medicalTermCellNode = node as? ASMedicalTermCellNode<EmptyCellNode<Symptom>> {
+        } else if let medicalTermCellNode = node as? ASMedicalTermCellNode<TerminalCellNode<Examination>> {
             medicalTermCellNode.linesChanged.debounce(0.3, scheduler: MainScheduler.instance)
                 .subscribe(onNext: { [weak self] in self?.linesUpdateSubject.onNext($0) })
                 .disposed(by: medicalTermCellNode.disposeBag)
-        } else if let medicalTermCellNode = node as? ASMedicalTermCellNode<EmptyCellNode<NoMedicalTerm>> {
+        } else if let medicalTermCellNode = node as? ASMedicalTermCellNode<TerminalCellNode<Diagnosis>> {
             medicalTermCellNode.linesChanged.debounce(0.3, scheduler: MainScheduler.instance)
                 .subscribe(onNext: { [weak self] in self?.linesUpdateSubject.onNext($0) })
                 .disposed(by: medicalTermCellNode.disposeBag)
+        } else if let medicalTermCellNode = node as? ASMedicalTermCellNode<TerminalCellNode<Prescription>> {
+            medicalTermCellNode.linesChanged.debounce(0.3, scheduler: MainScheduler.instance)
+                .subscribe(onNext: { [weak self] in self?.linesUpdateSubject.onNext($0) })
+                .disposed(by: medicalTermCellNode.disposeBag)
+        } else if let medicalTermCellNode = node as? ASMedicalTermCellNode<TerminalCellNode<Test>> {
+            medicalTermCellNode.linesChanged.debounce(0.3, scheduler: MainScheduler.instance)
+                .subscribe(onNext: { [weak self] in self?.linesUpdateSubject.onNext($0) })
+                .disposed(by: medicalTermCellNode.disposeBag)
+        } else if let medicalTermCellNode = node as? ASMedicalTermCellNode<TerminalCellNode<Procedure>> {
+            medicalTermCellNode.linesChanged.debounce(0.3, scheduler: MainScheduler.instance)
+                .subscribe(onNext: { [weak self] in self?.linesUpdateSubject.onNext($0) })
+                .disposed(by: medicalTermCellNode.disposeBag)
+        } else if let medicalTermCellNode = node as? ASMedicalTermCellNode<TerminalCellNode<Instruction>> {
+            medicalTermCellNode.linesChanged.debounce(0.3, scheduler: MainScheduler.instance)
+                .subscribe(onNext: { [weak self] in self?.linesUpdateSubject.onNext($0) })
+                .disposed(by: medicalTermCellNode.disposeBag)
+        } else if let medicalFormCellNode = node as? ASMedicalFormCellNode<TerminalCellNode<ObstetricHistory>> {
+            medicalFormCellNode.linesChanged.debounce(0.3, scheduler: MainScheduler.instance)
+                .subscribe(onNext: { [weak self] in self?.linesUpdateSubject.onNext($0) })
+                .disposed(by: medicalFormCellNode.disposeBag)
+        } else if let medicalFormCellNode = node as? ASMedicalFormCellNode<TerminalCellNode<MenstrualHistory>> {
+            medicalFormCellNode.linesChanged.debounce(0.3, scheduler: MainScheduler.instance)
+                .subscribe(onNext: { [weak self] in self?.linesUpdateSubject.onNext($0) })
+                .disposed(by: medicalFormCellNode.disposeBag)
+        } else if let medicalFormCellNode = node as? ASMedicalFormCellNode<TerminalCellNode<FamilyHistory>> {
+            medicalFormCellNode.linesChanged.debounce(0.3, scheduler: MainScheduler.instance)
+                .subscribe(onNext: { [weak self] in self?.linesUpdateSubject.onNext($0) })
+                .disposed(by: medicalFormCellNode.disposeBag)
+        } else if let medicalFormCellNode = node as? ASMedicalFormCellNode<TerminalCellNode<PersonalHistory>> {
+            medicalFormCellNode.linesChanged.debounce(0.3, scheduler: MainScheduler.instance)
+                .subscribe(onNext: { [weak self] in self?.linesUpdateSubject.onNext($0) })
+                .disposed(by: medicalFormCellNode.disposeBag)
+        } else if let medicalFormCellNode = node as? ASMedicalFormCellNode<TerminalCellNode<GeneralHistory>> {
+            medicalFormCellNode.linesChanged.debounce(0.3, scheduler: MainScheduler.instance)
+                .subscribe(onNext: { [weak self] in self?.linesUpdateSubject.onNext($0) })
+                .disposed(by: medicalFormCellNode.disposeBag)
         }
     }
     

@@ -8,6 +8,7 @@
 
 import Foundation
 import AsyncDisplayKit
+import RxSwift
 
 
 // MARK: Animations
@@ -16,28 +17,20 @@ extension ASMedicalTermCellNode {
     func expand() {
         guard let canvasView = canvasNode.view as? CanvasView else { return }
         guard style.preferredSize.height < maximumHeight else { return }
+        UIView.setAnimationsEnabled(false)
         style.preferredSize.height = min(max(canvasView.highestY + 30, style.preferredSize.height), maximumHeight)
         transitionLayout(withAnimation: false, shouldMeasureAsync: false) {
             canvasView.setNeedsDisplay()
         }
+        Observable<Int>.timer(0.2, scheduler: MainScheduler.instance)
+            .subscribe(onNext: { _ in UIView.setAnimationsEnabled(true) })
+            .disposed(by: disposeBag)
     }
-    
-//    func contract(interactionType: ASAwareTableNode.InteractionType) {
-//        guard let canvasView = canvasNode.view as? CanvasView else { return }
-//        guard let `item` = item else { return }
-//        let newHeight = min(max((canvasView.highestY) + 4, item.height), maximumHeight)
-//        style.preferredSize.height = newHeight
-//        transitionLayout(withAnimation: false, shouldMeasureAsync: true) {
-//            guard case .scribble = interactionType else { return }
-//            canvasView.setNeedsDisplay()
-//        }
-//    }
 }
 
 // MARK: Styling
 
 extension ASMedicalTermCellNode {
-    
     internal func setupUI() {
         setupCanvas()
         setupStyles()

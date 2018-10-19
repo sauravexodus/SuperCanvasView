@@ -22,13 +22,14 @@ struct ConsultationSection {
         self.items = items
     }
     
-    mutating func insert(_ consultationRow: ConsultationRow) {
-        guard case .medicalTerm = consultationRow, let termSection = medicalSection.medicalTermSectionValue else { return }
+    mutating func insert(_ consultationRow: ConsultationRow) -> Int? {
+        guard case .medicalTerm = consultationRow, let termSection = medicalSection.medicalTermSectionValue else { return nil }
         let padderRow = ConsultationRow(lines: [], medicalTermSection: termSection)
         if let lastItem = items.last, lastItem.isTerminal {
             items.removeLast()
         }
         items += [consultationRow, padderRow]
+        return items.count - 2
     }
     
     mutating func addTerminalCell() {

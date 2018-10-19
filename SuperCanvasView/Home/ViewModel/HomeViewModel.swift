@@ -109,12 +109,13 @@ extension HomeViewModel {
         guard !sections.isEmpty, let sectionIndex = sections.firstIndex(where: { section in section.medicalSection == MedicalSection(termSection) }) else {
             let sectionIndex = sections.firstIndex(where: { section in section.medicalSection.printPosition > MedicalSection(termSection).printPosition }) ?? sections.endIndex
             sections.insert(ConsultationSection(medicalSection: MedicalSection(termSection), items: []), at: sectionIndex)
-            sections[sectionIndex].insert(consultationRow)
+            _ = sections[sectionIndex].insert(consultationRow)
             return .just(.setSections(sections))
         }
-        sections[sectionIndex].insert(consultationRow)
-        let rowIndex = sections[sectionIndex].items.count - 1
-        let focusedIndexPath = IndexPathWithScrollPosition(indexPath: IndexPath(row: rowIndex, section: sectionIndex), scrollPosition: .none)
+        guard let rowIndex = sections[sectionIndex].insert(consultationRow) else {
+            return .just(.setSections(sections))
+        }
+        let focusedIndexPath = IndexPathWithScrollPosition(indexPath: IndexPath(row: rowIndex, section: sectionIndex), scrollPosition: .middle)
         return .concat(.just(.setSections(sections)), .just(.setFocusedIndexPath(focusedIndexPath)))
     }
 

@@ -32,6 +32,7 @@ final class ASAwareTableNode: ASTableNode {
     // MARK: Internal properties
 
     internal let linesUpdateSubject = PublishSubject<LinesWithIndexPath>()
+    internal let scrollSubject = PublishSubject<Void>()
     internal let itemDeleted = PublishSubject<IndexPath>()
     
     // MARK: Public properties
@@ -253,5 +254,6 @@ extension ASAwareTableNode: ASTableDelegate {
     
     /// Since ASAwareTableNode's delegate is HomeViewController. We have to do this so that ASAwareTableNode is aware of the scrolling.
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        scrollSubject.onNext(())
     }
 }

@@ -262,6 +262,11 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
+        containerNode.tableNode.rx.didScroll
+            .mapTo(.scroll)
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
         containerNode.pencilButtonNode.rx.tap.mapTo(.pencil).bind(to: containerNode.tableNode.rx.canvasTool).disposed(by: disposeBag)
         containerNode.eraserButtonNode.rx.tap.mapTo(.eraser).bind(to: containerNode.tableNode.rx.canvasTool).disposed(by: disposeBag)
         containerNode.undoButtonNode.rx.tap.mapTo(()).bind(to: containerNode.tableNode.rx.undo).disposed(by: disposeBag)
@@ -289,6 +294,7 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
             .disposed(by: disposeBag)
         
         reactor.state.map { $0.focusedIndexPath }
+            .distinctUntilChanged { lhs, rhs in lhs?.indexPath == rhs?.indexPath }
             .unwrap()
             .subscribe(onNext: { [weak self] (result) in
                 guard let strongSelf = self else { return }

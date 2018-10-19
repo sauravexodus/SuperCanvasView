@@ -23,11 +23,12 @@ final class HomeViewModel: Reactor {
         case delete(IndexPath)
         case deleteAll
         case print([UIImage])
+        case scroll
     }
     
     enum Mutation {
         case setSections([ConsultationSection])
-        case setFocusedIndexPath(IndexPathWithScrollPosition)
+        case setFocusedIndexPath(IndexPathWithScrollPosition?)
     }
     
     struct State {
@@ -48,6 +49,7 @@ final class HomeViewModel: Reactor {
         case let .delete(indexPath): return mutateDeleteRow(at: indexPath)
         case .deleteAll: return mutateInitialLoad()
         case let .print(images): return mutatePrint(images: images)
+        case .scroll: return mutateScroll()
         }
     }
     
@@ -150,6 +152,12 @@ extension HomeViewModel {
         pic.printingItems = images
         pic.present(animated: true)
         return .empty()
+    }
+    
+    private func mutateScroll() -> Observable<Mutation> {
+        // if current index path is already nil dont do anything other set it to nil
+        guard currentState.focusedIndexPath != nil else { return .empty() }
+        return .just(.setFocusedIndexPath(nil))
     }
 }
 

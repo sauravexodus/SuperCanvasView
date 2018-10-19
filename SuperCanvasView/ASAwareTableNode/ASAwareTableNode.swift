@@ -200,14 +200,54 @@ extension ASAwareTableNode: ASTableDelegate {
     }
     
     func tableNode(_ tableNode: ASTableNode, willDisplayRowWith node: ASCellNode) {
-        if let medicalTermCellNode = node as? ASMedicalTermCellNode<EmptyCellNode<Diagnosis>> {
+        if let medicalTermCellNode = node as? ASMedicalTermCellNode<EmptyCellNode<Symptom>> {
             medicalTermCellNode.linesChanged.debounce(0.3, scheduler: MainScheduler.instance)
                 .subscribe(onNext: { [weak self] in self?.linesUpdateSubject.onNext($0) })
                 .disposed(by: medicalTermCellNode.disposeBag)
-        } else if let medicalTermCellNode = node as? ASMedicalTermCellNode<EmptyCellNode<Symptom>> {
+        } else if let medicalTermCellNode = node as? ASMedicalTermCellNode<EmptyCellNode<Examination>> {
             medicalTermCellNode.linesChanged.debounce(0.3, scheduler: MainScheduler.instance)
                 .subscribe(onNext: { [weak self] in self?.linesUpdateSubject.onNext($0) })
                 .disposed(by: medicalTermCellNode.disposeBag)
+        } else if let medicalTermCellNode = node as? ASMedicalTermCellNode<EmptyCellNode<Diagnosis>> {
+            medicalTermCellNode.linesChanged.debounce(0.3, scheduler: MainScheduler.instance)
+                .subscribe(onNext: { [weak self] in self?.linesUpdateSubject.onNext($0) })
+                .disposed(by: medicalTermCellNode.disposeBag)
+        } else if let medicalTermCellNode = node as? ASMedicalTermCellNode<EmptyCellNode<Prescription>> {
+            medicalTermCellNode.linesChanged.debounce(0.3, scheduler: MainScheduler.instance)
+                .subscribe(onNext: { [weak self] in self?.linesUpdateSubject.onNext($0) })
+                .disposed(by: medicalTermCellNode.disposeBag)
+        } else if let medicalTermCellNode = node as? ASMedicalTermCellNode<EmptyCellNode<Test>> {
+            medicalTermCellNode.linesChanged.debounce(0.3, scheduler: MainScheduler.instance)
+                .subscribe(onNext: { [weak self] in self?.linesUpdateSubject.onNext($0) })
+                .disposed(by: medicalTermCellNode.disposeBag)
+        } else if let medicalTermCellNode = node as? ASMedicalTermCellNode<EmptyCellNode<Procedure>> {
+            medicalTermCellNode.linesChanged.debounce(0.3, scheduler: MainScheduler.instance)
+                .subscribe(onNext: { [weak self] in self?.linesUpdateSubject.onNext($0) })
+                .disposed(by: medicalTermCellNode.disposeBag)
+        } else if let medicalTermCellNode = node as? ASMedicalTermCellNode<EmptyCellNode<Instruction>> {
+            medicalTermCellNode.linesChanged.debounce(0.3, scheduler: MainScheduler.instance)
+                .subscribe(onNext: { [weak self] in self?.linesUpdateSubject.onNext($0) })
+                .disposed(by: medicalTermCellNode.disposeBag)
+        } else if let medicalFormCellNode = node as? ASMedicalFormCellNode<EmptyCellNode<ObstetricHistory>> {
+            medicalFormCellNode.linesChanged.debounce(0.3, scheduler: MainScheduler.instance)
+                .subscribe(onNext: { [weak self] in self?.linesUpdateSubject.onNext($0) })
+                .disposed(by: medicalFormCellNode.disposeBag)
+        } else if let medicalFormCellNode = node as? ASMedicalFormCellNode<EmptyCellNode<MenstrualHistory>> {
+            medicalFormCellNode.linesChanged.debounce(0.3, scheduler: MainScheduler.instance)
+                .subscribe(onNext: { [weak self] in self?.linesUpdateSubject.onNext($0) })
+                .disposed(by: medicalFormCellNode.disposeBag)
+        } else if let medicalFormCellNode = node as? ASMedicalFormCellNode<EmptyCellNode<FamilyHistory>> {
+            medicalFormCellNode.linesChanged.debounce(0.3, scheduler: MainScheduler.instance)
+                .subscribe(onNext: { [weak self] in self?.linesUpdateSubject.onNext($0) })
+                .disposed(by: medicalFormCellNode.disposeBag)
+        } else if let medicalFormCellNode = node as? ASMedicalFormCellNode<EmptyCellNode<PersonalHistory>> {
+            medicalFormCellNode.linesChanged.debounce(0.3, scheduler: MainScheduler.instance)
+                .subscribe(onNext: { [weak self] in self?.linesUpdateSubject.onNext($0) })
+                .disposed(by: medicalFormCellNode.disposeBag)
+        } else if let medicalFormCellNode = node as? ASMedicalFormCellNode<EmptyCellNode<GeneralHistory>> {
+            medicalFormCellNode.linesChanged.debounce(0.3, scheduler: MainScheduler.instance)
+                .subscribe(onNext: { [weak self] in self?.linesUpdateSubject.onNext($0) })
+                .disposed(by: medicalFormCellNode.disposeBag)
         }
     }
     

@@ -90,10 +90,10 @@ extension HomeViewModel {
             let sectionIndex = sections.firstIndex(where: { section in section.medicalSection.printPosition > medicalSection.printPosition }) ?? sections.endIndex
             let consultationRow = medicalSection.isMedicalTermSection ? ConsultationRow(lines: [], medicalTermSection: medicalSection.medicalTermSectionValue!) : ConsultationRow(lines: [], medicalFormSection: medicalSection.medicalFormSectionValue!)
             sections.insert(ConsultationSection(medicalSection: medicalSection, items: [consultationRow]), at: sectionIndex)
-            let focusedIndexPath = IndexPathWithScrollPosition(indexPath: IndexPath(row: 0, section: sectionIndex), scrollPosition: .none)
+            let focusedIndexPath = IndexPathWithScrollPosition(indexPath: IndexPath(row: 0, section: sectionIndex), scrollPosition: .top)
             return .concat(.just(.setSections(sections)), .just(.setFocusedIndexPath(focusedIndexPath)))
         }
-        let focusedIndexPath = IndexPathWithScrollPosition(indexPath: IndexPath(row: 0, section: sectionIndex), scrollPosition: .none)
+        let focusedIndexPath = IndexPathWithScrollPosition(indexPath: IndexPath(row: 0, section: sectionIndex), scrollPosition: .top)
         return .concat(.just(.setSections(sections)), .just(.setFocusedIndexPath(focusedIndexPath)))
     }
     
@@ -106,8 +106,8 @@ extension HomeViewModel {
             return medicalTermSection != termSection && section.isEmpty
         }
         let consultationRow = ConsultationRow(lines: [], medicalTermSection: termSection, medicalTerm: medicalTerm)
-        guard !sections.isEmpty else { return .just(.setSections([ConsultationSection(medicalSection: MedicalSection(termSection), items: [consultationRow])])) }
-        guard let sectionIndex = sections.firstIndex(where: { section in section.medicalSection == MedicalSection(termSection) }) else {
+//        guard !sections.isEmpty else { return .just(.setSections([ConsultationSection(medicalSection: MedicalSection(termSection), items: [consultationRow])])) }
+        guard !sections.isEmpty, let sectionIndex = sections.firstIndex(where: { section in section.medicalSection == MedicalSection(termSection) }) else {
             let sectionIndex = sections.firstIndex(where: { section in section.medicalSection.printPosition > MedicalSection(termSection).printPosition }) ?? sections.endIndex
             sections.insert(ConsultationSection(medicalSection: MedicalSection(termSection), items: []), at: sectionIndex)
             sections[sectionIndex].insert(consultationRow)

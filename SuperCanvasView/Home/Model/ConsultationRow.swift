@@ -11,16 +11,16 @@ import UIKit
 import Differentiator
 
 enum ConsultationRow {
-    case medicalTerm(id: String, height: CGFloat, lines: [Line], medicalTermType: MedicalTermType)
+    case medicalTerm(id: String, height: CGFloat, lines: [Line], medicalTermType: MedicalTermType?)
     case pageBreak(pageNumber: Int)
     
-    init(height: CGFloat, lines: [Line], medicalTerm: MedicalTermType) {
+    init(height: CGFloat, lines: [Line], medicalTerm: MedicalTermType? = nil) {
         self = .medicalTerm(id: UUID().uuidString, height: height, lines: lines, medicalTermType: medicalTerm)
     }
     
     var isTerminal: Bool {
         switch self {
-        case let .medicalTerm(_, _, lines, medicalTerm): return medicalTerm.name == nil && lines.isEmpty
+        case let .medicalTerm(_, _, lines, medicalTerm): return medicalTerm == nil && lines.isEmpty
         default: return false
         }
     }
@@ -32,11 +32,11 @@ enum ConsultationRow {
         }
     }
     
-    var medicalSection: MedicalSection {
-        return medicalTerm.sectionOfSelf
+    var medicalSection: MedicalTermSection? {
+        return medicalTerm?.sectionOfSelf
     }
     
-    var medicalTerm: MedicalTermType {
+    var medicalTerm: MedicalTermType? {
         switch self {
         case let .medicalTerm(_, _, _, medicalTerm): return medicalTerm
         default: fatalError("This is a page break row type!")
@@ -59,7 +59,7 @@ enum ConsultationRow {
     var height: CGFloat {
         switch self {
         case let .medicalTerm(_, initialHeight, lines, medicalTerm):
-            return min(max(NSAttributedString(string: medicalTerm.name ?? "").heightContrainedToA4, lines.highestY ?? 0, initialHeight), PageSize.selectedPage.height)
+            return min(max(NSAttributedString(string: medicalTerm?.name ?? "").heightContrainedToA4, lines.highestY ?? 0, initialHeight), PageSize.selectedPage.height)
         default: return 1
         }
     }

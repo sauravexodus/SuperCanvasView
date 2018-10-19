@@ -10,21 +10,21 @@ import Foundation
 import RxDataSources
 
 struct ConsultationSection {
-    var medicalSection: MedicalSection
+    var medicalSection: MedicalTermSection
     var items: [Item]
     
     var isEmpty: Bool {
         return items.count == 0 || (items.count == 1 && items[0].isTerminal)
     }
     
-    init(medicalSection: MedicalSection, items: [Item]) {
+    init(medicalSection: MedicalTermSection, items: [Item]) {
         self.medicalSection = medicalSection
         self.items = items
     }
     
     mutating func insert(_ consultationRow: ConsultationRow, with terminalCellHeight: CGFloat) {
-        guard case let .medicalTerm(_,_,_,medicalTerm) = consultationRow else { return }
-        let padderRow = ConsultationRow(height: terminalCellHeight, lines: [], medicalTerm: medicalTerm.sectionOfSelf.correspondingEmptyTerm)
+        guard case .medicalTerm = consultationRow else { return }
+        let padderRow = ConsultationRow(height: terminalCellHeight, lines: [])
         if let lastItem = items.last, lastItem.isTerminal {
             items.removeLast()
         }
@@ -33,19 +33,19 @@ struct ConsultationSection {
     
     mutating func addTerminalCell(with height: CGFloat) {
         if items.count == 0 {
-            items.append(ConsultationRow(height: height, lines: [], medicalTerm: medicalSection.correspondingEmptyTerm))
+            items.append(ConsultationRow(height: height, lines: []))
         }
-        if let lastItem = items.last, !lastItem.isTerminal, case let .medicalTerm(_, _, _, medicalTerm) = lastItem {
-            items.append(ConsultationRow(height: height, lines: [], medicalTerm: medicalTerm.sectionOfSelf.correspondingEmptyTerm))
+        if let lastItem = items.last, !lastItem.isTerminal, case .medicalTerm = lastItem {
+            items.append(ConsultationRow(height: height, lines: []))
         }
     }
 }
 
 extension ConsultationSection: AnimatableSectionModelType {
     typealias Item = ConsultationRow
-    typealias Identity = MedicalSection
+    typealias Identity = MedicalTermSection
     
-    var identity: MedicalSection {
+    var identity: MedicalTermSection {
         return medicalSection
     }
     

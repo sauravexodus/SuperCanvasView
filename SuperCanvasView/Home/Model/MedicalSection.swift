@@ -8,7 +8,123 @@
 
 import Foundation
 
-enum MedicalSection: Int, Hashable {
+typealias MedicalSection = Either<MedicalTermSection, MedicalFormSection>
+
+enum Either<T, U> {
+    case left(T)
+    case right(U)
+    
+    var leftValue: T? {
+        if case let .left(value) = self {
+            return value
+        }
+        return nil
+    }
+    var rightValue: U? {
+        if case let .right(value) = self {
+            return value
+        }
+        return nil
+    }
+}
+
+extension Either where T == MedicalTermSection, U == MedicalFormSection {
+    var printPosition: Int {
+        switch self {
+        case let .left(value):
+            return MedicalTermSection.allSections().firstIndex(of: value) ?? 0
+        case let .right(value):
+            return MedicalFormSection.allSections().firstIndex(of: value) ?? 0
+        }
+    }
+    
+    static func allSections() -> [MedicalSection] {
+        return MedicalTermSection.allSections().map(Either.left) + MedicalFormSection.allSections().map(Either.right)
+    }
+    
+    var isMedicalTermSection: Bool {
+        guard case .left = self else { return false }
+        return true
+    }
+    
+    var isMedicalFormSection: Bool {
+        return !isMedicalTermSection
+    }
+    
+    var displayTitle: String {
+        switch self {
+        case .left: return leftValue!.displayTitle
+        case .right: return rightValue!.displayTitle
+        }
+    }
+    
+    var shortDisplayTitle: String {
+        switch self {
+        case .left: return leftValue!.shortDisplayTitle
+        case .right: return rightValue!.shortDisplayTitle
+        }
+    }
+}
+
+extension Either where T: Equatable {
+    static func == (lhs: Either, rhs: T) -> Bool {
+        switch lhs {
+        case let .left(value):
+            return value == rhs
+        default:
+            return false
+        }
+    }
+}
+
+extension Either where U: Equatable {
+    static func == (lhs: Either, rhs: U) -> Bool {
+        switch lhs {
+        case let .right(value):
+            return value == rhs
+        default:
+            return false
+        }
+    }
+}
+
+enum MedicalFormSection: Int, Hashable {
+    case menstrualHistory
+    case obstetricHistory
+    case familyHistory
+    case personalHistory
+    case generalHistory
+    
+    var title: String {
+        switch self {
+        case .menstrualHistory: return "Menstrual History"
+        case .obstetricHistory: return "Obstetric History"
+        case .familyHistory: return "Family History"
+        case .personalHistory: return "Personal History"
+        case .generalHistory: return "General History"
+        }
+    }
+    
+    var displayTitle: String {
+        return title
+    }
+    
+    var shortDisplayTitle: String {
+        switch self {
+        case .menstrualHistory: return "Menstrual"
+        case .obstetricHistory: return "Obstetric"
+        case .familyHistory: return "Family"
+        case .personalHistory: return "Personal"
+        case .generalHistory: return "General"
+        }
+    }
+    
+    static func allSections() -> [MedicalFormSection] {
+        return [.menstrualHistory]
+    }
+}
+
+enum MedicalTermSection: Int, Hashable {
     case symptoms
     case examinations
     case diagnoses
@@ -19,7 +135,7 @@ enum MedicalSection: Int, Hashable {
     case none
     
     var printPosition: Int {
-        return MedicalSection.allSections().firstIndex(of: self) ?? 0
+        return MedicalTermSection.allSections().firstIndex(of: self) ?? 0
     }
     
     var title: String {
@@ -39,33 +155,20 @@ enum MedicalSection: Int, Hashable {
         return title
     }
     
-    static func allSections() -> [MedicalSection] {
-        return [.symptoms, .diagnoses]
-    }
-}
-
-extension MedicalSection {
-    var correspondingMedicalTermType: MedicalTermType.Type {
+    var shortDisplayTitle: String {
         switch self {
-        case .symptoms:
-            return Symptom.self
-        case .examinations:
-            return Examination.self
-        case .diagnoses:
-            return Diagnosis.self
-        case .prescriptions:
-            return Prescription.self
-        case .tests:
-            return Test.self
-        case .procedures:
-            return Procedure.self
-        case .instructions:
-            return Instruction.self
-        case .none:
-            return NoMedicalTerm.self
+        case .symptoms: return "Complaints"
+        case .examinations: return "Examinations"
+        case .diagnoses: return "Diagnosis"
+        case .prescriptions: return "Prescription"
+        case .tests: return "Investigations"
+        case .procedures: return "Procedures"
+        case .instructions: return "Instructions"
+        case .none: return ""
         }
     }
-    var correspondingEmptyTerm: MedicalTermType {
-        return correspondingMedicalTermType.init()
+    
+    static func allSections() -> [MedicalTermSection] {
+        return [.symptoms, .diagnoses]
     }
 }

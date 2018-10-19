@@ -17,7 +17,7 @@ final class HomeViewModel: Reactor {
 
     enum Action {
         case initialLoad
-        case select(MedicalSection)
+        case select(MedicalTermSection)
         case add(MedicalTermType)
         case showPageBreaks
         case updateLines(indexPath: IndexPath, lines: [Line])
@@ -69,24 +69,24 @@ final class HomeViewModel: Reactor {
 
 extension HomeViewModel {
     private func mutateInitialLoad() -> Observable<Mutation> {
-        let medicalSection = MedicalSection.allSections()[0]
-        return .just(.setSections([ConsultationSection(medicalSection: medicalSection, items: [ConsultationRow(height: currentState.terminalCellHeight, lines: [Line](), medicalTerm: medicalSection.correspondingEmptyTerm)])]))
+        let medicalSection = MedicalTermSection.allSections()[0]
+        return .just(.setSections([ConsultationSection(medicalSection: medicalSection, items: [ConsultationRow(height: currentState.terminalCellHeight, lines: [Line]())])]))
     }
     
     private func mutateAddingPageBreaks() -> Observable<Mutation> {
         return .just(.setSections(currentState.sections.removingPageBreaks().withPageBreaks(sectionHeaderHeight: 16)))
     }
     
-    private func mutateSelectMedicalSection(_ medicalSection: MedicalSection) -> Observable<Mutation> {
+    private func mutateSelectMedicalSection(_ medicalSection: MedicalTermSection) -> Observable<Mutation> {
         var sections = currentState.sections
         sections.removeAll { section in section.medicalSection != medicalSection && section.isEmpty }
         guard !sections.isEmpty, sections[0].items.count > 0, !sections[0].items[0].isTerminal else {
-            let consultationRow = ConsultationRow(height: currentState.terminalCellHeight, lines: [], medicalTerm: medicalSection.correspondingEmptyTerm)
+            let consultationRow = ConsultationRow(height: currentState.terminalCellHeight, lines: [])
             return .just(.setSections([ConsultationSection(medicalSection: medicalSection, items: [consultationRow])]))
         }
         guard let sectionIndex = sections.firstIndex(where: { section in section.medicalSection == medicalSection }) else {
             let sectionIndex = sections.firstIndex(where: { section in section.medicalSection.printPosition > medicalSection.printPosition }) ?? sections.endIndex
-            let consultationRow = ConsultationRow(height: currentState.terminalCellHeight, lines: [], medicalTerm: medicalSection.correspondingEmptyTerm)
+            let consultationRow = ConsultationRow(height: currentState.terminalCellHeight, lines: [])
             sections.insert(ConsultationSection(medicalSection: medicalSection, items: [consultationRow]), at: sectionIndex)
             let focusedIndexPath = IndexPathWithScrollPosition(indexPath: IndexPath(row: 0, section: sectionIndex), scrollPosition: .top)
             return .concat(.just(.setSections(sections)), .just(.setFocusedIndexPath(focusedIndexPath)))

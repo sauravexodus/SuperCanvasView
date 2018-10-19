@@ -9,7 +9,7 @@
 import Foundation
 
 protocol MedicalTermType {
-    static var section: MedicalSection { get }
+    static var section: MedicalTermSection { get }
     var name: String? { get set }
     var hashValue: Int { get }
     
@@ -17,7 +17,7 @@ protocol MedicalTermType {
 }
 
 extension MedicalTermType {
-    var sectionOfSelf: MedicalSection {
+    var sectionOfSelf: MedicalTermSection {
         return type(of: self).section
     }
 }
@@ -39,41 +39,41 @@ extension MedicalTermType where Self: Hashable {
 }
 
 struct Symptom: MedicalTermType, Hashable {
-    static let section: MedicalSection = .symptoms
+    static let section: MedicalTermSection = .symptoms
     var name: String?
 }
 
 struct Examination: MedicalTermType, Hashable {
-    static let section: MedicalSection = .examinations
+    static let section: MedicalTermSection = .examinations
     var name: String?
 }
 
 struct Diagnosis: MedicalTermType, Hashable {
-    static let section: MedicalSection = .diagnoses
+    static let section: MedicalTermSection = .diagnoses
     var name: String?
 }
 
 struct Prescription: MedicalTermType, Hashable {
-    static let section: MedicalSection = .prescriptions
+    static let section: MedicalTermSection = .prescriptions
     var name: String?
 }
 
 struct Test: MedicalTermType, Hashable {
-    static let section: MedicalSection = .tests
+    static let section: MedicalTermSection = .tests
     var name: String?
 }
 
 struct Procedure: MedicalTermType, Hashable {
-    static let section: MedicalSection = .procedures
+    static let section: MedicalTermSection = .procedures
     var name: String?
 }
 
 struct Instruction: MedicalTermType, Hashable {
-    static let section: MedicalSection = .instructions
+    static let section: MedicalTermSection = .instructions
     var name: String?
 }
 
 struct NoMedicalTerm: MedicalTermType, Hashable {
-    static let section: MedicalSection = .none
+    static let section: MedicalTermSection = .none
     var name: String?
 }

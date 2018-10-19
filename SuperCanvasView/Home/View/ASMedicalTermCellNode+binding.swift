@@ -46,7 +46,6 @@ extension ASMedicalTermCellNode {
         
         Observable.merge(tapObservable, canvasView.rx.pencilTouchDidNearBottom)
             .subscribe(onNext: { [unowned self] _ in
-                UIView.setAnimationsEnabled(false)
                 self.expand()
             })
             .disposed(by: disposeBag)

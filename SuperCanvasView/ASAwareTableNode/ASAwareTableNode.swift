@@ -49,19 +49,49 @@ final class ASAwareTableNode: ASTableNode {
     override init(style: UITableViewStyle) {
         let configureCell: RxASTableAnimatedDataSource<ConsultationSection>.ConfigureCellBlock = { (ds, tableNode, index, item) in
             return {
+                // TODO: Improve
                 guard case .medicalTerm = item else {
                     return ASPageBreakCellNode()
                 }
-                switch item.medicalSection {
-                case .diagnoses:
-                    let node = ASMedicalTermCellNode<EmptyCellNode<Diagnosis>>()
+                guard !item.isTerminal else {
+                    let node = ASMedicalTermCellNode<EmptyCellNode<NoMedicalTerm>>()
                     node.configure(with: item)
                     return node
+                }
+                // TODO: Improve
+                guard let medicalSection = item.medicalSection else {
+                    return ASPageBreakCellNode()
+                }
+                switch medicalSection {
                 case .symptoms:
                     let node = ASMedicalTermCellNode<EmptyCellNode<Symptom>>()
                     node.configure(with: item)
                     return node
-                default:
+                case .diagnoses:
+                    let node = ASMedicalTermCellNode<EmptyCellNode<Diagnosis>>()
+                    node.configure(with: item)
+                    return node
+                case .examinations:
+                    let node = ASMedicalTermCellNode<EmptyCellNode<Symptom>>()
+                    node.configure(with: item)
+                    return node
+                case .prescriptions:
+                    let node = ASMedicalTermCellNode<EmptyCellNode<Symptom>>()
+                    node.configure(with: item)
+                    return node
+                case .tests:
+                    let node = ASMedicalTermCellNode<EmptyCellNode<Symptom>>()
+                    node.configure(with: item)
+                    return node
+                case .procedures:
+                    let node = ASMedicalTermCellNode<EmptyCellNode<Symptom>>()
+                    node.configure(with: item)
+                    return node
+                case .instructions:
+                    let node = ASMedicalTermCellNode<EmptyCellNode<Symptom>>()
+                    node.configure(with: item)
+                    return node
+                case .none:
                     let node = ASMedicalTermCellNode<EmptyCellNode<NoMedicalTerm>>()
                     node.configure(with: item)
                     return node

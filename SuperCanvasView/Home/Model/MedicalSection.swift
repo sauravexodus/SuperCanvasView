@@ -6,6 +6,7 @@
 //  Copyright © 2018 Sourav Chandra. All rights reserved.
 //
 
+import RxDataSources
 import Foundation
 
 typealias MedicalSection = Either<MedicalTermSection, MedicalFormSection>
@@ -26,9 +27,54 @@ enum Either<T, U> {
         }
         return nil
     }
+    
+    init(_ left: T) {
+        self = .left(left)
+    }
+    
+    init(_ right: U) {
+        self = .right(right)
+    }
 }
 
-extension Either where T == MedicalTermSection, U == MedicalFormSection {
+extension Either: Equatable where T: Equatable, U: Equatable {
+    static func == (lhs: Either, rhs: Either) -> Bool {
+        switch (lhs, rhs) {
+        case let (.left(x), .left(y)):
+            return x == y
+        case let (.right(x), .right(y)):
+            return x == y
+        default:
+            return false
+        }
+    }
+}
+
+extension Either: Hashable where T: Hashable, U: Hashable {
+    var hashValue: Int {
+        switch self {
+        case let .left(x):
+            return combineHashes([ObjectIdentifier(T.self).hashValue, x.hashValue])
+        case let .right(y):
+            return combineHashes([ObjectIdentifier(U.self).hashValue, y.hashValue])
+        }
+    }
+}
+
+extension Either: IdentifiableType where T == MedicalTermSection, U == MedicalFormSection {
+    typealias Identity = Int
+
+    var identity: Int {
+        return hashValue
+    }
+
+    var title: String {
+        switch self {
+        case .left: return leftValue!.title
+        case .right: return rightValue!.title
+        }
+    }
+
     var printPosition: Int {
         switch self {
         case let .left(value):
@@ -38,6 +84,7 @@ extension Either where T == MedicalTermSection, U == MedicalFormSection {
         }
     }
     
+    // TODO: should be ordererd by print position!
     static func allSections() -> [MedicalSection] {
         return MedicalTermSection.allSections().map(Either.left) + MedicalFormSection.allSections().map(Either.right)
     }
@@ -63,6 +110,13 @@ extension Either where T == MedicalTermSection, U == MedicalFormSection {
         case .left: return leftValue!.shortDisplayTitle
         case .right: return rightValue!.shortDisplayTitle
         }
+    }
+    
+    var medicalTermSectionValue: MedicalTermSection? {
+        return leftValue
+    }
+    var medicalFormSectionValue: MedicalFormSection? {
+        return rightValue
     }
 }
 
@@ -132,11 +186,6 @@ enum MedicalTermSection: Int, Hashable {
     case tests
     case procedures
     case instructions
-    case none
-    
-    var printPosition: Int {
-        return MedicalTermSection.allSections().firstIndex(of: self) ?? 0
-    }
     
     var title: String {
         switch self {
@@ -147,7 +196,6 @@ enum MedicalTermSection: Int, Hashable {
         case .tests: return "Investigations"
         case .procedures: return "Procedures"
         case .instructions: return "Instructions"
-        case .none: return ""
         }
     }
     
@@ -164,7 +212,6 @@ enum MedicalTermSection: Int, Hashable {
         case .tests: return "Investigations"
         case .procedures: return "Procedures"
         case .instructions: return "Instructions"
-        case .none: return ""
         }
     }
     

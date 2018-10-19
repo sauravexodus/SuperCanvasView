@@ -11,17 +11,23 @@ import UIKit
 import Differentiator
 
 enum ConsultationRow {
-    case medicalTerm(id: String, lines: [Line], medicalTermType: MedicalTermType?)
+    case medicalTerm(id: String, lines: [Line], medicalTermSection: MedicalTermSection, medicalTermType: MedicalTermType?)
+    case medicalForm(id: String, lines: [Line], medicalFormSection: MedicalFormSection, medicalFormType: MedicalFormType?)
     case pageBreak(pageNumber: Int)
     
-    init(lines: [Line], medicalTerm: MedicalTermType? = nil) {
-        self = .medicalTerm(id: UUID().uuidString, lines: lines, medicalTermType: medicalTerm)
+    init(lines: [Line], medicalTermSection: MedicalTermSection, medicalTerm: MedicalTermType? = nil) {
+        self = .medicalTerm(id: UUID().uuidString, lines: lines, medicalTermSection: medicalTermSection, medicalTermType: medicalTerm)
+    }
+    
+    init(lines: [Line], medicalFormSection: MedicalFormSection, medicalForm: MedicalFormType? = nil) {
+        self = .medicalForm(id: UUID().uuidString, lines: lines, medicalFormSection: medicalFormSection, medicalFormType: medicalForm)
     }
     
     var isTerminal: Bool {
         switch self {
-        case let .medicalTerm(_, lines, medicalTerm): return medicalTerm == nil && lines.isEmpty
-        default: return false
+        case let .medicalTerm(_, lines, _, medicalTerm): return medicalTerm == nil && lines.isEmpty
+        case let .medicalForm(_, lines, _, medicalForm): return medicalForm == nil && lines.isEmpty
+        case .pageBreak: return false
         }
     }
     
@@ -32,41 +38,68 @@ enum ConsultationRow {
         }
     }
     
-    var medicalSection: MedicalTermSection? {
-        return medicalTerm?.sectionOfSelf
-    }
-    
     var medicalTerm: MedicalTermType? {
         switch self {
-        case let .medicalTerm(_, _, medicalTerm): return medicalTerm
-        default: fatalError("This is a page break row type!")
+        case let .medicalTerm(_, _, _, medicalTerm): return medicalTerm
+        default: return nil
+        }
+    }
+    
+    var medicalTermSection: MedicalTermSection? {
+        switch self {
+        case let .medicalTerm(_, _, section, _): return section
+        default: return nil
+        }
+    }
+    
+    var medicalForm: MedicalFormType? {
+        switch self {
+        case let .medicalForm(_, _, _, medicalForm): return medicalForm
+        default: return nil
+        }
+    }
+    
+    var medicalFormSection: MedicalFormSection? {
+        switch self {
+        case let .medicalForm(_, _, section, _): return section
+        default: return nil
         }
     }
     
     var lines: [Line] {
         get {
             switch self {
-            case let .medicalTerm(_, lines, _): return lines
-            default: fatalError("This is a page break row type!")
+            case let .medicalTerm(_, lines, _, _): return lines
+            case let .medicalForm(_, lines, _, _): return lines
+            case .pageBreak: fatalError("This is a page break row type!")
             }
         }
         set {
-            guard case let .medicalTerm(id, _, medicalTerm) = self else { fatalError("This is a page break!") }
-            self = .medicalTerm(id: id, lines: newValue, medicalTermType: medicalTerm)
+            switch self {
+            case let .medicalTerm(id, _, section, medicalTerm):
+                self = .medicalTerm(id: id, lines: newValue, medicalTermSection: section, medicalTermType: medicalTerm)
+            case let .medicalForm(id, _, section, medicalForm):
+                self = .medicalForm(id: id, lines: newValue, medicalFormSection: section, medicalFormType: medicalForm)
+            case .pageBreak:
+                fatalError("This is a page break row type!")
+            }
         }
     }
     
     var height: CGFloat {
         switch self {
-        case let .medicalTerm(_, lines, medicalTerm):
+        case let .medicalTerm(_, lines, _, medicalTerm):
             return min(max(NSAttributedString(string: medicalTerm?.name ?? "").heightConstrainedToPageWidth, lines.highestY ?? 0), PageSize.selectedPage.height)
-        default: return 1
+        case let .medicalForm(_, lines, _, medicalForm):
+            return min(max((medicalForm?.value ?? NSAttributedString(string: "")).heightConstrainedToPageWidth, lines.highestY ?? 0), PageSize.selectedPage.height)
+        case .pageBreak: return 1
         }
     }
     
     var id: String {
         switch self {
-        case let .medicalTerm(id, _, _): return id
+        case let .medicalTerm(id, _, _, _): return id
+        case let .medicalForm(id, _, _, _): return id
         case let .pageBreak(pageNumber): return "\(pageNumber)"
         }
     }

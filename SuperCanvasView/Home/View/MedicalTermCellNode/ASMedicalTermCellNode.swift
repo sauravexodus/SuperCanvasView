@@ -90,7 +90,6 @@ final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode, Can
         }
         style.preferredSize.height = min(CGFloat(max(CGFloat(item.height), item.lines.highestY ?? 0, minimumHeight)), maximumHeight)
         titleTextNode.attributedText = .init(string: term.name ?? "", attributes: [.foregroundColor: UIColor.darkGray, .font: textFont])
-        
         contentNode.configure(with: term)
         self.item = item
     }

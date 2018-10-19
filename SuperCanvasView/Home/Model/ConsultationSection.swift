@@ -10,21 +10,21 @@ import Foundation
 import RxDataSources
 
 struct ConsultationSection {
-    var medicalSection: MedicalTermSection
+    var medicalSection: MedicalSection
     var items: [Item]
     
     var isEmpty: Bool {
         return items.count == 0 || (items.count == 1 && items[0].isTerminal)
     }
     
-    init(medicalSection: MedicalTermSection, items: [Item]) {
+    init(medicalSection: MedicalSection, items: [Item]) {
         self.medicalSection = medicalSection
         self.items = items
     }
     
     mutating func insert(_ consultationRow: ConsultationRow) {
-        guard case .medicalTerm = consultationRow else { return }
-        let padderRow = ConsultationRow(lines: [])
+        guard case .medicalTerm = consultationRow, let termSection = medicalSection.medicalTermSectionValue else { return }
+        let padderRow = ConsultationRow(lines: [], medicalTermSection: termSection)
         if let lastItem = items.last, lastItem.isTerminal {
             items.removeLast()
         }
@@ -32,20 +32,21 @@ struct ConsultationSection {
     }
     
     mutating func addTerminalCell() {
+        guard let termSection = medicalSection.medicalTermSectionValue else { return }
         if items.count == 0 {
-            items.append(ConsultationRow(lines: []))
+            items.append(ConsultationRow(lines: [], medicalTermSection: termSection))
         }
         if let lastItem = items.last, !lastItem.isTerminal, case .medicalTerm = lastItem {
-            items.append(ConsultationRow(lines: []))
+            items.append(ConsultationRow(lines: [], medicalTermSection: termSection))
         }
     }
 }
 
 extension ConsultationSection: AnimatableSectionModelType {
     typealias Item = ConsultationRow
-    typealias Identity = MedicalTermSection
+    typealias Identity = MedicalSection
     
-    var identity: MedicalTermSection {
+    var identity: MedicalSection {
         return medicalSection
     }
     

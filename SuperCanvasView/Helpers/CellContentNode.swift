@@ -30,3 +30,15 @@ final class EmptyCellNode<T>: CellContentNode {
         return ASLayoutSpec()
     }
 }
+
+final class TerminalCellNode<T>: CellContentNode {
+    typealias RepresentationTarget = T
+    
+    func configure(with _: T) {
+        
+    }
+    
+    override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
+        return ASLayoutSpec()
+    }
+}

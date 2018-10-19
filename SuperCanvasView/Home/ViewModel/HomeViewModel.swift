@@ -13,12 +13,11 @@ import RxSwift
 
 final class HomeViewModel: Reactor {
     typealias IndexPathWithScrollPosition = (indexPath: IndexPath, scrollPosition: UITableViewScrollPosition)
-    typealias IndexPathWithHeight = (indexPath: IndexPath, height: CGFloat)
 
     enum Action {
         case initialLoad
-        case select(MedicalTermSection)
-        case add(MedicalTermType)
+        case select(MedicalSection)
+        case add(MedicalTermType, MedicalTermSection)
         case showPageBreaks
         case updateLines(indexPath: IndexPath, lines: [Line])
         case delete(IndexPath)
@@ -44,7 +43,7 @@ final class HomeViewModel: Reactor {
         case .initialLoad: return mutateInitialLoad()
         case .showPageBreaks: return mutateAddingPageBreaks()
         case let .select(medicalSection): return mutateSelectMedicalSection(medicalSection)
-        case let .add(medicalTerm): return mutateAppendMedicalTerm(medicalTerm)
+        case let .add(medicalTerm, termSection): return mutateAppendMedicalTerm(medicalTerm, to: termSection)
         case let .updateLines(indexPath, lines): return mutateUpdatingLines(at: indexPath, lines: lines)
         case let .delete(indexPath): return mutateDeleteRow(at: indexPath)
         case .deleteAll: return mutateInitialLoad()
@@ -68,40 +67,49 @@ final class HomeViewModel: Reactor {
 
 extension HomeViewModel {
     private func mutateInitialLoad() -> Observable<Mutation> {
-        let medicalSection = MedicalTermSection.allSections()[0]
-        return .just(.setSections([ConsultationSection(medicalSection: medicalSection, items: [ConsultationRow(lines: [Line]())])]))
+        let medicalSection = MedicalSection.allSections().first(where: { section in section.isMedicalTermSection }) ?? MedicalSection(.symptoms)
+        let termSection = medicalSection.medicalTermSectionValue ?? MedicalTermSection.symptoms
+        let sectionIndex = MedicalSection.allSections().firstIndex(where: { section in section.isMedicalTermSection }) ?? 0
+        let sections = [ConsultationSection(medicalSection: medicalSection, items: [ConsultationRow(lines: [], medicalTermSection: termSection)])]
+        let focusedIndexPath = IndexPathWithScrollPosition(indexPath: IndexPath(row: 0, section: sectionIndex), scrollPosition: .top)
+        return .concat(.just(.setSections(sections)), .just(.setFocusedIndexPath(focusedIndexPath)))
     }
     
     private func mutateAddingPageBreaks() -> Observable<Mutation> {
         return .just(.setSections(currentState.sections.removingPageBreaks().withPageBreaks(sectionHeaderHeight: 16)))
     }
     
-    private func mutateSelectMedicalSection(_ medicalSection: MedicalTermSection) -> Observable<Mutation> {
+    private func mutateSelectMedicalSection(_ medicalSection: MedicalSection) -> Observable<Mutation> {
         var sections = currentState.sections
         sections.removeAll { section in section.medicalSection != medicalSection && section.isEmpty }
         guard !sections.isEmpty, sections[0].items.count > 0, !sections[0].items[0].isTerminal else {
-            let consultationRow = ConsultationRow(lines: [])
+            let consultationRow = medicalSection.isMedicalTermSection ? ConsultationRow(lines: [], medicalTermSection: medicalSection.medicalTermSectionValue!) : ConsultationRow(lines: [], medicalFormSection: medicalSection.medicalFormSectionValue!)
             return .just(.setSections([ConsultationSection(medicalSection: medicalSection, items: [consultationRow])]))
         }
         guard let sectionIndex = sections.firstIndex(where: { section in section.medicalSection == medicalSection }) else {
             let sectionIndex = sections.firstIndex(where: { section in section.medicalSection.printPosition > medicalSection.printPosition }) ?? sections.endIndex
-            let consultationRow = ConsultationRow(lines: [])
+            let consultationRow = medicalSection.isMedicalTermSection ? ConsultationRow(lines: [], medicalTermSection: medicalSection.medicalTermSectionValue!) : ConsultationRow(lines: [], medicalFormSection: medicalSection.medicalFormSectionValue!)
             sections.insert(ConsultationSection(medicalSection: medicalSection, items: [consultationRow]), at: sectionIndex)
-            let focusedIndexPath = IndexPathWithScrollPosition(indexPath: IndexPath(row: 0, section: sectionIndex), scrollPosition: .top)
+            let focusedIndexPath = IndexPathWithScrollPosition(indexPath: IndexPath(row: 0, section: sectionIndex), scrollPosition: .none)
             return .concat(.just(.setSections(sections)), .just(.setFocusedIndexPath(focusedIndexPath)))
         }
-        let focusedIndexPath = IndexPathWithScrollPosition(indexPath: IndexPath(row: 0, section: sectionIndex), scrollPosition: .top)
+        let focusedIndexPath = IndexPathWithScrollPosition(indexPath: IndexPath(row: 0, section: sectionIndex), scrollPosition: .none)
         return .concat(.just(.setSections(sections)), .just(.setFocusedIndexPath(focusedIndexPath)))
     }
     
-    private func mutateAppendMedicalTerm(_ medicalTerm: MedicalTermType) -> Observable<Mutation> {
+    private func mutateAppendMedicalTerm(_ medicalTerm: MedicalTermType, to termSection: MedicalTermSection) -> Observable<Mutation> {
         var sections = currentState.sections.removingPageBreaks()
-        sections.removeAll { section in section.medicalSection != medicalTerm.sectionOfSelf && section.isEmpty }
-        let consultationRow = ConsultationRow(lines: [], medicalTerm: medicalTerm)
-        guard !sections.isEmpty else { return .just(.setSections([ConsultationSection(medicalSection: medicalTerm.sectionOfSelf, items: [consultationRow])])) }
-        guard let sectionIndex = sections.firstIndex(where: { section in section.medicalSection == medicalTerm.sectionOfSelf }) else {
-            let sectionIndex = sections.firstIndex(where: { section in section.medicalSection.printPosition > medicalTerm.sectionOfSelf.printPosition }) ?? sections.endIndex
-            sections.insert(ConsultationSection(medicalSection: medicalTerm.sectionOfSelf, items: []), at: sectionIndex)
+        sections.removeAll { section in
+            guard let medicalTermSection = section.medicalSection.medicalTermSectionValue else {
+                return section.isEmpty
+            }
+            return medicalTermSection != termSection && section.isEmpty
+        }
+        let consultationRow = ConsultationRow(lines: [], medicalTermSection: termSection, medicalTerm: medicalTerm)
+        guard !sections.isEmpty else { return .just(.setSections([ConsultationSection(medicalSection: MedicalSection(termSection), items: [consultationRow])])) }
+        guard let sectionIndex = sections.firstIndex(where: { section in section.medicalSection == MedicalSection(termSection) }) else {
+            let sectionIndex = sections.firstIndex(where: { section in section.medicalSection.printPosition > MedicalSection(termSection).printPosition }) ?? sections.endIndex
+            sections.insert(ConsultationSection(medicalSection: MedicalSection(termSection), items: []), at: sectionIndex)
             sections[sectionIndex].insert(consultationRow)
             return .just(.setSections(sections))
         }

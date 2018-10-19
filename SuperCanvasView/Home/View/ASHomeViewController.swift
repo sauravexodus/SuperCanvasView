@@ -27,38 +27,48 @@ final class ASDisplayNodeWithBackgroundColor: ASDisplayNode {
 
 final class ContainerDisplayNode: ASDisplayNode {
     let addSymptomButtonNode = ASButtonNode().then {
-        $0.setTitle("Add Symptom", with: .systemFont(ofSize: 13), with: .white, for: .normal)
-        $0.style.preferredSize.width = 100
+        $0.setTitle("AS", with: .systemFont(ofSize: 13), with: .white, for: .normal)
+        $0.style.preferredSize.width = 20
     }
     
     let selectSymptomButtonNode = ASButtonNode().then {
-        $0.setTitle("Select Symptom", with: .systemFont(ofSize: 13), with: .white, for: .normal)
-        $0.style.preferredSize.width = 100
+        $0.setTitle("SS", with: .systemFont(ofSize: 13), with: .white, for: .normal)
+        $0.style.preferredSize.width = 20
     }
     
     let addDiagnosisButtonNode = ASButtonNode().then {
-        $0.setTitle("Add Diagnosis", with: .systemFont(ofSize: 13), with: .white, for: .normal)
-        $0.style.preferredSize.width = 100
+        $0.setTitle("AD", with: .systemFont(ofSize: 13), with: .white, for: .normal)
+        $0.style.preferredSize.width = 20
     }
     
     let selectDiagnosisButtonNode = ASButtonNode().then {
-        $0.setTitle("Select Diagnosis", with: .systemFont(ofSize: 13), with: .white, for: .normal)
-        $0.style.preferredSize.width = 100
+        $0.setTitle("SD", with: .systemFont(ofSize: 13), with: .white, for: .normal)
+        $0.style.preferredSize.width = 20
+    }
+    
+    let selectObstetricHistoryButton = ASButtonNode().then {
+        $0.setTitle("SOH", with: .systemFont(ofSize: 13), with: .white, for: .normal)
+        $0.style.preferredSize.width = 20
+    }
+    
+    let selectMenstrualHistoryButton = ASButtonNode().then {
+        $0.setTitle("SMH", with: .systemFont(ofSize: 13), with: .white, for: .normal)
+        $0.style.preferredSize.width = 20
     }
     
     let deleteAllRowsButtonNode = ASButtonNode().then {
-        $0.setTitle("Delete All", with: .systemFont(ofSize: 13), with: .white, for: .normal)
-        $0.style.preferredSize.width = 100
+        $0.setTitle("DA", with: .systemFont(ofSize: 13), with: .white, for: .normal)
+        $0.style.preferredSize.width = 20
     }
     
     let printButtonNode = ASButtonNode().then {
-        $0.setTitle("Print", with: .systemFont(ofSize: 13), with: .white, for: .normal)
-        $0.style.preferredSize.width = 100
+        $0.setTitle("P", with: .systemFont(ofSize: 13), with: .white, for: .normal)
+        $0.style.preferredSize.width = 20
     }
     
     let showPageBreaksButtonNode = ASButtonNode().then {
-        $0.setTitle("Page Breaks", with: .systemFont(ofSize: 13), with: .white, for: .normal)
-        $0.style.preferredSize.width = 100
+        $0.setTitle("PB", with: .systemFont(ofSize: 13), with: .white, for: .normal)
+        $0.style.preferredSize.width = 20
     }
     
     let undoButtonNode = ASButtonNode().then {
@@ -121,6 +131,8 @@ final class ContainerDisplayNode: ASDisplayNode {
             selectSymptomButtonNode,
             addDiagnosisButtonNode,
             selectDiagnosisButtonNode,
+            selectMenstrualHistoryButton,
+            selectObstetricHistoryButton,
             deleteAllRowsButtonNode,
             printButtonNode,
             showPageBreaksButtonNode,
@@ -178,29 +190,41 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
         
         containerNode.selectSymptomButtonNode.rx
             .tap
-            .mapTo(.select(.symptoms))
+            .mapTo(.select(MedicalSection(.symptoms)))
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
         containerNode.addSymptomButtonNode.rx
             .tap
             .map { _ in
-                return .add(Symptom(name: "Symptom"))
+                return .add(Symptom(name: "Symptom"), MedicalTermSection.symptoms)
             }
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
         containerNode.selectDiagnosisButtonNode.rx
             .tap
-            .mapTo(.select(.diagnoses))
+            .mapTo(.select(MedicalSection(.diagnoses)))
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
         containerNode.addDiagnosisButtonNode.rx
             .tap
             .map { _ in
-                return .add(Diagnosis(name: "Diagnosis"))
+                return .add(Diagnosis(name: "Diagnosis"), MedicalTermSection.diagnoses)
             }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        containerNode.selectMenstrualHistoryButton.rx
+            .tap
+            .mapTo(.select(MedicalSection(.menstrualHistory)))
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        containerNode.selectObstetricHistoryButton.rx
+            .tap
+            .mapTo(.select(MedicalSection(.obstetricHistory)))
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         

@@ -498,13 +498,6 @@ extension Reactive where Base: CanvasView {
             .mapTo(())
     }
 
-    var pencilTouchEnded: Observable<Void> {
-        return self.methodInvoked(#selector(Base.touchesEnded(_:with:))).map { $0[0] as? Set<UITouch> }
-            .unwrap()
-            .filter { $0.contains(where: { $0.type == .stylus }) }
-            .mapTo(())
-    }
-
     var pencilTouchDidNearBottom: Observable<Void> {
         let began: Observable<CGFloat> = self.methodInvoked(#selector(Base.touchesBegan(_:with:))).map { $0[0] as? Set<UITouch> }
             .unwrap()
@@ -537,11 +530,6 @@ extension Reactive where Base: CanvasView {
             .unwrap()
         
         return Observable.merge(began, moved).distinctUntilChanged().mapTo(())
-    }
-    
-    var pencilDidStopMoving: Observable<Void> {
-        return Observable
-            .merge(pencilTouchStartedOrMoved, pencilTouchEnded)
     }
 }
 

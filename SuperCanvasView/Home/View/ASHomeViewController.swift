@@ -28,47 +28,47 @@ final class ASDisplayNodeWithBackgroundColor: ASDisplayNode {
 final class ContainerDisplayNode: ASDisplayNode {
     let addSymptomButtonNode = ASButtonNode().then {
         $0.setTitle("AS", with: .systemFont(ofSize: 13), with: .white, for: .normal)
-        $0.style.preferredSize.width = 20
+        $0.style.preferredSize.width = 40
     }
     
     let selectSymptomButtonNode = ASButtonNode().then {
         $0.setTitle("SS", with: .systemFont(ofSize: 13), with: .white, for: .normal)
-        $0.style.preferredSize.width = 20
+        $0.style.preferredSize.width = 40
     }
     
     let addDiagnosisButtonNode = ASButtonNode().then {
         $0.setTitle("AD", with: .systemFont(ofSize: 13), with: .white, for: .normal)
-        $0.style.preferredSize.width = 20
+        $0.style.preferredSize.width = 40
     }
     
     let selectDiagnosisButtonNode = ASButtonNode().then {
         $0.setTitle("SD", with: .systemFont(ofSize: 13), with: .white, for: .normal)
-        $0.style.preferredSize.width = 20
+        $0.style.preferredSize.width = 40
     }
     
     let selectObstetricHistoryButton = ASButtonNode().then {
         $0.setTitle("SOH", with: .systemFont(ofSize: 13), with: .white, for: .normal)
-        $0.style.preferredSize.width = 20
+        $0.style.preferredSize.width = 40
     }
     
     let selectMenstrualHistoryButton = ASButtonNode().then {
         $0.setTitle("SMH", with: .systemFont(ofSize: 13), with: .white, for: .normal)
-        $0.style.preferredSize.width = 20
+        $0.style.preferredSize.width = 40
     }
     
     let deleteAllRowsButtonNode = ASButtonNode().then {
         $0.setTitle("DA", with: .systemFont(ofSize: 13), with: .white, for: .normal)
-        $0.style.preferredSize.width = 20
+        $0.style.preferredSize.width = 40
     }
     
     let printButtonNode = ASButtonNode().then {
         $0.setTitle("P", with: .systemFont(ofSize: 13), with: .white, for: .normal)
-        $0.style.preferredSize.width = 20
+        $0.style.preferredSize.width = 40
     }
     
     let showPageBreaksButtonNode = ASButtonNode().then {
         $0.setTitle("PB", with: .systemFont(ofSize: 13), with: .white, for: .normal)
-        $0.style.preferredSize.width = 20
+        $0.style.preferredSize.width = 40
     }
     
     let undoButtonNode = ASButtonNode().then {
@@ -262,6 +262,11 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
+        containerNode.tableNode.rx.didScroll
+            .mapTo(.scroll)
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
         containerNode.pencilButtonNode.rx.tap.mapTo(.pencil).bind(to: containerNode.tableNode.rx.canvasTool).disposed(by: disposeBag)
         containerNode.eraserButtonNode.rx.tap.mapTo(.eraser).bind(to: containerNode.tableNode.rx.canvasTool).disposed(by: disposeBag)
         containerNode.undoButtonNode.rx.tap.mapTo(()).bind(to: containerNode.tableNode.rx.undo).disposed(by: disposeBag)
@@ -289,8 +294,8 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
             .disposed(by: disposeBag)
         
         reactor.state.map { $0.focusedIndexPath }
+            .distinctUntilChanged { lhs, rhs in lhs?.indexPath == rhs?.indexPath }
             .unwrap()
-            .distinctUntilChanged { lhs, rhs in lhs.indexPath == rhs.indexPath }
             .subscribe(onNext: { [weak self] (result) in
                 guard let strongSelf = self else { return }
                 strongSelf.containerNode.tableNode.scrollToRow(at: result.indexPath, at: result.scrollPosition, animated: true)

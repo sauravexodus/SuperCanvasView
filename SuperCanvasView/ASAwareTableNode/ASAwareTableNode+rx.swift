@@ -40,4 +40,8 @@ extension Reactive where Base: ASAwareTableNode {
             ASAwareTableNode.canvasTool = tool
         })
     }
+    
+    var didScroll: ControlEvent<Void> {
+        return ControlEvent(events: base.scrollSubject)
+    }
 }

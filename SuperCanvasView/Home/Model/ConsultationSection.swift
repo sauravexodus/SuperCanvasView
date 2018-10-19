@@ -22,21 +22,21 @@ struct ConsultationSection {
         self.items = items
     }
     
-    mutating func insert(_ consultationRow: ConsultationRow, with terminalCellHeight: CGFloat) {
+    mutating func insert(_ consultationRow: ConsultationRow) {
         guard case .medicalTerm = consultationRow else { return }
-        let padderRow = ConsultationRow(height: terminalCellHeight, lines: [])
+        let padderRow = ConsultationRow(lines: [])
         if let lastItem = items.last, lastItem.isTerminal {
             items.removeLast()
         }
         items += [consultationRow, padderRow]
     }
     
-    mutating func addTerminalCell(with height: CGFloat) {
+    mutating func addTerminalCell() {
         if items.count == 0 {
-            items.append(ConsultationRow(height: height, lines: []))
+            items.append(ConsultationRow(lines: []))
         }
         if let lastItem = items.last, !lastItem.isTerminal, case .medicalTerm = lastItem {
-            items.append(ConsultationRow(height: height, lines: []))
+            items.append(ConsultationRow(lines: []))
         }
     }
 }

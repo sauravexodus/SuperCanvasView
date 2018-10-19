@@ -163,7 +163,6 @@ extension ASAwareTableNode {
         guard let canvasView = cellNode.canvasNode.view as? CanvasView else { return }
         scrollToRow(at: indexPath, at: .middle, animated: true)
         canvasView.undo()
-        cellNode.expand()
     }
     
     func redo() {
@@ -172,7 +171,6 @@ extension ASAwareTableNode {
         guard let canvasView = cellNode.canvasNode.view as? CanvasView else { fatalError("Canvas view was not found") }
         scrollToRow(at: indexPath, at: .middle, animated: true)
         canvasView.redo()
-        cellNode.expand()
     }
     
     func clear() {

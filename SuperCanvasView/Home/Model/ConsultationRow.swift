@@ -88,11 +88,29 @@ enum ConsultationRow {
     
     var height: CGFloat {
         switch self {
-        case let .medicalTerm(_, lines, _, medicalTerm):
-            return min(max(NSAttributedString(string: medicalTerm?.name ?? "").heightConstrainedToPageWidth, lines.highestY ?? 0), PageSize.selectedPage.height)
-        case let .medicalForm(_, lines, _, medicalForm):
-            return min(max((medicalForm?.value ?? NSAttributedString(string: "")).heightConstrainedToPageWidth, lines.highestY ?? 0), PageSize.selectedPage.height)
+        case let .medicalTerm(_, lines, _, _):
+            return isTerminal ? ConsultationRow.terminalHeight : min(max(textHeight, lines.highestY ?? 0), ConsultationRow.maximumHeight)
+        case let .medicalForm(_, lines, _, _):
+            return isTerminal ? ConsultationRow.terminalHeight : min(max(textHeight, lines.highestY ?? 0), ConsultationRow.maximumHeight)
         case .pageBreak: return 1
+        }
+    }
+    
+    func getHeightExpansionProperties(with height: CGFloat) -> (needsToExpand: Bool, expandedHeight: CGFloat) {
+        return (needsToExpand: height + 30 < ConsultationRow.maximumHeight, expandedHeight: height + 30)
+    }
+    
+    static let terminalHeight: CGFloat = 40
+    
+    static let maximumHeight: CGFloat = PageSize.selectedPage.height
+    
+    var textHeight: CGFloat {
+        switch self {
+        case let .medicalTerm(_, _, _, medicalTerm):
+            return NSAttributedString(string: medicalTerm?.name ?? "", attributes: [.font: FontSpecification.medicalTermText]).heightConstrainedToPageWidth + 4 // for bottom inset on cell
+        case let .medicalForm(_, _, _, medicalForm):
+            return (medicalForm?.value ?? NSAttributedString(string: "", attributes: [.font: FontSpecification.medicalTermText])).heightConstrainedToPageWidth + 4 // for bottom inset on cell
+        case .pageBreak: fatalError("page break doesn't have text height!")
         }
     }
     

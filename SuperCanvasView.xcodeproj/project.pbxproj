@@ -38,6 +38,7 @@
 		C7827C272517091E2CCAED622F6C810F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C318CE3D39793DC76B21BF7A520708D1 /* LaunchScreen.storyboard */; };
 		CA3FE5527984B2BD22482B501E49A68F /* ASDisplayNode+extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9E57D95AFC9E892EDA9AF1341C585B9 /* ASDisplayNode+extensions.swift */; };
 		FCFC864FA86EF209C44F27A91E7B9F8E /* ASMedicalTermCellNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3F9AF9D78978A62A892FF45D0E28AEE /* ASMedicalTermCellNode.swift */; };
+		FF252264217A6ED000226497 /* FontSpecification.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF252263217A6ED000226497 /* FontSpecification.swift */; };
 		FFD50C662179E174001BB38E /* ASMedicalFormCellNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFD50C652179E174001BB38E /* ASMedicalFormCellNode.swift */; };
 		FFD50C682179E19D001BB38E /* ASMedicalFormCellNode+UI.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFD50C672179E19D001BB38E /* ASMedicalFormCellNode+UI.swift */; };
 		FFD50C6A2179E1CC001BB38E /* ASMedicalFormCellNode+binding.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFD50C692179E1CC001BB38E /* ASMedicalFormCellNode+binding.swift */; };
@@ -89,6 +90,7 @@
 		D3F9AF9D78978A62A892FF45D0E28AEE /* ASMedicalTermCellNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ASMedicalTermCellNode.swift; sourceTree = "<group>"; };
 		D9E57D95AFC9E892EDA9AF1341C585B9 /* ASDisplayNode+extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ASDisplayNode+extensions.swift"; sourceTree = "<group>"; };
 		DC29120EC3DE5785E8660B63F0FD3915 /* ASHomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASHomeViewController.swift; sourceTree = "<group>"; };
+		FF252263217A6ED000226497 /* FontSpecification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontSpecification.swift; sourceTree = "<group>"; };
 		FFD50C652179E174001BB38E /* ASMedicalFormCellNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ASMedicalFormCellNode.swift; sourceTree = "<group>"; };
 		FFD50C672179E19D001BB38E /* ASMedicalFormCellNode+UI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ASMedicalFormCellNode+UI.swift"; sourceTree = "<group>"; };
 		FFD50C692179E1CC001BB38E /* ASMedicalFormCellNode+binding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ASMedicalFormCellNode+binding.swift"; sourceTree = "<group>"; };
@@ -162,6 +164,7 @@
 				BAE40C0821709890002C722C /* UIImage+extensions.swift */,
 				7D5CD201217074260031A9FB /* NSAttributedString+extensions.swift */,
 				7D85E5E721711CE30060DFED /* PageSize.swift */,
+				FF252263217A6ED000226497 /* FontSpecification.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -465,6 +468,7 @@
 				7D85E5E821711CE30060DFED /* PageSize.swift in Sources */,
 				7D5CD202217074260031A9FB /* NSAttributedString+extensions.swift in Sources */,
 				5204D069BD91314633190C1DABAE9729 /* ConsultationSection.swift in Sources */,
+				FF252264217A6ED000226497 /* FontSpecification.swift in Sources */,
 				7D85E5E6217117540060DFED /* ConsultationRow.swift in Sources */,
 				C48226222CDAF9B542076645F718778F /* HomeViewModel.swift in Sources */,
 				2BD63062F615C0E019CD4908C62C946C /* Line.swift in Sources */,

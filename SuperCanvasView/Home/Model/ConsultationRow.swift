@@ -59,7 +59,14 @@ enum ConsultationRow {
     var height: CGFloat {
         switch self {
         case let .medicalTerm(_, initialHeight, lines, medicalTerm):
-            return min(max(NSAttributedString(string: medicalTerm.name ?? "").heightContrainedToA4, lines.highestY ?? 0, initialHeight), PageSize.selectedPage.height)
+            return min(
+                max(
+                    NSAttributedString(string: medicalTerm.name ?? "").heightContrainedToSelectedPageSize + 8, // TODO: Change this to the insets of the medical term label
+                    lines.highestY ?? 0,
+                    initialHeight
+                ),
+                PageSize.selectedPage.heightRemovingMargins - 16 // TODO: change this to section header height
+            )
         default: return 1
         }
     }

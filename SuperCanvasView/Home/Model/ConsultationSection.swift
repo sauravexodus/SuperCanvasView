@@ -57,6 +57,7 @@ extension ConsultationSection: AnimatableSectionModelType {
 
 extension Array where Element == ConsultationSection {
     func withPageBreaks(sectionHeaderHeight: CGFloat) -> [ConsultationSection] {
+        let pageHeight = PageSize.selectedPage.heightRemovingMargins
         var currentHeight: CGFloat = 0
         var pageNumber = 0
         return map {
@@ -68,7 +69,7 @@ extension Array where Element == ConsultationSection {
                     items.append(row)
                     return
                 }
-                if currentHeight + row.height > PageSize.selectedPage.height {
+                if currentHeight + row.height > pageHeight {
                     items.append(.pageBreak(pageNumber: pageNumber))
                     pageNumber += 1
                     currentHeight = 0
@@ -76,7 +77,7 @@ extension Array where Element == ConsultationSection {
                 items.append(row)
                 currentHeight += row.height
             }
-            if currentHeight + sectionHeaderHeight > PageSize.selectedPage.height {
+            if currentHeight + sectionHeaderHeight > pageHeight {
                 items.append(.pageBreak(pageNumber: pageNumber))
                 pageNumber += 1
                 currentHeight = 0

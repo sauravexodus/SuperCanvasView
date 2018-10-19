@@ -34,7 +34,6 @@ final class HomeViewModel: Reactor {
     struct State {
         var sections: [ConsultationSection] = []
         let terminalCellHeight: CGFloat = 40
-        let pageHeight: CGFloat = PageSize.selectedPage.height
         var focusedIndexPath: IndexPathWithScrollPosition?
     }
     
@@ -113,7 +112,7 @@ extension HomeViewModel {
     }
 
     private func mutateUpdatingLines(at indexPath: IndexPath, lines: [Line]) -> Observable<Mutation> {
-        var sections = currentState.sections.removingPageBreaks()
+        var sections = currentState.sections
         guard sections.count > indexPath.section, sections[indexPath.section].items.count > indexPath.row else { return .empty() }
         sections[indexPath.section].items[indexPath.row].lines = lines
         sections[indexPath.section].addTerminalCell(with: currentState.terminalCellHeight)

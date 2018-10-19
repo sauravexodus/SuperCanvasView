@@ -91,7 +91,7 @@ final class ContainerDisplayNode: ASDisplayNode {
         $0.view.tableFooterView = UIView()
         $0.view.backgroundColor = .white
         $0.view.tableFooterView = UIView()
-        $0.view.tableFooterView?.frame.size.height = PageSize.selectedPage.height
+        $0.view.tableFooterView?.frame.size.height = PageSize.selectedPage.heightRemovingMargins
         $0.style.flexGrow = 1
     }
     
@@ -220,7 +220,8 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
             .tap
             .flatMap { [weak self] _ -> Observable<[UIImage]> in
                 guard let strongSelf = self  else { return .empty() }
-                return strongSelf.containerNode.tableNode.generatePages(PageSize.selectedPage.height)
+                return strongSelf.containerNode.tableNode.contract()
+                    .flatMap { strongSelf.containerNode.tableNode.generatePages() }
             }
             .map { .print($0) }
             .bind(to: reactor.action)
@@ -228,6 +229,10 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
         
         containerNode.showPageBreaksButtonNode.rx
             .tap
+            .flatMap { [weak self] _ -> Observable<Void> in
+                guard let strongSelf = self  else { return .empty() }
+                return strongSelf.containerNode.tableNode.contract()
+            }
             .mapTo(.showPageBreaks)
             .bind(to: reactor.action)
             .disposed(by: disposeBag)

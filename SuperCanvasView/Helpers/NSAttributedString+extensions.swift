@@ -17,7 +17,7 @@ extension NSAttributedString {
         return ceil(boundingBox.height)
     }
     
-    var heightContrainedToA4: CGFloat {
-        return height(withConstrainedWidth: PageSize.selectedPage.width)
+    var heightContrainedToSelectedPageSize: CGFloat {
+        return height(withConstrainedWidth: PageSize.selectedPage.widthRemovingMargins)
     }
 }

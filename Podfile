@@ -17,6 +17,7 @@ target 'SuperCanvasView' do
   pod 'RxViewController'
   pod 'RxGesture'
   pod 'DeepDiff', '1.2.0'
+  pod 'DHSmartScreenshot'
   
   # Texture
   pod 'Texture'

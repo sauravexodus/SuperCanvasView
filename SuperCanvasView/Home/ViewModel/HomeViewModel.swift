@@ -106,7 +106,6 @@ extension HomeViewModel {
             return medicalTermSection != termSection && section.isEmpty
         }
         let consultationRow = ConsultationRow(lines: [], medicalTermSection: termSection, medicalTerm: medicalTerm)
-//        guard !sections.isEmpty else { return .just(.setSections([ConsultationSection(medicalSection: MedicalSection(termSection), items: [consultationRow])])) }
         guard !sections.isEmpty, let sectionIndex = sections.firstIndex(where: { section in section.medicalSection == MedicalSection(termSection) }) else {
             let sectionIndex = sections.firstIndex(where: { section in section.medicalSection.printPosition > MedicalSection(termSection).printPosition }) ?? sections.endIndex
             sections.insert(ConsultationSection(medicalSection: MedicalSection(termSection), items: []), at: sectionIndex)

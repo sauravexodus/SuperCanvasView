@@ -19,18 +19,6 @@ typealias CellContentNode = _CellContentNode & ASDisplayNode
 
 // MARK: Concrete Implementations
 
-final class EmptyCellNode<T>: CellContentNode {
-    typealias RepresentationTarget = T
-    
-    func configure(with _: T) {
-        
-    }
-    
-    override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
-        return ASLayoutSpec()
-    }
-}
-
 final class TerminalCellNode<T>: CellContentNode {
     typealias RepresentationTarget = T
     

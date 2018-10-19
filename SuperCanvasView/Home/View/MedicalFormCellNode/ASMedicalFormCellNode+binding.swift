@@ -39,7 +39,7 @@ extension ASMedicalFormCellNode {
 //            .mapTo(())
         
         Observable.merge(
-            // TODO: Put back when we figure it out
+            // TODO: Put back later
 //            tapObservable,
             canvasView.rx.pencilTouchDidNearBottom)
             .subscribe(onNext: { [unowned self] _ in

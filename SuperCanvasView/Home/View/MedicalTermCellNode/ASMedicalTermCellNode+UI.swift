@@ -22,7 +22,7 @@ extension ASMedicalTermCellNode {
         transitionLayout(withAnimation: false, shouldMeasureAsync: false) {
             canvasView.setNeedsDisplay()
         }
-        Observable<Int>.timer(0.1, scheduler: MainScheduler.instance)
+        Observable<Int>.timer(0.2, scheduler: MainScheduler.instance)
             .subscribe(onNext: { _ in UIView.setAnimationsEnabled(true) })
             .disposed(by: disposeBag)
     }

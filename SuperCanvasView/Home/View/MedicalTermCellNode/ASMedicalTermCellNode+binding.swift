@@ -39,14 +39,13 @@ extension ASMedicalTermCellNode {
     private func bindExpanding() {
         guard let canvasView = canvasNode.view as? CanvasView else { return }
         
-//        let tapObservable = rx.tapGesture { gesture, _ in
-//            gesture.allowedTouchTypes = [NSNumber(value: UITouchType.direct.rawValue)]
-//            }
-//            .mapTo(())
+        let tapObservable = rx.tapGesture { gesture, _ in
+            gesture.allowedTouchTypes = [NSNumber(value: UITouchType.direct.rawValue)]
+            }
+            .mapTo(())
         
         Observable.merge(
-            //            TODO: Put back later
-//            tapObservable,
+            tapObservable,
             canvasView.rx.pencilTouchDidNearBottom)
             .subscribe(onNext: { [unowned self] _ in
                 self.expand()

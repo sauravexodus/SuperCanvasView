@@ -479,24 +479,6 @@ extension Reactive where Base: CanvasView {
                 target.redoableActions = value
             }))
     }
-    
-    var pencilTouchStarted: Observable<Void> {
-        return self.methodInvoked(#selector(Base.touchesBegan(_:with:))).map { $0[0] as? Set<UITouch> }
-            .unwrap()
-            .filter { $0.contains(where: { $0.type == .stylus }) }
-            .mapTo(())
-    }
-    
-    var pencilTouchStartedOrMoved: Observable<Void> {
-        return Observable.merge(
-                self.methodInvoked(#selector(Base.touchesBegan(_:with:))),
-                self.methodInvoked(#selector(Base.touchesMoved(_:with:)))
-            )
-            .map { $0[0] as? Set<UITouch> }
-            .unwrap()
-            .filter { $0.contains(where: { $0.type == .stylus }) }
-            .mapTo(())
-    }
 
     var pencilTouchDidNearBottom: Observable<Void> {
         let began: Observable<CGFloat> = self.methodInvoked(#selector(Base.touchesBegan(_:with:))).map { $0[0] as? Set<UITouch> }

@@ -29,6 +29,7 @@ extension ASMedicalTermCellNode {
     }
 
     internal func bind() {
+        bindClearAction()
         bindEditAction()
         bindDeleteAction()
         bindCanvas()
@@ -95,11 +96,20 @@ extension ASMedicalTermCellNode {
             .disposed(by: disposeBag)
     }
     
+    private func bindClearAction() {
+        clearButtonNode.rx.tap
+            .subscribe(onNext: { [weak self] _ in
+                guard let strongSelf = self, let canvasView = strongSelf.canvasNode.view as? CanvasView, let owningNode = self?.owningNode as? ASAwareTableNode else { return }
+                owningNode.undoableActionsIndexes.removeAll()
+                owningNode.redoableActionsIndexes.removeAll()
+                canvasView.clear()
+            })
+            .disposed(by: disposeBag)
+    }
+    
     private func bindEditAction() {
         editButtonNode.rx.tap
-            .subscribe(onNext: { _ in
-                print("Edit Tapped")
-            })
+            .subscribe(onNext: { _ in })
             .disposed(by: disposeBag)
     }
     

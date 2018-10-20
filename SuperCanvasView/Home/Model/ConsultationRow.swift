@@ -11,17 +11,23 @@ import UIKit
 import Differentiator
 
 enum ConsultationRow {
-    case medicalTerm(id: String, height: CGFloat, lines: [Line], medicalTermType: MedicalTermType)
-    case pageBreak(pageNumber: Int)
+    case medicalTerm(id: String, lines: [Line], medicalTermSection: MedicalTermSection, medicalTermType: MedicalTermType?)
+    case medicalForm(id: String, lines: [Line], medicalFormSection: MedicalFormSection, medicalFormType: MedicalFormType?)
+    case pageBreak(pageNumber: Int, pageHeight: CGFloat)
     
-    init(height: CGFloat, lines: [Line], medicalTerm: MedicalTermType) {
-        self = .medicalTerm(id: UUID().uuidString, height: height, lines: lines, medicalTermType: medicalTerm)
+    init(lines: [Line], medicalTermSection: MedicalTermSection, medicalTerm: MedicalTermType? = nil) {
+        self = .medicalTerm(id: UUID().uuidString, lines: lines, medicalTermSection: medicalTermSection, medicalTermType: medicalTerm)
+    }
+    
+    init(lines: [Line], medicalFormSection: MedicalFormSection, medicalForm: MedicalFormType? = nil) {
+        self = .medicalForm(id: UUID().uuidString, lines: lines, medicalFormSection: medicalFormSection, medicalFormType: medicalForm)
     }
     
     var isTerminal: Bool {
         switch self {
-        case let .medicalTerm(_, _, lines, medicalTerm): return medicalTerm.name == nil && lines.isEmpty
-        default: return false
+        case let .medicalTerm(_, lines, _, medicalTerm): return medicalTerm == nil && lines.isEmpty
+        case let .medicalForm(_, lines, _, medicalForm): return medicalForm == nil && lines.isEmpty
+        case .pageBreak: return false
         }
     }
     
@@ -32,48 +38,86 @@ enum ConsultationRow {
         }
     }
     
-    var medicalSection: MedicalSection {
-        return medicalTerm.sectionOfSelf
-    }
-    
-    var medicalTerm: MedicalTermType {
+    var medicalTerm: MedicalTermType? {
         switch self {
         case let .medicalTerm(_, _, _, medicalTerm): return medicalTerm
-        default: fatalError("This is a page break row type!")
+        default: return nil
+        }
+    }
+    
+    var medicalTermSection: MedicalTermSection? {
+        switch self {
+        case let .medicalTerm(_, _, section, _): return section
+        default: return nil
+        }
+    }
+    
+    var medicalForm: MedicalFormType? {
+        switch self {
+        case let .medicalForm(_, _, _, medicalForm): return medicalForm
+        default: return nil
+        }
+    }
+    
+    var medicalFormSection: MedicalFormSection? {
+        switch self {
+        case let .medicalForm(_, _, section, _): return section
+        default: return nil
         }
     }
     
     var lines: [Line] {
         get {
             switch self {
-            case let .medicalTerm(_, _, lines, _): return lines
-            default: fatalError("This is a page break row type!")
+            case let .medicalTerm(_, lines, _, _): return lines
+            case let .medicalForm(_, lines, _, _): return lines
+            case .pageBreak: fatalError("This is a page break row type!")
             }
         }
         set {
-            guard case let .medicalTerm(id, height, _, medicalTerm) = self else { fatalError("This is a page break!") }
-            self = .medicalTerm(id: id, height: height, lines: newValue, medicalTermType: medicalTerm)
+            switch self {
+            case let .medicalTerm(id, _, section, medicalTerm):
+                self = .medicalTerm(id: id, lines: newValue, medicalTermSection: section, medicalTermType: medicalTerm)
+            case let .medicalForm(id, _, section, medicalForm):
+                self = .medicalForm(id: id, lines: newValue, medicalFormSection: section, medicalFormType: medicalForm)
+            case .pageBreak:
+                fatalError("This is a page break row type!")
+            }
         }
     }
     
     var height: CGFloat {
         switch self {
-        case let .medicalTerm(_, initialHeight, lines, medicalTerm):
-            return min(
-                max(
-                    NSAttributedString(string: medicalTerm.name ?? "").heightContrainedToSelectedPageSize + 8, // TODO: Change this to the insets of the medical term label
-                    lines.highestY ?? 0,
-                    initialHeight
-                ),
-                PageSize.selectedPage.heightRemovingMargins - 16 // TODO: change this to section header height
-            )
-        default: return 1
+        case let .medicalTerm(_, lines, _, _):
+            return isTerminal ? ConsultationRow.terminalHeight : min(max(textHeight, lines.highestY ?? 0), ConsultationRow.maximumHeight)
+        case let .medicalForm(_, lines, _, _):
+            return isTerminal ? ConsultationRow.terminalHeight : min(max(textHeight, lines.highestY ?? 0), ConsultationRow.maximumHeight)
+        case .pageBreak: return 1
+        }
+    }
+    
+    func getHeightExpansionProperties(with height: CGFloat) -> (needsToExpand: Bool, expandedHeight: CGFloat) {
+        return (needsToExpand: height + 30 < ConsultationRow.maximumHeight, expandedHeight: height + 30)
+    }
+    
+    static let terminalHeight: CGFloat = 40
+    
+    static let maximumHeight: CGFloat = PageSize.selectedPage.heightRemovingMargins
+    
+    var textHeight: CGFloat {
+        switch self {
+        case let .medicalTerm(_, _, _, medicalTerm):
+            return NSAttributedString(string: medicalTerm?.name ?? "", attributes: [.font: FontSpecification.medicalTermText]).heightContrainedToSelectedPageSize + 4 // for bottom inset on cell
+        case let .medicalForm(_, _, _, medicalForm):
+            return (medicalForm?.value ?? NSAttributedString(string: "", attributes: [.font: FontSpecification.medicalTermText])).heightContrainedToSelectedPageSize + 4 // for bottom inset on cell
+        case .pageBreak: fatalError("page break doesn't have text height!")
         }
     }
     
     var id: String {
         switch self {
         case let .medicalTerm(id, _, _, _): return id
+        case let .medicalForm(id, _, _, _): return id
         case let .pageBreak(pageNumber): return "\(pageNumber)"
         }
     }

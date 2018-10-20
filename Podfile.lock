@@ -1,5 +1,6 @@
 PODS:
   - DeepDiff (1.2.0)
+  - DHSmartScreenshot (1.3.1)
   - Differentiator (3.1.0)
   - PINCache (3.0.1-beta.6):
     - PINCache/Arc-exception-safe (= 3.0.1-beta.6)
@@ -57,6 +58,7 @@ PODS:
 
 DEPENDENCIES:
   - DeepDiff (= 1.2.0)
+  - DHSmartScreenshot
   - ReactorKit
   - Reusable
   - RxASDataSources
@@ -73,6 +75,7 @@ DEPENDENCIES:
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
     - DeepDiff
+    - DHSmartScreenshot
     - Differentiator
     - PINCache
     - PINOperation
@@ -92,6 +95,7 @@ SPEC REPOS:
 
 SPEC CHECKSUMS:
   DeepDiff: 0ee83ac6942d441f677c22e981548c6e0937f2b6
+  DHSmartScreenshot: ee749048bd7126c4826748f98df3a4adc6ad6c78
   Differentiator: be49ca3408f0ecfc761e4c7763d20c62be01b9ad
   PINCache: d195fdba255283f7e9900a55e3cced377f431f9b
   PINOperation: a6219e6fc9db9c269eb7a7b871ac193bcf400aac
@@ -109,6 +113,6 @@ SPEC CHECKSUMS:
   Texture: 9d7e38965cf22ccd7cd9c249dd78b3f14e70ab6c
   Then: 71866660c7af35a7343831f7668e7cd2b62ee0f2
 
-PODFILE CHECKSUM: 02b5b474d295ac72ed006417839c494cc6e4cd58
+PODFILE CHECKSUM: e2d756106e918dcfd98cc71da0880ad5d0eccde8
 
 COCOAPODS: 1.5.3

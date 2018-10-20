@@ -22,21 +22,23 @@ struct ConsultationSection {
         self.items = items
     }
     
-    mutating func insert(_ consultationRow: ConsultationRow, with terminalCellHeight: CGFloat) {
-        guard case let .medicalTerm(_,_,_,medicalTerm) = consultationRow else { return }
-        let padderRow = ConsultationRow(height: terminalCellHeight, lines: [], medicalTerm: medicalTerm.sectionOfSelf.correspondingEmptyTerm)
+    mutating func insert(_ consultationRow: ConsultationRow) -> Int? {
+        guard case .medicalTerm = consultationRow, let termSection = medicalSection.medicalTermSectionValue else { return nil }
+        let padderRow = ConsultationRow(lines: [], medicalTermSection: termSection)
         if let lastItem = items.last, lastItem.isTerminal {
             items.removeLast()
         }
         items += [consultationRow, padderRow]
+        return items.count - 2
     }
     
-    mutating func addTerminalCell(with height: CGFloat) {
+    mutating func addTerminalCell() {
+        guard let termSection = medicalSection.medicalTermSectionValue else { return }
         if items.count == 0 {
-            items.append(ConsultationRow(height: height, lines: [], medicalTerm: medicalSection.correspondingEmptyTerm))
+            items.append(ConsultationRow(lines: [], medicalTermSection: termSection))
         }
-        if let lastItem = items.last, !lastItem.isTerminal, case let .medicalTerm(_, _, _, medicalTerm) = lastItem {
-            items.append(ConsultationRow(height: height, lines: [], medicalTerm: medicalTerm.sectionOfSelf.correspondingEmptyTerm))
+        if let lastItem = items.last, !lastItem.isTerminal, case .medicalTerm = lastItem {
+            items.append(ConsultationRow(lines: [], medicalTermSection: termSection))
         }
     }
 }
@@ -53,6 +55,10 @@ extension ConsultationSection: AnimatableSectionModelType {
         self = original
         self.items = items
     }
+    
+    func hasWrittenRow() -> Bool {
+        return items.filter { !$0.isPageBreak && !$0.isTerminal }.count > 0
+    }
 }
 
 extension Array where Element == ConsultationSection {
@@ -63,6 +69,7 @@ extension Array where Element == ConsultationSection {
         return map {
             var mutable = $0
             var items: [ConsultationRow] = []
+            if !$0.hasWrittenRow() { return mutable }
             currentHeight += 16
             $0.items.forEach { row in
                 if row.isTerminal {
@@ -70,7 +77,7 @@ extension Array where Element == ConsultationSection {
                     return
                 }
                 if currentHeight + row.height > pageHeight {
-                    items.append(.pageBreak(pageNumber: pageNumber))
+                    items.append(.pageBreak(pageNumber: pageNumber, pageHeight: currentHeight))
                     pageNumber += 1
                     currentHeight = 0
                 }
@@ -78,7 +85,7 @@ extension Array where Element == ConsultationSection {
                 currentHeight += row.height
             }
             if currentHeight + sectionHeaderHeight > pageHeight {
-                items.append(.pageBreak(pageNumber: pageNumber))
+                items.append(.pageBreak(pageNumber: pageNumber, pageHeight: currentHeight))
                 pageNumber += 1
                 currentHeight = 0
             }

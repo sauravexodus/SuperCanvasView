@@ -33,20 +33,9 @@ final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode, Can
         $0.contentEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 16)
     }
     
-    let textFont: UIFont = UIFont.preferredPrintFont(forTextStyle: .body)
-    
-    var minimumHeight: CGFloat {
-        let attributedText = NSAttributedString(string: "Random", attributes: [.font: textFont])
-        let width = frame.size.width
-        let height = attributedText.height(withConstrainedWidth: width)
-        return height + bottomInset
-    }
-    
     let bottomInset: CGFloat = 4
     let leftInset: CGFloat = 12
-
     var header: String?
-    let maximumHeight: CGFloat = PageSize.selectedPage.heightRemovingMargins
     let disposeBag = DisposeBag()
     var item: ConsultationRow?
     
@@ -80,15 +69,13 @@ final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode, Can
     // MARK: Instance methods
 
     func configure(with item: ConsultationRow) {
+        self.item = item
+        style.preferredSize.height = item.height
         guard let term = item.medicalTerm as? ContentNode.RepresentationTarget else {
-            print("Something has gone horribly, horribly awry...")
+            titleTextNode.attributedText = .init(string: "", attributes: [.foregroundColor: UIColor.darkGray, .font: FontSpecification.medicalTermText])
             return
         }
-        style.preferredSize.height = min(CGFloat(max(CGFloat(item.height), item.lines.highestY ?? 0, minimumHeight)), maximumHeight)
-        titleTextNode.attributedText = .init(string: term.name ?? "", attributes: [.foregroundColor: UIColor.darkGray, .font: textFont])
-
+        titleTextNode.attributedText = .init(string: term.name ?? "", attributes: [.foregroundColor: UIColor.darkGray, .font: FontSpecification.medicalTermText])
         contentNode.configure(with: term)
-        self.item = item
     }
 }
-

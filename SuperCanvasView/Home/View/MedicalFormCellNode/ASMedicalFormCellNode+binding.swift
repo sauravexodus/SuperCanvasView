@@ -1,8 +1,8 @@
 //
-//  ASMedicalTermCellNode+binding.swift
+//  ASMedicalFormCellNode+binding.swift
 //  SuperCanvasView
 //
-//  Created by Sourav Chandra on 12/10/18.
+//  Created by Krishna C Aluru on 10/19/18.
 //  Copyright © 2018 Sourav Chandra. All rights reserved.
 //
 
@@ -11,7 +11,7 @@ import RxSwift
 
 // MARK: Bindings
 
-extension ASMedicalTermCellNode {
+extension ASMedicalFormCellNode {
     var linesChanged: Observable<(lines: [Line], indexPath: IndexPath)> {
         guard let canvasView = canvasNode.view as? CanvasView else { return .empty() }
         return canvasView.rx.lines
@@ -23,19 +23,13 @@ extension ASMedicalTermCellNode {
             .catchErrorJustReturn(nil)
             .unwrap()
     }
-
-    var delete: Observable<IndexPath> {
-        return deleteButtonNode.rx.tap.mapTo(indexPath).unwrap()
-    }
-
+    
     internal func bind() {
-        bindEditAction()
-        bindDeleteAction()
         bindCanvas()
         
         bindExpanding()
     }
-
+    
     private func bindExpanding() {
         guard let canvasView = canvasNode.view as? CanvasView else { return }
         
@@ -44,9 +38,10 @@ extension ASMedicalTermCellNode {
             }
             .mapTo(())
         
-        Observable.merge(tapObservable, canvasView.rx.pencilTouchDidNearBottom)
+        Observable.merge(
+            tapObservable,
+            canvasView.rx.pencilTouchDidNearBottom)
             .subscribe(onNext: { [unowned self] _ in
-                UIView.setAnimationsEnabled(false)
                 self.expand()
             })
             .disposed(by: disposeBag)
@@ -80,34 +75,6 @@ extension ASMedicalTermCellNode {
                 owningNode.undoableActionsIndexes.append(indexPath)
             })
             .disposed(by: disposeBag)
-        
-        deleteButtonNode.rx.tap
-            .subscribe(onNext: { [weak self] _ in
-                guard
-                    let owningNode = self?.owningNode as? ASAwareTableNode,
-                    let indexPath = self?.indexPath
-                    else { return }
-                
-                owningNode.undoableActionsIndexes = owningNode.undoableActionsIndexes.filter { $0 == indexPath }
-                owningNode.redoableActionsIndexes = owningNode.redoableActionsIndexes.filter { $0 == indexPath }
-            })
-            .disposed(by: disposeBag)
-    }
-    
-    private func bindEditAction() {
-        editButtonNode.rx.tap
-            .subscribe(onNext: { _ in
-                print("Edit Tapped")
-            })
-            .disposed(by: disposeBag)
-    }
-    
-    private func bindDeleteAction() {
-        guard let tableNode = owningNode as? ASAwareTableNode else { return }
-        deleteButtonNode.rx.tap
-            .map { [weak self] _ in self?.indexPath }
-            .unwrap()
-            .bind(to: tableNode.itemDeleted)
-            .disposed(by: disposeBag)
     }
 }
+

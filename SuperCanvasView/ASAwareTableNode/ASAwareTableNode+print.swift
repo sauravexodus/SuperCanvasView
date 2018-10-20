@@ -13,8 +13,8 @@ import RxSwift
 
 extension ASAwareTableNode {
     func contract() -> Observable<Void> {
-        scrollToRow(at: IndexPath(row: 0, section: 0), at: .middle, animated: true)
-        return Observable<Int>.interval(0.1, scheduler: MainScheduler.instance)
+        scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
+        return Observable<Int>.interval(0.2, scheduler: MainScheduler.instance)
             .take(numberOfSections)
             .concatMap { [weak self] section -> Observable<Void> in
                 guard let strongSelf = self else { return .just(()) }
@@ -23,8 +23,9 @@ extension ASAwareTableNode {
                     .concatMap { [weak self] row -> Observable<Void> in
                         guard let strongSelf = self else { return .just(()) }
                         let indexPath = IndexPath(row: row, section: section)
+                        if section >= strongSelf.numberOfSections || row >= strongSelf.numberOfRows(inSection: section) { return .just(()) }
                         if strongSelf.animatedDataSource.sectionModels[section].items[row].isTerminal || strongSelf.animatedDataSource.sectionModels[section].items[row].isPageBreak { return .just(()) }
-                        strongSelf.scrollToRow(at: indexPath, at: .middle, animated: true)
+                        strongSelf.scrollToRow(at: indexPath, at: .top, animated: true)
                         guard let node = strongSelf.nodeForRow(at: indexPath) as? ExpandableCellNode else {
                             return .just(())
                         }
@@ -40,7 +41,7 @@ extension ASAwareTableNode {
     }
 
     func generatePages() -> Observable<[UIImage]> {
-        scrollToRow(at: IndexPath(row: 0, section: 0), at: .middle, animated: true)
+        scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
         return Observable<Int>.interval(0.1, scheduler: MainScheduler.instance)
             .take(numberOfSections)
             .concatMap { [weak self] section -> Observable<UIImage?> in
@@ -72,7 +73,7 @@ extension ASAwareTableNode {
                 guard let strongSelf = self else { return .just(nil) }
                 let indexPath = IndexPath(row: row, section: section)
                 if strongSelf.animatedDataSource.sectionModels[section].items[row].isTerminal || strongSelf.animatedDataSource.sectionModels[section].items[row].isPageBreak { return .just(nil) }
-                strongSelf.scrollToRow(at: indexPath, at: .middle, animated: true)
+                strongSelf.scrollToRow(at: indexPath, at: .top, animated: true)
                 let cell = strongSelf.cellForRow(at: indexPath)
                 return cell?.contentView.rx.swCapture() ?? .just(nil)
             }

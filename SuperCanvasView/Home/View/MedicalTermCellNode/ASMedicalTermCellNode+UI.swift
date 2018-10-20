@@ -8,31 +8,35 @@
 
 import Foundation
 import AsyncDisplayKit
+import RxSwift
+
+
+// MARK: Animations
 
 protocol ExpandableCellNode {
     func expand()
     func contract(interactionType: ASAwareTableNode.InteractionType)
 }
 
-
-// MARK: Animations
-
 extension ASMedicalTermCellNode: ExpandableCellNode {
     func expand() {
-        guard let canvasView = canvasNode.view as? CanvasView else { return }
-        guard style.preferredSize.height < maximumHeight else { return }
-        style.preferredSize.height = min(max(canvasView.highestY + 30, style.preferredSize.height), maximumHeight)
+        guard let canvasView = canvasNode.view as? CanvasView, let expansionProperties = item?.getHeightExpansionProperties(with: style.preferredSize.height), expansionProperties.needsToExpand else { return }
+        UIView.setAnimationsEnabled(false)
+        style.preferredSize.height = expansionProperties.expandedHeight
         transitionLayout(withAnimation: false, shouldMeasureAsync: false) {
             canvasView.setNeedsDisplay()
         }
+        Observable<Int>.timer(0.2, scheduler: MainScheduler.instance)
+            .subscribe(onNext: { _ in UIView.setAnimationsEnabled(true) })
+            .disposed(by: disposeBag)
     }
 
     func contract(interactionType: ASAwareTableNode.InteractionType) {
         guard let canvasView = canvasNode.view as? CanvasView else { return }
         guard let `item` = item else { return }
-        let newHeight = min(max((item.lines.highestY ?? canvasView.highestY) + 4, item.height), maximumHeight)
+        let newHeight = min(max((item.lines.highestY ?? 0) + 4, item.height), PageSize.selectedPage.heightRemovingMargins)
         style.preferredSize.height = newHeight
-        transitionLayout(withAnimation: false, shouldMeasureAsync: false) {
+        transitionLayout(withAnimation: false, shouldMeasureAsync: true) {
             guard case .scribble = interactionType else { return }
             canvasView.setNeedsDisplay()
         }
@@ -42,7 +46,6 @@ extension ASMedicalTermCellNode: ExpandableCellNode {
 // MARK: Styling
 
 extension ASMedicalTermCellNode {
-    
     internal func setupUI() {
         setupCanvas()
         setupStyles()

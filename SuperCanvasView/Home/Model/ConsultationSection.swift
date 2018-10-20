@@ -70,19 +70,20 @@ extension Array where Element == ConsultationSection {
             var mutable = $0
             var items: [ConsultationRow] = []
             if !$0.hasWrittenRow() { return mutable }
-            currentHeight += 16
+            currentHeight += sectionHeaderHeight
             $0.items.forEach { row in
+                let rowHeight = ceil(row.height)
                 if row.isTerminal {
                     items.append(row)
                     return
                 }
-                if currentHeight + row.height > pageHeight {
+                if currentHeight + rowHeight > pageHeight {
                     items.append(.pageBreak(pageNumber: pageNumber, pageHeight: currentHeight))
                     pageNumber += 1
                     currentHeight = 0
                 }
                 items.append(row)
-                currentHeight += row.height
+                currentHeight += rowHeight
             }
             if currentHeight + sectionHeaderHeight > pageHeight {
                 items.append(.pageBreak(pageNumber: pageNumber, pageHeight: currentHeight))

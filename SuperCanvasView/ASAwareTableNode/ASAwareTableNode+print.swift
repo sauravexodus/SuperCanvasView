@@ -13,8 +13,8 @@ import RxSwift
 
 extension ASAwareTableNode {
     func contract() -> Observable<Void> {
-        scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
-        return Observable<Int>.interval(0.2, scheduler: MainScheduler.instance)
+        scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
+        return Observable<Int>.interval(0.1, scheduler: MainScheduler.instance)
             .take(numberOfSections)
             .concatMap { [weak self] section -> Observable<Void> in
                 guard let strongSelf = self else { return .just(()) }
@@ -25,7 +25,7 @@ extension ASAwareTableNode {
                         let indexPath = IndexPath(row: row, section: section)
                         if section >= strongSelf.numberOfSections || row >= strongSelf.numberOfRows(inSection: section) { return .just(()) }
                         if strongSelf.animatedDataSource.sectionModels[section].items[row].isTerminal || strongSelf.animatedDataSource.sectionModels[section].items[row].isPageBreak { return .just(()) }
-                        strongSelf.scrollToRow(at: indexPath, at: .top, animated: true)
+                        strongSelf.scrollToRow(at: indexPath, at: .top, animated: false)
                         guard let node = strongSelf.nodeForRow(at: indexPath) as? ExpandableCellNode else {
                             return .just(())
                         }
@@ -36,13 +36,13 @@ extension ASAwareTableNode {
             .reduce(0, accumulator: { acc, _ in acc + 1 })
             .mapTo(())
             .do(onDispose: { [weak self] in
-                self?.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
+                self?.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
             })
     }
 
     func generatePages() -> Observable<[UIImage]> {
-        scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
-        return Observable<Int>.interval(0.1, scheduler: MainScheduler.instance)
+        scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
+        return Observable<Int>.interval(0.08, scheduler: MainScheduler.instance)
             .take(numberOfSections)
             .concatMap { [weak self] section -> Observable<UIImage?> in
                 guard let strongSelf = self else { return .just(nil) }
@@ -62,18 +62,18 @@ extension ASAwareTableNode {
             })
             .map { $0.map { $0.image.padToPage(of: PageSize.selectedPage.heightRemovingMargins, width: PageSize.selectedPage.widthRemovingMargins) } }
             .do(onDispose: { [weak self] in
-                self?.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: true)
+                self?.scrollToRow(at: IndexPath(row: 0, section: 0), at: .top, animated: false)
             })
     }
     
     private func captureSinglePage(_ section: Int) -> Observable<UIImage?> {
-        let cellImageObservables = Observable<Int>.interval(0.1, scheduler: MainScheduler.instance)
+        let cellImageObservables = Observable<Int>.interval(0.08, scheduler: MainScheduler.instance)
             .take(numberOfRows(inSection: section))
             .concatMap { [weak self] row -> Observable<UIImage?> in
                 guard let strongSelf = self else { return .just(nil) }
                 let indexPath = IndexPath(row: row, section: section)
                 if strongSelf.animatedDataSource.sectionModels[section].items[row].isTerminal || strongSelf.animatedDataSource.sectionModels[section].items[row].isPageBreak { return .just(nil) }
-                strongSelf.scrollToRow(at: indexPath, at: .top, animated: true)
+                strongSelf.scrollToRow(at: indexPath, at: .top, animated: false)
                 let cell = strongSelf.cellForRow(at: indexPath)
                 return cell?.contentView.rx.swCapture() ?? .just(nil)
             }

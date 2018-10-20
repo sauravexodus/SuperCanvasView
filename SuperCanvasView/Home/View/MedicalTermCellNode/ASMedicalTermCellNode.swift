@@ -24,6 +24,10 @@ final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode, Can
         CanvasView().then { $0.backgroundColor = UIColor.lightGray.withAlphaComponent(0.3) }
     }
     
+    internal let clearButtonNode = ASButtonNode().then {
+        $0.setImage(UIImage(named: "Edit"), for: .normal)
+    }
+    
     internal let editButtonNode = ASButtonNode().then {
         $0.setImage(UIImage(named: "Edit"), for: .normal)
     }
@@ -56,7 +60,7 @@ final class ASMedicalTermCellNode<ContentNode: CellContentNode>: ASCellNode, Can
         return titleTextNode.insets(.init(top: 0, left: leftInset, bottom: bottomInset, right: 0)).relative(horizontalPosition: .start, verticalPosition: .start, sizingOption: [])
             .overlayed(by: contentNode)
             .overlayed(by: a4CanvasStack)
-            .overlayed(by: [editButtonNode, deleteButtonNode].stacked(in: .horizontal, spacing: 8, justifyContent: .end, alignItems: .start))
+            .overlayed(by: [clearButtonNode, editButtonNode, deleteButtonNode].stacked(in: .horizontal, spacing: 8, justifyContent: .end, alignItems: .start))
     }
     
     override func animateLayoutTransition(_ context: ASContextTransitioning) {}

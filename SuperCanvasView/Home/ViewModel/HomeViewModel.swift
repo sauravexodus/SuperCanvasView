@@ -33,7 +33,6 @@ final class HomeViewModel: Reactor {
     
     struct State {
         var sections: [ConsultationSection] = []
-        let pageHeight: CGFloat = PageSize.selectedPage.height
         var focusedIndexPath: IndexPathWithScrollPosition?
     }
     
@@ -92,10 +91,10 @@ extension HomeViewModel {
             let sectionIndex = sections.firstIndex(where: { section in section.medicalSection.printPosition > medicalSection.printPosition }) ?? sections.endIndex
             let consultationRow = medicalSection.isMedicalTermSection ? ConsultationRow(lines: [], medicalTermSection: medicalSection.medicalTermSectionValue!) : ConsultationRow(lines: [], medicalFormSection: medicalSection.medicalFormSectionValue!)
             sections.insert(ConsultationSection(medicalSection: medicalSection, items: [consultationRow]), at: sectionIndex)
-            let focusedIndexPath = IndexPathWithScrollPosition(indexPath: IndexPath(row: 0, section: sectionIndex), scrollPosition: .top)
+            let focusedIndexPath = IndexPathWithScrollPosition(indexPath: IndexPath(row: 0, section: sectionIndex), scrollPosition: .middle)
             return .concat(.just(.setSections(sections)), .just(.setFocusedIndexPath(focusedIndexPath)))
         }
-        let focusedIndexPath = IndexPathWithScrollPosition(indexPath: IndexPath(row: 0, section: sectionIndex), scrollPosition: .top)
+        let focusedIndexPath = IndexPathWithScrollPosition(indexPath: IndexPath(row: 0, section: sectionIndex), scrollPosition: .middle)
         return .concat(.just(.setSections(sections)), .just(.setFocusedIndexPath(focusedIndexPath)))
     }
     

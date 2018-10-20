@@ -45,9 +45,8 @@
 		FFD50C6C2179E304001BB38E /* MedicalForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFD50C6B2179E304001BB38E /* MedicalForm.swift */; };
 		FFF61F3F216E6E6A002294ED /* UIScrollView+extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFF61F38216E6E6A002294ED /* UIScrollView+extensions.swift */; };
 		FFF61F41216E6E6A002294ED /* Hashable.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFF61F3A216E6E6A002294ED /* Hashable.swift */; };
-		FFF61F44216E6E6A002294ED /* Array+extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFF61F3D216E6E6A002294ED /* Array+extension.swift */; };
+		FFF61F44216E6E6A002294ED /* Array+extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFF61F3D216E6E6A002294ED /* Array+extensions.swift */; };
 		FFF61F47216E6FB2002294ED /* UIKit+helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFF61F46216E6FB2002294ED /* UIKit+helpers.swift */; };
-		FFF61F49216E6FB8002294ED /* ObservableType+extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFF61F48216E6FB8002294ED /* ObservableType+extensions.swift */; };
 		FFF61F4B216E6FC9002294ED /* UIFont+extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFF61F4A216E6FC9002294ED /* UIFont+extensions.swift */; };
 		FFF61F4D216E6FDD002294ED /* CellContentNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFF61F4C216E6FDD002294ED /* CellContentNode.swift */; };
 /* End PBXBuildFile section */
@@ -97,9 +96,8 @@
 		FFD50C6B2179E304001BB38E /* MedicalForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MedicalForm.swift; sourceTree = "<group>"; };
 		FFF61F38216E6E6A002294ED /* UIScrollView+extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIScrollView+extensions.swift"; sourceTree = "<group>"; };
 		FFF61F3A216E6E6A002294ED /* Hashable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Hashable.swift; sourceTree = "<group>"; };
-		FFF61F3D216E6E6A002294ED /* Array+extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Array+extension.swift"; sourceTree = "<group>"; };
+		FFF61F3D216E6E6A002294ED /* Array+extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Array+extensions.swift"; sourceTree = "<group>"; };
 		FFF61F46216E6FB2002294ED /* UIKit+helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIKit+helpers.swift"; sourceTree = "<group>"; };
-		FFF61F48216E6FB8002294ED /* ObservableType+extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ObservableType+extensions.swift"; sourceTree = "<group>"; };
 		FFF61F4A216E6FC9002294ED /* UIFont+extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIFont+extensions.swift"; sourceTree = "<group>"; };
 		FFF61F4C216E6FDD002294ED /* CellContentNode.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CellContentNode.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -155,9 +153,8 @@
 			children = (
 				FFF61F4C216E6FDD002294ED /* CellContentNode.swift */,
 				FFF61F4A216E6FC9002294ED /* UIFont+extensions.swift */,
-				FFF61F48216E6FB8002294ED /* ObservableType+extensions.swift */,
 				FFF61F46216E6FB2002294ED /* UIKit+helpers.swift */,
-				FFF61F3D216E6E6A002294ED /* Array+extension.swift */,
+				FFF61F3D216E6E6A002294ED /* Array+extensions.swift */,
 				FFF61F3A216E6E6A002294ED /* Hashable.swift */,
 				FFF61F38216E6E6A002294ED /* UIScrollView+extensions.swift */,
 				4E4D303EB45142B60B74306D0A1B5A4F /* UIView+extensions.swift */,
@@ -485,9 +482,8 @@
 				7D5CD20B217084270031A9FB /* ASMedicalTermCellNode+binding.swift in Sources */,
 				FFF61F47216E6FB2002294ED /* UIKit+helpers.swift in Sources */,
 				7D85E5EA217124E40060DFED /* ASPageBreakCellNode.swift in Sources */,
-				FFF61F49216E6FB8002294ED /* ObservableType+extensions.swift in Sources */,
 				4338832969589F7AC8D575E76DA7FFE6 /* UIView+Capture.swift in Sources */,
-				FFF61F44216E6E6A002294ED /* Array+extension.swift in Sources */,
+				FFF61F44216E6E6A002294ED /* Array+extensions.swift in Sources */,
 				1DF82FCB877D003BD4FA0B04C19BCDC2 /* UIView+extensions.swift in Sources */,
 				AB90864BE77259AF0654B27216AB6CB6 /* WKWebView+Capture.swift in Sources */,
 			);

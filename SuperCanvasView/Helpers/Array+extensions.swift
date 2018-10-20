@@ -22,9 +22,7 @@ extension Array where Element: Equatable {
 }
 
 extension Array where Element: UIImage {
-    
     func mergeToSingleImage() -> UIImage? {
-
         let newImageWidth  = self.map { $0.size.width }.max() ?? 0
         let newImageHeight: CGFloat = self.reduce(0, { $0 + $1.size.height })
         let newImageSize = CGSize(width : newImageWidth, height: newImageHeight)

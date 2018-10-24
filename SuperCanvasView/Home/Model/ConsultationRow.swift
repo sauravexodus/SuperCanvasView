@@ -13,7 +13,7 @@ import Differentiator
 enum ConsultationRow {
     case medicalTerm(id: String, lines: [Line], medicalTermSection: MedicalTermSection, medicalTermType: MedicalTermType?)
     case medicalForm(id: String, lines: [Line], medicalFormSection: MedicalFormSection, medicalFormType: MedicalFormType?)
-    case pageBreak(pageNumber: Int)
+    case pageBreak(pageNumber: Int, pageHeight: CGFloat)
     
     init(lines: [Line], medicalTermSection: MedicalTermSection, medicalTerm: MedicalTermType? = nil) {
         self = .medicalTerm(id: UUID().uuidString, lines: lines, medicalTermSection: medicalTermSection, medicalTermType: medicalTerm)
@@ -102,14 +102,14 @@ enum ConsultationRow {
     
     static let terminalHeight: CGFloat = 40
     
-    static let maximumHeight: CGFloat = PageSize.selectedPage.height
+    static let maximumHeight: CGFloat = PageSize.selectedPage.heightRemovingMargins
     
     var textHeight: CGFloat {
         switch self {
         case let .medicalTerm(_, _, _, medicalTerm):
-            return NSAttributedString(string: medicalTerm?.name ?? "", attributes: [.font: FontSpecification.medicalTermText]).heightConstrainedToPageWidth + 4 // for bottom inset on cell
+            return NSAttributedString(string: medicalTerm?.name ?? "", attributes: [.font: FontSpecification.medicalTermText]).heightContrainedToSelectedPageSize + 4 // for bottom inset on cell
         case let .medicalForm(_, _, _, medicalForm):
-            return (medicalForm?.value ?? NSAttributedString(string: "", attributes: [.font: FontSpecification.medicalTermText])).heightConstrainedToPageWidth + 4 // for bottom inset on cell
+            return (medicalForm?.value ?? NSAttributedString(string: "", attributes: [.font: FontSpecification.medicalTermText])).heightContrainedToSelectedPageSize + 4 // for bottom inset on cell
         case .pageBreak: fatalError("page break doesn't have text height!")
         }
     }

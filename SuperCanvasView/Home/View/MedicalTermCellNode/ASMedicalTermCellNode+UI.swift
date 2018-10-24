@@ -13,7 +13,12 @@ import RxSwift
 
 // MARK: Animations
 
-extension ASMedicalTermCellNode {
+protocol ExpandableCellNode {
+    func expand()
+    func contract(interactionType: ASAwareTableNode.InteractionType)
+}
+
+extension ASMedicalTermCellNode: ExpandableCellNode {
     func expand() {
         guard let canvasView = canvasNode.view as? CanvasView, let expansionProperties = item?.getHeightExpansionProperties(with: style.preferredSize.height), expansionProperties.needsToExpand else { return }
         UIView.setAnimationsEnabled(false)
@@ -24,6 +29,17 @@ extension ASMedicalTermCellNode {
         Observable<Int>.timer(0.2, scheduler: MainScheduler.instance)
             .subscribe(onNext: { _ in UIView.setAnimationsEnabled(true) })
             .disposed(by: disposeBag)
+    }
+
+    func contract(interactionType: ASAwareTableNode.InteractionType) {
+        guard let canvasView = canvasNode.view as? CanvasView else { return }
+        guard let `item` = item else { return }
+        let newHeight = min(max((item.lines.highestY ?? 0), item.height), PageSize.selectedPage.heightRemovingMargins)
+        style.preferredSize.height = newHeight
+        transitionLayout(withAnimation: false, shouldMeasureAsync: true) {
+            guard case .scribble = interactionType else { return }
+            canvasView.setNeedsDisplay()
+        }
     }
 }
 

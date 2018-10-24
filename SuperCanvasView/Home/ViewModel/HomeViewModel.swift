@@ -24,6 +24,7 @@ final class HomeViewModel: Reactor {
         case deleteAll
         case print([UIImage])
         case scroll
+        case removePageBreaks
     }
     
     enum Mutation {
@@ -49,6 +50,7 @@ final class HomeViewModel: Reactor {
         case .deleteAll: return mutateInitialLoad()
         case let .print(images): return mutatePrint(images: images)
         case .scroll: return mutateScroll()
+        case .removePageBreaks: return .just(.setSections(currentState.sections.removingPageBreaks()))
         }
     }
     
@@ -77,7 +79,7 @@ extension HomeViewModel {
     }
     
     private func mutateAddingPageBreaks() -> Observable<Mutation> {
-        return .just(.setSections(currentState.sections.removingPageBreaks().withPageBreaks(sectionHeaderHeight: 16)))
+        return .just(.setSections(currentState.sections.removingPageBreaks().withPageBreaks(sectionHeaderHeight: 25)))
     }
     
     private func mutateSelectMedicalSection(_ medicalSection: MedicalSection) -> Observable<Mutation> {

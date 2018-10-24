@@ -43,7 +43,7 @@ final class ASMedicalFormCellNode<ContentNode: CellContentNode>: ASCellNode, Can
     
     override func layoutSpecThatFits(_ constrainedSize: ASSizeRange) -> ASLayoutSpec {
         let a4CanvasStack: ASStackLayoutSpec = .horizontal()
-        a4CanvasStack.children = [ canvasNode.then { $0.style.preferredSize.width = PageSize.selectedPage.width }, ASLayoutSpec().then { $0.style.flexGrow = 1 } ]
+        a4CanvasStack.children = [ canvasNode.then { $0.style.preferredSize.width = PageSize.selectedPage.widthRemovingMargins }, ASLayoutSpec().then { $0.style.flexGrow = 1 } ]
         return titleTextNode.insets(.init(top: 0, left: leftInset, bottom: bottomInset, right: 0)).relative(horizontalPosition: .start, verticalPosition: .start, sizingOption: [])
             .overlayed(by: contentNode)
             .overlayed(by: a4CanvasStack)

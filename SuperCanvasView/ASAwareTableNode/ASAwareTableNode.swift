@@ -108,7 +108,9 @@ final class ASAwareTableNode: ASTableNode {
                         return node
                     }
                 case .pageBreak:
-                    return ASPageBreakCellNode()
+                    let node = ASPageBreakCellNode()
+                    node.configure(with: item)
+                    return node
                 }
             }
         }

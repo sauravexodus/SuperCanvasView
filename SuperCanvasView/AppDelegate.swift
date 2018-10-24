@@ -16,6 +16,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         window = UIWindow(frame: UIScreen.main.bounds)
+        UserDefaults.standard.set(100, forKey: "topMargin")
+        UserDefaults.standard.set(100, forKey: "bottomMargin")
+        UserDefaults.standard.set(100, forKey: "leftMargin")
         if let `window` = self.window {
             let viewModel = HomeViewModel()
             let viewController = ASHomeViewController(viewModel: viewModel)

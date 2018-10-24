@@ -28,6 +28,14 @@ enum PageSize: Int {
         }
     }
     
+    var heightRemovingMargins: CGFloat {
+        return height - UserDefaults.standard.float(forKey: "topMargin").cgFloat - UserDefaults.standard.float(forKey: "bottomMargin").cgFloat
+    }
+    
+    var widthRemovingMargins: CGFloat {
+        return width - UserDefaults.standard.float(forKey: "leftMargin").cgFloat
+    }
+    
     var size: CGSize {
         return CGSize(width: width, height: height)
     }

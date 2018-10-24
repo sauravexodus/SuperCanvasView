@@ -17,6 +17,7 @@ import RxASDataSources
 import RxViewController
 import Then
 import DeepDiff
+//import DHSmartScreenshot
 
 final class ASDisplayNodeWithBackgroundColor: ASDisplayNode {
     init(color: UIColor) {
@@ -65,6 +66,11 @@ final class ContainerDisplayNode: ASDisplayNode {
         $0.setTitle("P", with: .systemFont(ofSize: 13), with: .white, for: .normal)
         $0.style.preferredSize.width = 40
     }
+
+    let contractButtonNode = ASButtonNode().then {
+        $0.setTitle("Contract", with: .systemFont(ofSize: 13), with: .white, for: .normal)
+        $0.style.preferredSize.width = 100
+    }
     
     let showPageBreaksButtonNode = ASButtonNode().then {
         $0.setTitle("PB", with: .systemFont(ofSize: 13), with: .white, for: .normal)
@@ -101,7 +107,7 @@ final class ContainerDisplayNode: ASDisplayNode {
         $0.view.tableFooterView = UIView()
         $0.view.backgroundColor = .white
         $0.view.tableFooterView = UIView()
-        $0.view.tableFooterView?.frame.size.height = PageSize.selectedPage.height
+        $0.view.tableFooterView?.frame.size.height = PageSize.selectedPage.heightRemovingMargins
         $0.style.flexGrow = 1
     }
     
@@ -134,6 +140,7 @@ final class ContainerDisplayNode: ASDisplayNode {
             selectMenstrualHistoryButton,
             selectObstetricHistoryButton,
             deleteAllRowsButtonNode,
+            contractButtonNode,
             printButtonNode,
             showPageBreaksButtonNode,
             spacer
@@ -243,10 +250,20 @@ final class ASHomeViewController: ASViewController<ContainerDisplayNode>, Reacto
         containerNode.printButtonNode.rx
             .tap
             .flatMap { [weak self] _ -> Observable<[UIImage]> in
-                guard let strongSelf = self  else { return .empty() }
-                return strongSelf.containerNode.tableNode.generatePages(PageSize.selectedPage.height)
+                guard let strongSelf = self else { return .empty() }
+                return strongSelf.containerNode.tableNode.generatePages()
             }
             .map { .print($0) }
+            .bind(to: reactor.action)
+            .disposed(by: disposeBag)
+        
+        containerNode.contractButtonNode.rx
+            .tap
+            .flatMap { [weak self] _ -> Observable<Void> in
+                guard let strongSelf = self else { return .empty() }
+                return strongSelf.containerNode.tableNode.contract()
+            }
+            .mapTo(.removePageBreaks)
             .bind(to: reactor.action)
             .disposed(by: disposeBag)
         
